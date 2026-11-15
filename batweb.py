@@ -4,7 +4,7 @@
 #   /app/forensics  → Forensics Email : verdict authentique/spoofé/suspect + carte des relais
 #   /app/stegano    → Stégano Studio : cacher/révéler un message dans une image (glisser-déposer)
 #   /app/netmap     → Carte réseau vivante : les hôtes du wifi en graphe, auto-refresh
-import json, os, re, subprocess, concurrent.futures
+import json, os, re, subprocess, time, concurrent.futures
 
 GITHUB = "https://github.com/MaximeLEAL/tool_DC-arsenal"
 
@@ -316,7 +316,164 @@ def page_stegano():
     return shell("stegano", "#9b30ff", "Stégano Studio",
                  '<a href="/">← Gotham City</a> · APP WEB · BATCAVE STÉGANO', body, STEGANO_JS)
 
-# ─────────────────────────── 3. CARTE RÉSEAU VIVANTE ───────────────────────────
+# ─────────────────────────── 4. KRYPTONITE WEB ───────────────────────────
+def _kit_path(kit):
+    base = os.path.dirname(os.path.abspath(__file__))
+    return os.path.join(base, kit)
+
+def api_kryptonite_scan():
+    ks = _kit_path("KryptoniteSuite")
+    try:
+        subprocess.run(["python3", "kryptonite.py", "scan"], cwd=ks,
+                       capture_output=True, text=True, timeout=120)
+        p = os.path.join(ks, "sorties", "scan.json")
+        findings = json.load(open(p)) if os.path.exists(p) else []
+    except Exception as e:
+        findings = [{"kit": "ERREUR", "type": str(e)[:120], "detail": ""}]
+    kits = {}
+    for f in findings:
+        kits[f.get("kit", "?")] = kits.get(f.get("kit", "?"), 0) + 1
+    return {"findings": findings, "count": len(findings), "by_kit": kits,
+            "scanned": time.strftime("%H:%M:%S")}
+
+KRYPTONITE_JS = r"""
+async function kscan(){
+  document.getElementById('kv').innerHTML = '<div style="font-family:var(--mono);color:var(--muted)">⚡ scan en cours…</div>';
+  const r = await fetch('/app/kryptonite/scan');
+  const d = await r.json();
+  const cards = d.findings.map(f => `
+    <div class="finding" style="border-left-color:var(--c)">
+      <span class="fkit">${f.kit}</span>
+      <div><b>${f.type}</b>${f.detail ? `<div style="color:var(--muted);font-size:.82em;margin-top:4px;font-family:var(--mono)">${f.detail}</div>` : ''}</div>
+    </div>`).join('');
+  document.getElementById('kv').innerHTML = d.count === 0
+    ? '<div class="verdict ok" style="display:block"><div class="big">MACHINE PROPRE</div><div style="color:var(--muted);font-size:.85em">Aucun IOC de l\'arsenal détecté.</div></div>'
+    : `<div class="verdict mid" style="display:block"><div class="big">${d.count} TRACE(S) DÉTECTÉE(S)</div>
+       <div style="color:var(--muted);font-size:.85em">par kit : ${Object.entries(d.by_kit).map(([k, n]) => k + ' ×' + n).join(' · ')}</div></div>` + cards;
+}
+"""
+KRYPTONITE_BODY = """
+    <h1>Kryptonite Web</h1>
+    <div class="sub">La machine vs les IOCs des 27 kits · scan en direct · verdict visuel</div>
+    <div class="card">
+      <button class="btn" onclick="kscan()">🟩 Lancer le scan</button>
+      <span style="font-family:var(--mono);color:var(--muted);font-size:.7rem;margin-left:14px">
+        Vérifie : process · fichiers · LaunchAgents · ports · mutex</span>
+    </div>
+    <div id="kv"></div>
+    <div class="card"><p style="color:var(--muted);font-size:.85em;line-height:1.6">
+    C'est la version web du scanner <b>KryptoniteSuite</b> : la machine est confrontée aux IOCs
+    (indicateurs de compromission) documentés de chaque kit — process actifs, fichiers laissés,
+    agents de persistance, ports en écoute. Le rôle : vérifier qu'un exercice est bien nettoyé.</p></div>
+"""
+def page_kryptonite():
+    return shell("kryptonite", "#39ff14", "Kryptonite Web",
+                 '<a href="/">← Gotham City</a> · APP WEB · KRYPTONITE SUITE',
+                 KRYPTONITE_BODY, KRYPTONITE_JS)
+
+# ─────────────────────────── 5. SENTINELLE ───────────────────────────
+SENTINELLE_JS = r"""
+async function srefresh(){
+  const r = await fetch('/app/sentinelle/events');
+  const d = await r.json();
+  document.getElementById('stat').innerHTML = d.status;
+  const ev = d.events.map(e => `
+    <div class="hop" style="border-left-color:${e.sev === 'alerte' ? 'var(--red)' : 'var(--c)'}">
+      <div><div class="lbl"><b>${e.type}</b> — ${e.detail}</div>
+      <div class="dt">${e.ts}</div></div></div>`).join('');
+  document.getElementById('ev').innerHTML = ev || '<div style="color:var(--muted)">Aucun événement — tout est calme.</div>';
+}
+srefresh(); setInterval(srefresh, 15000);
+"""
+SENTINELLE_BODY = """
+    <h1>Sentinelle</h1>
+    <div class="sub">Le gardien de ta machine · device wifi inconnu · ports · persistance · push téléphone</div>
+    <div class="card"><div style="font-family:var(--mono);font-size:.78rem;color:var(--txt)" id="stat">lecture du statut…</div></div>
+    <div class="card"><h3 style="font-family:var(--cond);color:#fff;letter-spacing:1px;margin-bottom:10px">📜 ÉVÉNEMENTS</h3>
+      <div id="ev"></div></div>
+    <div class="card"><p style="color:var(--muted);font-size:.85em;line-height:1.6">
+    Sentinelle tourne en agent permanent (toutes les 5 min) et surveille : <b>nouveaux appareils wifi</b>,
+    <b>nouveaux ports en écoute</b>, <b>LaunchAgents modifiés</b>, <b>sessions ouvertes</b>, <b>disque</b>.
+    Chaque anomalie → notification macOS + push téléphone (canal ntfy). Les évènements sont journalisés ici.</p></div>
+"""
+def page_sentinelle():
+    return shell("sentinelle", "#ff8c30", "Sentinelle",
+                 '<a href="/">← Gotham City</a> · APP WEB · SURVEILLANCE',
+                 SENTINELLE_BODY, SENTINELLE_JS)
+
+# ─────────────────────────── 6. WOPR WEB ───────────────────────────
+def api_wopr_status():
+    import socket
+    def up(port):
+        try:
+            s = socket.create_connection(("127.0.0.1", port), timeout=1)
+            s.close(); return True
+        except Exception: return False
+    return {"target": up(8090), "scoreboard": up(8091)}
+
+def api_wopr_action(action):
+    if action not in ("build", "destroy"): return {"ok": False, "err": "action inconnue"}
+    wopr = _kit_path("WOPR")
+    try:
+        subprocess.Popen(["python3", "wopr.py", action], cwd=wopr,
+                         stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        return {"ok": True, "action": action}
+    except Exception as e:
+        return {"ok": False, "err": str(e)[:120]}
+
+WOPR_JS = r"""
+async function wrefresh(){
+  const r = await fetch('/app/wopr/status');
+  const d = await r.json();
+  const set = (id, ok, label) => {
+    const el = document.getElementById(id);
+    el.innerHTML = (ok ? '🟢 ' : '⚫ ') + label + (ok ? ' — EN LIGNE' : ' — hors ligne');
+    el.style.color = ok ? '#4ad66d' : 'var(--dim)';
+    document.getElementById(id + '-link').style.display = ok ? 'inline-block' : 'none';
+  };
+  set('t', d.target, 'Cible vulnérable :8090');
+  set('s', d.scoreboard, 'Scoreboard :8091');
+  document.getElementById('bbuild').disabled = d.target;
+}
+async function waction(a){
+  document.getElementById('wmsg').textContent = '⏳ ' + a + ' en cours…';
+  await fetch('/app/wopr/' + a);
+  setTimeout(wrefresh, 2500);
+}
+wrefresh();
+"""
+WOPR_BODY = r"""
+    <h1>W.O.P.R. Web</h1>
+    <div class="sub">Le lab CTF de WarGames · cible vulnérable + scoreboard · pilotage depuis le browser</div>
+    <div class="card" style="text-align:center;padding:28px">
+      <pre style="font-family:var(--mono);color:#7fff00;font-size:.78rem;line-height:1.35;display:inline-block;text-align:left">   ____  ____.               .___
+   |    |/ _|_____ ___.__. __| _/____     ____   ______
+   |      < |  _  <   |  |/ __ |  __ \  _/ ___\ /  ___/
+   |    |  \| (_) \___  / /_/ |  ___/   \  \___ \___ \
+   |____|__ /\____/ ____\____ |\___  >  /\___  /____  >
+           \/     \/     \/      \/      \/     \/
+   SHALL WE PLAY A GAME?</pre>
+    </div>
+    <div class="card">
+      <div style="font-family:var(--mono);font-size:.82rem;line-height:2" id="t">⚫ Cible vulnérable :8090</div>
+      <div style="font-family:var(--mono);font-size:.82rem;line-height:2" id="s">⚫ Scoreboard :8091</div>
+      <div style="display:flex;gap:12px;margin-top:16px;flex-wrap:wrap">
+        <button class="btn" id="bbuild" onclick="waction('build')">🚀 Construire le lab</button>
+        <button class="btn ghost" onclick="waction('destroy')">🧨 Détruire</button>
+        <a class="btn ghost" id="t-link" href="http://127.0.0.1:8090" target="_blank" style="display:none">🎯 Ouvrir la cible</a>
+        <a class="btn ghost" id="s-link" href="http://127.0.0.1:8091" target="_blank" style="display:none">🏆 Scoreboard</a>
+      </div>
+      <div id="wmsg" style="font-family:var(--mono);color:var(--muted);font-size:.74rem;margin-top:12px"></div>
+    </div>
+    <div class="card"><p style="color:var(--muted);font-size:.85em;line-height:1.6">
+    Le lab crée une cible volontairement vulnérable sur <b>localhost:8090</b> (SQLi, path traversal, RCE)
+    avec 4 flags cachés, et un scoreboard :8091. À toi de les trouver. Uniquement en local —
+    le lab se détruit avec ses preuves.</p></div>
+"""
+def page_wopr():
+    return shell("wopr", "#7fff00", "W.O.P.R. Web",
+                 '<a href="/">← Gotham City</a> · APP WEB · AUTO-LAB CTF',
+                 WOPR_BODY, WOPR_JS)
 _seen = {}
 
 def api_netmap_scan(deep=False):
