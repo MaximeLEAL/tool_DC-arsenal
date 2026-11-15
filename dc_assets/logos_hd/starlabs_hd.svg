@@ -1,0 +1,10 @@
+<svg viewBox="0 0 400 400" xmlns="http://www.w3.org/2000/svg">
+<rect width="400" height="400" fill="#020208"/>
+<path d="M80 80 L320 80 L320 320 L80 320 Z" fill="none" stroke="#00c8ff" stroke-width="3"/>
+<path d="M80 200 L320 200 M200 80 L200 320" stroke="#00c8ff" stroke-width="1" opacity=".5"/>
+<circle cx="200" cy="200" r="30" fill="none" stroke="#00c8ff" stroke-width="3"/>
+<circle cx="200" cy="200" r="12" fill="#00c8ff"/>
+<circle cx="200" cy="200" r="50" fill="none" stroke="#00c8ff" stroke-width="1" opacity=".3"/>
+<path d="M60 60 L100 60 M300 60 L340 60 M60 340 L100 340 M300 340 L340 340" stroke="#00c8ff" stroke-width="2"/>
+<text x="200" y="270" text-anchor="middle" fill="#00c8ff" font-size="16" font-family="Orbitron,monospace">S.T.A.R. LABS</text>
+</svg>
