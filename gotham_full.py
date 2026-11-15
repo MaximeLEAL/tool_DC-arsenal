@@ -1,7 +1,9 @@
 #!/usr/bin/env python3
 # language: Python 3, file: gotham_full.py v8, target: macOS
 # GOTHAM CITY v8 — 26 kits, 1 image unique par kit, zéro doublon, pages tools servies
-import http.server, urllib.request, urllib.parse, json, os, sys
+import http.server, urllib.request, urllib.parse, json, os, sys, shutil
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import batweb
 
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 9000
 TOOL_DC = os.path.dirname(os.path.abspath(__file__))
@@ -51,6 +53,15 @@ class H(http.server.BaseHTTPRequestHandler):
         if p.startswith("/face/"):                      return self._face(p)
         if p == "/api/status":                          return self._api_status()
         if p.startswith("/pages/"):                     return self._static(p[len("/pages/"):], PAGES)
+        if p.startswith("/app/"):
+            sub = p[len("/app/"):]
+            if sub == "forensics":                      return self._html(batweb.page_forensics())
+            if sub == "stegano":                        return self._html(batweb.page_stegano())
+            if sub == "netmap":                         return self._html(batweb.page_netmap())
+            if sub == "netmap/scan":
+                deep = q.get("deep", [""])[0] == "1" if (q := urllib.parse.parse_qs(u.query)) else False
+                return self._json(batweb.api_netmap_scan(deep))
+            self.send_response(404); self.end_headers(); return
         if p.startswith("/gotham_static/"):             return self._static(p[len("/gotham_static/"):], os.path.join(TOOL_DC, "gotham_static"))
         if p.startswith("/kit/"):
             kid = p.split("/kit/")[1].split("?")[0]

@@ -1,0 +1,27 @@
+name: News journal (quotidien)
+
+on:
+  schedule:
+    - cron: "30 5 * * *"   # 6h30 Paris — avant le digest 8h
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  news-snapshot:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Snapshot du journal Daily Planet
+        run: python3 build_news_snapshot.py
+
+      - name: Commit et push
+        run: |
+          git config user.name "arsenal-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add docs/
+          git diff --cached --quiet && echo "Pas de nouvelles" && exit 0
+          git commit -m "journal du matin : snapshot des actus"
+          git push

@@ -528,6 +528,16 @@ cd ~/Desktop/tool_DC/DailyPlanet && python3 veille.py serve 8088
 | 2 | top | terminal | les N dernières colorées par catégorie |
 | 3 | notifs | notifications | notif macOS à chaque actu cyber (veille_notifs.py start) |
 
+## KIT 27 — BATWEB (apps web · 3 tools)
+```
+open http://127.0.0.1:9000/app/forensics
+```
+| # | Tool | Thème | Description |
+|---|---|---|---|
+| 1 | FORENSICS EMAIL | forensics web | headers collés → verdict authentique/spoofé/suspect + carte des relais |
+| 2 | STÉGANO STUDIO | stégano studio | cacher/révéler un message dans une image, glisser-déposer, mot de passe |
+| 3 | CARTE RÉSEAU | carte réseau | hôtes du wifi en graphe vivant, refresh 10s, alerte nouvel appareil |
+
 
 ═══════════════════════════════════════════════════════════════
   TOTAL : 26 KITS · ~240 TOOLS · TOUT DANS ~/Desktop/tool_DC/

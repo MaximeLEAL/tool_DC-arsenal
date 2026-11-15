@@ -144,7 +144,7 @@ def digest(hour=8):
     if extra > 0:
         msg += f"\n+ {extra} autres sur le journal"
     notify("📰 DIGEST DU MATIN", msg,
-           link="https://maximeleal.github.io/tool_DC-arsenal/DailyPlanet/")
+           link="https://maximeleal.github.io/tool_DC-arsenal/DailyPlanet/journal.html")
     # téléphone : 3 notifs enrichies avec les vignettes, cliquables vers les articles
     for n, it in enumerate(top3, 1):
         img = thumb_for(it.get("lien", ""))
