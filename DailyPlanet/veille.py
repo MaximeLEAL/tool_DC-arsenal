@@ -4,7 +4,7 @@
 # Agrège les grands flux RSS (FR + EN), dédoublonne, classe, et sert une page web journal.
 # Usage: python3 veille.py serve [port]   |   python3 veille.py top [n]
 import http.server, urllib.request, urllib.parse, xml.etree.ElementTree as ET, json, time, os, sys, re, html, threading
-sys.path.insert(0, os.path.expanduser('~/Desktop/tool_DC'))
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dc_fullscreen as dfs
 
 ROOT = os.path.dirname(os.path.abspath(__file__))

@@ -518,7 +518,7 @@ cd ~/Desktop/tool_DC/JokerCard && python3 joker_forge.py <c2>
 | 4 | RAPPORT | audit | RAPPORT_SGP_JOKER.md (architecture complète) |
 
 
-## KIT 26 — DAILY PLANET (veille · 25 sources · 2 tools)
+## KIT 26 — DAILY PLANET (veille · 25 sources · 3 tools)
 ```
 cd ~/Desktop/tool_DC/DailyPlanet && python3 veille.py serve 8088
 ```
@@ -526,6 +526,7 @@ cd ~/Desktop/tool_DC/DailyPlanet && python3 veille.py serve 8088
 |---|---|---|---|
 | 1 | serve | web journal | 644 actus / 25 sources / filtres CYBER-TECH-JURIDIQUE / recherche |
 | 2 | top | terminal | les N dernières colorées par catégorie |
+| 3 | notifs | notifications | notif macOS à chaque actu cyber (veille_notifs.py start) |
 
 
 ═══════════════════════════════════════════════════════════════

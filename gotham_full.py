@@ -4,7 +4,7 @@
 import http.server, urllib.request, urllib.parse, json, os, sys
 
 PORT = int(sys.argv[1]) if len(sys.argv) > 1 else 9000
-TOOL_DC = os.path.expanduser("~/Desktop/tool_DC")
+TOOL_DC = os.path.dirname(os.path.abspath(__file__))
 GITHUB = "https://github.com/MaximeLEAL/tool_DC-arsenal"
 FACES = os.path.join(TOOL_DC, "gotham_static", "faces")
 PAGES = os.path.join(TOOL_DC, "arsenal_web_pages")
@@ -36,7 +36,7 @@ KITS = [
     {"id": "RavenEvasion",      "n": "RAVEN",             "c": "#8899ff", "f": "raven_face.jpg",    "i": "🐦‍⬛", "d": "Évasion EDR · 5 modules"},
     {"id": "TheThinker",        "n": "THE THINKER",       "c": "#9b30ff", "f": "thinker_face.jpg",                "i": "🧠", "d": "Reverse engineering · 8 commands"},
     {"id": "JokerCard",         "n": "JOKER CARD",        "c": "#ff6a00", "f": "jokercard_face.jpg",                "i": "🂡", "d": "SGP Card · BadUSB · 4 tools"},
-    {"id": "DailyPlanet",       "n": "DAILY PLANET",      "c": "#64a0ff", "f": "dailyplanet_face.jpg",                "i": "📰", "d": "Veille · 25 sources · 2 tools"},
+    {"id": "DailyPlanet",       "n": "DAILY PLANET",      "c": "#64a0ff", "f": "dailyplanet_face.jpg",                "i": "📰", "d": "Veille · 25 sources · 3 tools"},
 ]
 KIT_BY_ID = {k["id"]: k for k in KITS}
 
