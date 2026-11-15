@@ -152,6 +152,23 @@ def fetch_og_image(article_url):
         open(fail_path, "w").write("1")
         return None
 
+def prefetch_thumbs(items, max_threads=8):
+    """pré-télécharge en arrière-plan les vignettes des articles qui n'en ont pas encore"""
+    sem = threading.Semaphore(max_threads)
+    threads = []
+    for it in items:
+        u = it.get("lien", "")
+        if not u: continue
+        h = hashlib.md5(u.encode()).hexdigest()
+        if os.path.exists(os.path.join(IMG_CACHE, h + ".img")): continue
+        if os.path.exists(os.path.join(IMG_CACHE, h + ".fail")): continue
+        def work(url=u, s=sem):
+            with s:
+                fetch_og_image(url)
+        t = threading.Thread(target=work, daemon=True); t.start(); threads.append(t)
+    return len(threads)
+
+
 def serve_img(self, article_url):
     data = fetch_og_image(article_url)
     if not data:
@@ -404,9 +421,14 @@ if __name__ == "__main__":
         top(int(sys.argv[2]) if len(sys.argv) > 2 else 15)
     else:
         port = int(sys.argv[2]) if len(sys.argv) > 2 else 8088
+        data = fetch_all(force=True)
+        def prefetcher():
+            n = prefetch_thumbs(data.get("items", []))
+            print(f"[*] pré-téléchargement de {n} vignettes en arrière-plan")
+        threading.Thread(target=prefetcher, daemon=True).start()
         def refresher():
             while True:
-                time.sleep(CACHE_TTL); fetch_all(force=True)
+                time.sleep(CACHE_TTL); d2 = fetch_all(force=True); prefetch_thumbs(d2.get("items", []))
         threading.Thread(target=refresher, daemon=True).start()
         print(f"[*] DAILY PLANET sur http://127.0.0.1:{port} — {len(FEEDS)} sources tech & cyber")
         http.server.ThreadingHTTPServer(("0.0.0.0", port), H).serve_forever()
