@@ -1,0 +1,96 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>scan · KRYPTONITE SUITE — Arsenal DC</title>
+<link rel="preconnect" href="https://fonts.googleapis.com"><link rel="preconnect" href="https://fonts.gstatic.com" crossorigin><link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet"><style>:root{
+  --bg:#06070c; --panel:#0c0e17; --panel2:#070810; --line:#1a1c2e;
+  --txt:#c4c6d6; --muted:#6a6d86; --dim:#45485e;
+  --red:#e63022; --gold:#f5c518;
+  --disp:"Anton",Impact,sans-serif; --cond:"Oswald",sans-serif;
+  --sans:"Archivo",-apple-system,"Segoe UI",sans-serif;
+  --mono:"JetBrains Mono",ui-monospace,Menlo,monospace;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--txt);font-family:var(--sans);min-height:100vh;position:relative;-webkit-font-smoothing:antialiased}
+::selection{background:var(--red);color:#fff}
+::-webkit-scrollbar{width:11px}::-webkit-scrollbar-track{background:var(--bg)}
+::-webkit-scrollbar-thumb{background:#1c1e30;border-radius:6px;border:2px solid var(--bg)}
+::-webkit-scrollbar-thumb:hover{background:var(--red)}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}
+.bg .beam{position:absolute;inset:0;background:
+  radial-gradient(44% 70% at 50% 108%,color-mix(in srgb,var(--c) 10%,transparent),transparent 60%),
+  radial-gradient(60% 80% at 50% -10%,rgba(230,48,34,.12),transparent 62%),
+  radial-gradient(40% 50% at 82% 20%,rgba(100,149,255,.08),transparent 60%)}
+.bg .dots{position:absolute;inset:0;opacity:.12;background-image:radial-gradient(rgba(255,255,255,.5) 1px,transparent 1.4px);background-size:16px 16px;mask-image:radial-gradient(ellipse 70% 55% at 50% 20%,#000 10%,transparent 72%)}
+.bg .grid{position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,#000 35%,transparent 88%)}
+.bg .vig{position:absolute;inset:0;background:radial-gradient(ellipse 100% 80% at 50% 30%,transparent 55%,rgba(0,0,0,.55))}
+.wrap{position:relative;z-index:1}
+.nav{display:flex;justify-content:space-between;align-items:center;padding:14px clamp(18px,4vw,40px);position:sticky;top:0;z-index:30;background:rgba(6,7,12,.55);backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid var(--line)}
+.brand{font-family:var(--cond);font-weight:700;letter-spacing:5px;font-size:.95rem;color:#fff;display:flex;align-items:center;gap:11px;text-transform:uppercase;text-decoration:none}
+.brand .dot{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 14px var(--red);animation:pulse 2s infinite}
+.brand em{color:var(--red);font-style:normal}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.nav-right{display:flex;align-items:center;gap:14px}
+.status{font-family:var(--mono);font-size:.64rem;letter-spacing:1.6px;color:#4ad66d;display:flex;align-items:center;gap:7px;text-transform:uppercase}
+.status::before{content:"";width:6px;height:6px;border-radius:50%;background:#4ad66d;box-shadow:0 0 10px #4ad66d;animation:pulse 1.6s infinite}
+.ghbtn{font-family:var(--mono);color:#9fb4ff;font-size:.7rem;letter-spacing:.6px;text-decoration:none;border:1px solid var(--line);padding:8px 15px;border-radius:10px;transition:.25s;background:rgba(255,255,255,.02)}
+.ghbtn:hover{border-color:#6495ff;color:#cdd9ff;box-shadow:0 0 22px rgba(100,149,255,.22);transform:translateY(-1px)}
+.banner{display:flex;gap:20px;align-items:center;max-width:820px;margin:30px auto 0;padding:20px 24px;
+background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);border-radius:4px;position:relative;overflow:hidden}
+.banner::before{content:"";position:absolute;inset:auto 0 0 0;height:3px;background:linear-gradient(90deg,transparent,var(--c),transparent)}
+.banner .info{flex:1;min-width:0}
+.crumb{font-family:var(--mono);font-size:.68rem;letter-spacing:1.2px;text-transform:uppercase}
+.crumb a{color:var(--c);text-decoration:none}
+.crumb a:hover{text-decoration:underline}
+h1{font-family:var(--disp);color:#fff;font-size:clamp(1.7rem,5vw,2.6rem);margin:8px 0 4px;letter-spacing:1px;text-transform:uppercase;line-height:.95;text-shadow:0 2px 0 rgba(0,0,0,.55)}
+.sub{font-family:var(--mono);color:var(--muted);font-size:.7rem;letter-spacing:1.5px;text-transform:uppercase}
+main{max-width:820px;margin:22px auto 0;padding:0 24px 44px;position:relative;z-index:1}
+.theme{display:inline-block;font-family:var(--mono);color:var(--c);border:1px solid color-mix(in srgb,var(--c) 60%,transparent);border-radius:999px;
+padding:5px 15px;font-size:.66rem;letter-spacing:1.6px;margin:4px 0 8px;background:color-mix(in srgb,var(--c) 10%,transparent)}
+h2{font-family:var(--mono);color:var(--c);font-size:.72rem;letter-spacing:3px;margin:28px 0 10px;text-transform:uppercase;
+display:flex;align-items:center;gap:12px}
+h2::before{content:"";width:22px;height:1px;background:var(--c);box-shadow:0 0 8px var(--c)}
+h2::after{content:"";flex:1;height:1px;background:linear-gradient(90deg,var(--line),transparent)}
+p.txt{color:var(--txt);font-size:.97em;line-height:1.7}
+ul.how{margin:4px 0 2px 2px;padding:0;list-style:none}
+ul.how li{color:#a8abbf;font-size:.93em;line-height:1.65;padding:6px 0 6px 24px;position:relative}
+ul.how li:before{content:"▸";color:var(--c);position:absolute;left:2px}
+.cmd{background:var(--panel2);border:1px solid var(--line);border-radius:8px;padding:14px 16px;
+font-family:var(--mono);font-size:.78em;color:#4ad66d;margin:10px 0 6px;overflow-x:auto}
+.cmd small{display:block;color:var(--dim);font-family:var(--sans);margin-bottom:7px;letter-spacing:2px;font-size:.68rem;text-transform:uppercase}
+.key{font-family:var(--mono);color:var(--muted);font-size:.74rem;letter-spacing:.5px;margin-bottom:22px}
+.key b{color:#fff}
+.gh{display:flex;align-items:center;gap:12px;color:#fff;text-decoration:none;
+background:linear-gradient(135deg,#238636,#2ea043);padding:15px 20px;border-radius:10px;
+font-weight:700;font-size:.95em;box-shadow:0 6px 24px #23863644;transition:transform .2s;margin-top:30px}
+.gh:hover{transform:translateY(-2px)}
+.gh svg{width:24px;height:24px;fill:#fff;flex-shrink:0}
+.gh small{display:block;font-weight:400;font-size:.72em;opacity:.85}
+.gh .arrow{margin-left:auto;font-size:1.3em}
+.list .t{display:flex;gap:14px;align-items:baseline;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+border-radius:4px;padding:13px 16px;margin-bottom:9px;text-decoration:none;transition:border-color .25s,transform .25s,box-shadow .25s}
+.list .t:hover{border-color:color-mix(in srgb,var(--c) 60%,var(--line));transform:translateX(4px);box-shadow:0 8px 26px color-mix(in srgb,var(--c) 14%,transparent)}
+.list .n{font-family:var(--mono);color:var(--c);font-weight:700;min-width:24px}
+.list .nm{font-family:var(--cond);color:#fff;font-size:.95em;font-weight:600;letter-spacing:.4px;text-transform:uppercase}
+.list .th{margin-left:auto;font-family:var(--mono);color:var(--c);font-size:.66rem;opacity:.85}
+footer{text-align:center;color:var(--muted);padding:36px 20px 52px;font-family:var(--mono);font-size:.66rem;letter-spacing:2.2px;border-top:1px solid var(--line);margin-top:40px;text-transform:uppercase}
+footer a{color:#9fb4ff;text-decoration:none}
+footer a:hover{color:#cdd9ff}
+@media (max-width:560px){.status{display:none}}</style></head><body style="--c:#39ff14">
+<div class="bg"><div class="beam"></div><div class="dots"></div><div class="grid"></div><div class="vig"></div></div><div class="wrap">
+<nav class="nav"><div class="brand"><span class="dot"></span>Gotham <em>City</em></div><div class="nav-right"><span class="status">System Online</span><a class="ghbtn" href="https://github.com/MaximeLEAL/tool_DC-arsenal" target="_blank">&#8599; GITHUB</a></div></nav>
+<div class="banner" style="--c:#39ff14"><img src="../../gotham_static/faces/kryptonite_face.jpg" alt="" style="width:110px;height:110px;object-fit:cover;border-radius:10px;border:1px solid #39ff1466;flex-shrink:0"><div class="info"><div class="crumb"><a href="../index.html">← KRYPTONITE SUITE</a> · <a href="../../arsenal_dc.html">Arsenal DC</a></div><h1>scan</h1><p class="sub">KRYPTONITE SUITE · powered by Maxime Leal</p></div></div>
+<main>
+<span class="theme">DÉTECTION</span>
+<h2>Rôle de ce tool</h2>
+<p class="txt">La défense : détecter les traces des kits de l&#x27;arsenal sur une machine.</p>
+<h2>Comment ça marche</h2>
+<ul class="how"><li>Comparaison de la machine contre la base d&#x27;IOCs.</li><li>Génération de règles Sigma (SIEM) et YARA.</li><li>Rapport : ce qui est propre, ce qui est infecté.</li></ul>
+<h2>Concrètement, ici</h2>
+<p class="txt">machine vs IOCs des 20 kits (chemins, fichiers, process, ports)</p>
+<div class="cmd"><small>COMMANDE DU KIT</small>cd ~/Desktop/tool_DC/KryptoniteSuite &amp;&amp; python3 kryptonite.py scan</div><p class="key">Puis touche <b>1</b> + Entrée pour lancer ce tool.</p>
+<a class="gh" href="https://github.com/MaximeLEAL/tool_DC-arsenal/tree/main/KryptoniteSuite" target="_blank">
+  <svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg><span>Code source sur GitHub<small>github.com/MaximeLEAL/tool_DC-arsenal → KryptoniteSuite</small></span><span class="arrow">→</span>
+</a>
+</main>
+<footer>ARSENAL DC · <a href="https://github.com/MaximeLEAL/tool_DC-arsenal">GITHUB</a> · POWERED BY MAXIME LEAL</footer>
+</div></body></html>

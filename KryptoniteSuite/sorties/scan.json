@@ -1,1 +1,17 @@
-[]
+[
+ {
+  "kit": "PORT",
+  "type": ":4444 \u2014 listener reverse shell standard",
+  "detail": "Python    15120 mleal    3u  IPv4 0xe5c20b697a5eb6d2      0t0  TCP *:4444 (LISTE"
+ },
+ {
+  "kit": "PORT",
+  "type": ":5050 \u2014 console web Arkham C2",
+  "detail": "Python    15120 mleal    4u  IPv4 0x3dd2c363cd297eef      0t0  TCP *:5050 (LISTE"
+ },
+ {
+  "kit": "PORT",
+  "type": ":8096 \u2014 coordonnateur H.I.V.E.",
+  "detail": "Python    15117 mleal    3u  IPv4 0x32cae197d0628576      0t0  TCP *:8096 (LISTE"
+ }
+]

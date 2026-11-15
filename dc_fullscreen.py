@@ -542,6 +542,16 @@ DIM = "\033[2m"
 # ═══════════════════════════════════════════════════════════════════
 # export
 # ═══════════════════════════════════════════════════════════════════
+def batman_transition():
+    """chauves-souris rapides entre les écrans"""
+    clear()
+    for _ in range(3):
+        x, y = random.randint(1, max(1, COLS - 5)), random.randint(1, max(1, ROWS - 2))
+        print(f"\x1b[{y};{x}H\033[38;2;255;215;0m^{RST}", end="")
+    print(f"\x1b[{ROWS // 2};{COLS // 2 - 5}H\033[1;93m^.^ BATCAVE{RST}", end="", flush=True)
+    time.sleep(0.25)
+    clear()
+
 ALL_ANIMATIONS = {
     "batman": batman_intro, "batman_transition": batman_transition,
     "flash": flash_intro, "speed_lines": speed_lines_fullscreen,

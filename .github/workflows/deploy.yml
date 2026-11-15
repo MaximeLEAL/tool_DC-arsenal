@@ -1,0 +1,40 @@
+name: Deploy site
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "liste_tool.md"
+      - "generate_all_pages.py"
+      - "build_site.py"
+      - "gotham_full.py"
+      - "design_preview/**"
+      - "gotham_static/faces/**"
+      - "assets/**"
+      - "README.md"
+      - "arsenal_dc.html"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-deploy:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Générer les fiches tools
+        run: python3 generate_all_pages.py
+
+      - name: Construire le site statique
+        run: python3 build_site.py
+
+      - name: Commit et push docs/
+        run: |
+          git config user.name "arsenal-bot"
+          git config user.email "bot@users.noreply.github.com"
+          git add docs/
+          git diff --cached --quiet && echo "Rien à déployer" && exit 0
+          git commit -m "auto-deploy: rebuild du site"
+          git push
