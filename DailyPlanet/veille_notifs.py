@@ -4,11 +4,30 @@
 # Usage:  python3 veille_notifs.py start [minutes]   → veille en boucle (défaut 5 min)
 #         python3 veille_notifs.py once              → un seul check
 #         python3 veille_notifs.py test              → notif de test
-import json, os, subprocess, sys, time
+import json, os, subprocess, sys, time, urllib.request
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 CACHE = os.path.join(ROOT, "veille_cache.json")
 STATE = os.path.join(ROOT, "notifs_state.json")
+CFG = os.path.join(ROOT, "notifs_config.json")
+
+def cfg():
+    return load(CFG, {})
+
+def push_ntfy(title, message, link=None, tags="newspaper"):
+    """publie la notif sur ntfy.sh → reçue sur le téléphone (app ntfy abonnée au canal)"""
+    topic = cfg().get("ntfy_topic")
+    if not topic: return
+    try:
+        req = urllib.request.Request(
+            f"https://ntfy.sh/{topic}",
+            data=message.encode("utf-8"),
+            headers={"Title": title.encode("utf-8"), "Tags": tags,
+                     "Priority": "default",
+                     **({"Click": link} if link else {})})
+        urllib.request.urlopen(req, timeout=10)
+    except Exception as e:
+        print(f"[!] ntfy: {e}")
 
 def refresh_cache():
     """rafraîchit le cache via veille.py (fetch_all) — import silencieux"""
@@ -30,12 +49,13 @@ def load(p, default):
 def save(p, d):
     json.dump(d, open(p, "w", encoding="utf-8"), ensure_ascii=False)
 
-def notify(title, message):
-    """notification macOS (Centre de notifications)"""
+def notify(title, message, link=None):
+    """notification macOS + push téléphone (ntfy si configuré)"""
     title = title.replace('"', "'")[:60]
     message = message.replace('"', "'")[:180]
     script = f'display notification "{message}" with title "{title}" subtitle "DAILY PLANET"'
     subprocess.run(["osascript", "-e", script], capture_output=True)
+    push_ntfy(title, message, link)
 
 def check(quiet_first=True):
     cache = load(CACHE, {})
@@ -55,7 +75,7 @@ def check(quiet_first=True):
     for item in fresh[:5]:
         source = item.get("source", "News")
         titre = item.get("titre", "")[:120]
-        notify(f"📰 {source}", titre)
+        notify(f"📰 {source}", titre, link=item.get("lien"))
         time.sleep(1.2)
     if len(fresh) > 5:
         notify(f"📰 Daily Planet", f"+ {len(fresh) - 5} autres actus sur le site")
@@ -112,7 +132,8 @@ def digest(hour=8):
     extra = len(recent) - len(top3)
     if extra > 0:
         msg += f"\n+ {extra} autres sur le journal"
-    notify("📰 DIGEST DU MATIN", msg)
+    notify("📰 DIGEST DU MATIN", msg,
+           link="https://maximeleal.github.io/tool_DC-arsenal/DailyPlanet/")
     print(f"[✓] digest envoyé : {len(top3)} actus majeures ({len(recent)} nouvelles au total)")
     # marque tout comme vu pour ne pas re-notifier
     state["seen"] = list(set(state.get("seen", [])) | {i.get("lien", "") for i in items})[-400:]
