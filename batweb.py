@@ -78,6 +78,11 @@ def shell(app_id, color, title, crumb, body, extra_js=""):
         <a href="/app/forensics" class="{'on' if app_id=='forensics' else ''}">FORENSICS</a>
         <a href="/app/stegano" class="{'on' if app_id=='stegano' else ''}">STÉGANO</a>
         <a href="/app/netmap" class="{'on' if app_id=='netmap' else ''}">RÉSEAU</a>
+        <a href="/app/kryptonite" class="{'on' if app_id=='kryptonite' else ''}">KRYPTONITE</a>
+        <a href="/app/sentinelle" class="{'on' if app_id=='sentinelle' else ''}">SENTINELLE</a>
+        <a href="/app/wopr" class="{'on' if app_id=='wopr' else ''}">WOPR</a>
+        <a href="/app/lab" class="{'on' if app_id=='lab' else ''}">LAB</a>
+        <a href="/app/ecole" class="{'on' if app_id=='ecole' else ''}">ÉCOLE</a>
       </div>"""
     return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
