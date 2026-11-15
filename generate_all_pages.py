@@ -528,6 +528,32 @@ footer a:hover{color:#cdd9ff}
 
 GITHUB_SVG = '<svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27s1.36.09 2 .27c1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.01 8.01 0 0 0 16 8c0-4.42-3.58-8-8-8z"/></svg>'
 
+# BatWeb : tool → route de l'app web interactive (embarquée dans la fiche)
+APP_ROUTES = {"forensics email": "forensics", "stégano studio": "stegano",
+              "carte réseau": "netmap", "kryptonite web": "kryptonite",
+              "sentinelle": "sentinelle", "wopr web": "wopr"}
+
+def app_embed(folder, tool):
+    """pour les tools BatWeb : embarque l'app web réelle dans la fiche"""
+    route = APP_ROUTES.get(tool["name"].lower().strip())
+    if not route or folder != "BatWeb": return ""
+    return f"""
+<h2>L'app en direct</h2>
+<div class="appbox" id="appbox">
+  <iframe id="appframe" src="/app/{route}" style="display:none;width:100%;height:920px;border:1px solid var(--line);border-radius:8px;background:var(--panel2)"></iframe>
+  <div id="appfallback" style="display:none;font-family:var(--mono);font-size:.78rem;color:var(--muted);padding:18px;border:1px dashed var(--line);border-radius:10px">
+    🖥️ Cette app tourne sur le serveur local de ton Mac.<br><br>
+    <a href="/app/{route}" target="_blank" style="color:var(--c)">Ouvrir l'app →</a> (http://127.0.0.1:9000{"/app/" + route})<br><br>
+    Sur cette page publique, seule la documentation est affichée — les apps interactives restent en local, comme prévu.
+  </div>
+</div>
+<script>
+fetch('/app/{route}').then(r => {{
+  if (r.ok) {{ document.getElementById('appframe').style.display = 'block';
+              document.getElementById('appfallback').style.display = 'none'; }}
+}}).catch(() => {{}});
+</script>"""
+
 def tool_page(folder, kit_name, color, emoji, face, cmd, tool, kit_label):
     info = theme_info(tool["theme"], tool["name"])
     how = "".join(f"<li>{H.escape(h)}</li>" for h in info["how"])
@@ -557,6 +583,7 @@ def tool_page(folder, kit_name, color, emoji, face, cmd, tool, kit_label):
 <h2>Concrètement, ici</h2>
 <p class="txt">{H.escape(desc)}</p>
 {cmd_block}
+{app_embed(folder, tool)}
 <a class="gh" href="{GITHUB}/tree/main/{H.escape(folder)}" target="_blank">
   {GITHUB_SVG}<span>Code source sur GitHub<small>github.com/MaximeLEAL/tool_DC-arsenal → {H.escape(folder)}</small></span><span class="arrow">→</span>
 </a>
@@ -585,6 +612,8 @@ def kit_index(folder, kit_name, color, emoji, face, cmd, tools):
 {cmd_block}
 <p class="txt" style="color:var(--muted);font-size:.88em;margin-bottom:14px">Chaque tool a sa fiche : rôle, fonctionnement, utilisation et lien GitHub.</p>
 <div class="list">{rows}</div>
+{"<a class='gh' href='/app/forensics'>🖥️ Ouvrir Forensics Email</a><a class='gh' href='/app/stegano' style='background:linear-gradient(135deg,#6a30c8,#9b30ff)'>🖼️ Ouvrir Stégano Studio</a><a class='gh' href='/app/netmap' style='background:linear-gradient(135deg,#2a8f4e,#4ad66d)'>🌐 Ouvrir la Carte réseau</a><a class='gh' href='/app/kryptonite' style='background:linear-gradient(135deg,#1d9a2e,#39ff14);color:#062'>🟩 Ouvrir Kryptonite Web</a><a class='gh' href='/app/sentinelle' style='background:linear-gradient(135deg,#c86a1d,#ff8c30)'>🧡 Ouvrir Sentinelle</a><a class='gh' href='/app/wopr' style='background:linear-gradient(135deg,#3a6b00,#7fff00);color:#0a2000'>🎮 Ouvrir W.O.P.R.</a>"
+ if folder == "BatWeb" else ""}
 <a class="gh" href="{GITHUB}/tree/main/{H.escape(folder)}" target="_blank">
   {GITHUB_SVG}<span>Voir {H.escape(folder)} sur GitHub<small>Code source complet du kit</small></span><span class="arrow">→</span>
 </a>
