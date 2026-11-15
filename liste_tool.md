@@ -540,6 +540,8 @@ open http://127.0.0.1:9000/app/forensics
 | 4 | KRYPTONITE WEB | web scanner | la machine vs les IOCs des 27 kits, scan en direct, verdict visuel |
 | 5 | SENTINELLE | surveillance | gardien permanent : wifi, ports, persistance, sessions, disque → push |
 | 6 | WOPR WEB | ctf web | lab CTF piloté du browser : cible :8090 + scoreboard :8091 |
+| 7 | LAB D'ANALYSE | analyse malware | échantillon déposé → inspecté statiquement (entropie, PE, strings) → verdict |
+| 8 | L'ÉCOLE | école du malware | anatomie visuelle : keylogger, ransomware, C2, phishing → détection + contre-mesures |
 
 
 ═══════════════════════════════════════════════════════════════

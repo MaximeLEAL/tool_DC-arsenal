@@ -314,6 +314,14 @@ THEMES = {
         "how": ["Nouvel appareil wifi, nouveau port en écoute, LaunchAgent modifié.",
                 "Chaque anomalie déclenche notif macOS + push téléphone.",
                 "Tous les événements sont journalisés dans la page."]},
+    "école du malware": {"role": "Comprendre l'anatomie des familles de malware pour mieux les détecter et les neutraliser.",
+        "how": ["Le cycle d'infection expliqué étape par étape : arrivée → persistance → action → exfiltration.",
+                "Les signes de détection concrets pour chaque famille (process, fichiers, réseau).",
+                "Les contre-mesures : ce qui rend chaque attaque inefficace, lien vers l'arsenal défensif."]},
+    "analyse malware": {"role": "L'analyse statique démasque un échantillon suspect sans jamais l'exécuter.",
+        "how": ["Entropie, headers PE et sections : le packing et le chiffrement se voient.",
+                "Les strings trahissent URLs, IPs et APIs suspectes (injection, capture, persistance).",
+                "Le verdict est argumenté, avec le hash SHA-256 pour vérification VirusTotal."]},
     "ctf web": {"role": "Le lab CTF W.O.P.R. piloté depuis le navigateur : cible vulnérable + scoreboard.",
         "how": ["Un bouton construit la cible :8090 avec ses 4 flags cachés.",
                 "Le scoreboard :8091 suit les soumissions en direct.",
@@ -531,7 +539,7 @@ GITHUB_SVG = '<svg viewBox="0 0 16 16"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.
 # BatWeb : tool → route de l'app web interactive (embarquée dans la fiche)
 APP_ROUTES = {"forensics email": "forensics", "stégano studio": "stegano",
               "carte réseau": "netmap", "kryptonite web": "kryptonite",
-              "sentinelle": "sentinelle", "wopr web": "wopr"}
+              "sentinelle": "sentinelle", "wopr web": "wopr", "lab d'analyse": "lab", "école du malware": "ecole"}
 
 def app_embed(folder, tool):
     """pour les tools BatWeb : embarque l'app web réelle dans la fiche"""

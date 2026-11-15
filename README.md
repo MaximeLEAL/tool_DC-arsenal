@@ -2,7 +2,7 @@
 
 # 🦇 GOTHAM CITY — L'ARSENAL DC
 
-**27 kits · 252 outils · 1 interface web**
+**27 kits · 254 outils · 1 interface web**
 
 Un arsenal de cybersécurité complet, habillé aux couleurs de l'univers DC Comics.
 Développé de A à Z en Python — interface web embarquée, générateur de documentation
@@ -63,7 +63,7 @@ code source.
 | 24 | 🧠 The Thinker | reverse engineering : analyse statique/dynamique, radare2 |
 | 25 | 🂡 Joker Card | BadUSB : payloads, firmware ducky-lite, gestionnaire web |
 | 26 | 📰 Daily Planet | veille : 25 sources, 644 actus, dashboard filtrable, digest 8h + push téléphone |
-| 27 | 🕸️ BatWeb | 6 apps web : forensics email, stégano studio, carte réseau, kryptonite web, sentinelle, WOPR web |
+| 27 | 🕸️ BatWeb | 7 apps web : forensics email, stégano studio, carte réseau, kryptonite web, sentinelle, WOPR web, lab d'analyse, l'école du malware |
 
 ## 🚀 Démarrage
 
@@ -119,7 +119,7 @@ sa contre-mesure.
 
 <div align="center">
 
-**GOTHAM CITY · 27 KITS · 252 TOOLS** · *powered by Maxime Leal*
+**GOTHAM CITY · 27 KITS · 254 TOOLS** · *powered by Maxime Leal*
 
 [🌐 Site](https://maximeleal.github.io/tool_DC-arsenal/) · [📦 Code](https://github.com/MaximeLEAL/tool_DC-arsenal)
 

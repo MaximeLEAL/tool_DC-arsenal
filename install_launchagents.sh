@@ -20,8 +20,11 @@ mkdir -p "$RUN/design_preview"
 cp "$DC/design_preview/page_principale.html" "$RUN/design_preview/" 2>/dev/null || true
 cp "$DC/DailyPlanet/veille.py" "$DC/DailyPlanet/veille_notifs.py" "$DC/dc_fullscreen.py" "$RUN/DailyPlanet/" 2>/dev/null || true
 cp "$DC/dc_fullscreen.py" "$RUN/" 2>/dev/null || true
-cp "$DC/gotham_static/faces/"*.jpg "$RUN/gotham_static/faces/" 2>/dev/null || mkdir -p "$RUN/gotham_static/faces" && cp "$DC/gotham_static/faces/"*.jpg "$RUN/gotham_static/faces/" 2>/dev/null || true
+cp "$DC/gotham_static/faces/"*.jpg "$RUN/gotham_static/faces/" 2>/dev/null
+rsync -a --delete "$DC/arsenal_web_pages/" "$RUN/arsenal_web_pages/" 2>/dev/null || mkdir -p "$RUN/gotham_static/faces" && cp "$DC/gotham_static/faces/"*.jpg "$RUN/gotham_static/faces/" 2>/dev/null
+rsync -a --delete "$DC/arsenal_web_pages/" "$RUN/arsenal_web_pages/" 2>/dev/null || true
 cp "$DC/arsenal_pages_data/"*.json "$RUN/arsenal_pages_data/" 2>/dev/null || true
+rsync -a --delete "$DC/arsenal_web_pages/" "$RUN/arsenal_web_pages/" 2>/dev/null || cp -R "$DC/arsenal_web_pages" "$RUN/" 2>/dev/null
 mkdir -p "$RUN/Sentinelle" "$RUN/KryptoniteSuite" "$RUN/WOPR"
 cp "$DC/Sentinelle/sentinelle.py" "$RUN/Sentinelle/" 2>/dev/null
 cp "$DC/KryptoniteSuite/kryptonite.py" "$RUN/KryptoniteSuite/" 2>/dev/null
@@ -37,6 +40,7 @@ cp "$DC/design_preview/page_principale.html" "$RUN/design_preview/" 2>/dev/null
 cp "$DC/dc_fullscreen.py" "$RUN/" 2>/dev/null
 cp "$DC/DailyPlanet/veille.py" "$DC/dc_fullscreen.py" "$RUN/DailyPlanet/" 2>/dev/null
 cp "$DC/gotham_static/faces/"*.jpg "$RUN/gotham_static/faces/" 2>/dev/null
+rsync -a --delete "$DC/arsenal_web_pages/" "$RUN/arsenal_web_pages/" 2>/dev/null
 cp "$DC/arsenal_pages_data/"*.json "$RUN/arsenal_pages_data/" 2>/dev/null
 EOS
 chmod +x "$LOGS/gotham_sync.sh"

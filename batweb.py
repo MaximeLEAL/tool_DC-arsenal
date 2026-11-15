@@ -316,7 +316,175 @@ def page_stegano():
     return shell("stegano", "#9b30ff", "Stégano Studio",
                  '<a href="/">← Gotham City</a> · APP WEB · BATCAVE STÉGANO', body, STEGANO_JS)
 
-# ─────────────────────────── 4. KRYPTONITE WEB ───────────────────────────
+# ─────────────────────────── 7. LAB D'ANALYSE ───────────────────────────
+import hashlib, math, struct
+
+LAB_SUSPECT = {
+    "exec":     ["WinExec", "CreateProcess", "ShellExecute", "cmd.exe", "powershell",
+                 "/bin/sh", "system(", "curl ", "wget "],
+    "injection":["VirtualAllocEx", "WriteProcessMemory", "CreateRemoteThread",
+                 "SetWindowsHookEx", "NtUnmapViewOfSection", "QueueUserAPC",
+                 "GetProcAddress", "LoadLibraryA"],
+    "persist":  ["CurrentVersion\\Run", "schtasks", "LaunchAgents", "launchctl",
+                 "Startup", "at Job", "crontab"],
+    "evasion":  ["IsDebuggerPresent", "CheckRemoteDebuggerPresent", "vmware",
+                 "VirtualBox", "sandbox", "Sandboxie", "GetTickCount"],
+    "capture":  ["GetAsyncKeyState", "keylog", "GetForegroundWindow", "BitBlt",
+                 "capCreateCaptureWindow", "waveInOpen"],
+    "files":    ["DeleteFile", "RemoveDirectory", "SetFileAttributes", "ShellExecuteEx"],
+    "crypto":   ["CryptEncrypt", "CryptDecrypt", "AES", "CryptGenKey", "BCrypt"],
+}
+
+def _entropy(data):
+    if not data: return 0.0
+    freq = {}
+    for b in data: freq[b] = freq.get(b, 0) + 1
+    n = len(data)
+    return -sum((c/n) * math.log2(c/n) for c in freq.values())
+
+def _pe_info(data):
+    """parse PE minimal : sections + entropie par section"""
+    try:
+        if data[:2] != b"MZ": return None
+        e_lfanew = struct.unpack("<I", data[0x3C:0x40])[0]
+        if data[e_lfanew:e_lfanew+4] != b"PE\0\0": return None
+        coff = e_lfanew + 4
+        nsec = struct.unpack("<H", data[coff+2:coff+4])[0]
+        ts = struct.unpack("<I", data[coff+4:coff+8])[0]
+        optsz = struct.unpack("<H", data[coff+16:coff+18])[0]
+        sect_off = coff + 20 + optsz
+        secs = []
+        for i in range(min(nsec, 20)):
+            o = sect_off + i * 40
+            name = data[o:o+8].rstrip(b"\0").decode("latin1")
+            vsz = struct.unpack("<I", data[o+8:o+12])[0]
+            rsz = struct.unpack("<I", data[o+16:o+20])[0]
+            roff = struct.unpack("<I", data[o+20:o+24])[0]
+            blob = data[roff:roff+rsz] if roff and rsz else b""
+            secs.append({"name": name, "size": vsz, "entropy": round(_entropy(blob), 2)})
+        return {"sections": secs,
+                "timestamp": time.strftime("%Y-%m-%d %H:%M", time.gmtime(ts)) if ts else "-"}
+    except Exception:
+        return None
+
+def analyze_sample(data, name=""):
+    """analyse STATIQUE : ne jamais exécuter l'échantillon"""
+    res = {"name": name, "size": len(data), "sha256": hashlib.sha256(data).hexdigest(),
+           "md5": hashlib.md5(data).hexdigest(),
+           "entropy": round(_entropy(data[:2_000_000]), 2)}
+    # type
+    if data[:2] == b"MZ": ftype = "Exécutable Windows (PE)"
+    elif data[:4] == b"\x7fELF": ftype = "Exécutable Linux (ELF)"
+    elif data[:4] in (b"\xcf\xfa\xed\xfe", b"\xca\xfe\xba\xbe"): ftype = "Binaire macOS (Mach-O)"
+    elif data[:5] == b"%PDF-": ftype = "PDF"
+    elif data[:4] == b"PK\x03\x04": ftype = "Archive ZIP / Office"
+    else: ftype = "Inconnu / script"
+    res["type"] = ftype
+    res["pe"] = _pe_info(data) if ftype.startswith("Exécutable Windows") else None
+    # strings
+    strings = re.findall(rb"[\x20-\x7e]{6,}", data[:3_000_000])
+    strlist = [s.decode("latin1") for s in strings]
+    findings = {k: [] for k in LAB_SUSPECT}
+    seen = set()
+    for s in strlist:
+        for cat, kws in LAB_SUSPECT.items():
+            for kw in kws:
+                if kw.lower() in s.lower() and s not in seen and len(findings[cat]) < 40:
+                    findings[cat].append(s.strip()[:160]); seen.add(s)
+    urls = sorted({u[:120] for s in strlist for u in
+                   re.findall(r"https?://[\w./?=&%-]{8,120}", s)})[:25]
+    ips = sorted({ip for s in strlist for ip in
+                  re.findall(r"\b(?:\d{1,3}\.){3}\d{1,3}\b", s)
+                  if not ip.startswith(("0.", "127.", "255."))})[:15]
+    findings["net"] = urls + ips
+    res["findings"] = {k: v for k, v in findings.items() if v}
+    res["strings_count"] = len(strlist)
+    # verdict
+    score, reasons = 0, []
+    ent = res["entropy"]
+    packed_secs = [s for s in (res["pe"] or {}).get("sections", []) if s["entropy"] > 7.3 and s["size"] > 1024]
+    if ent > 7.4: score += 2; reasons.append(f"entropie globale très élevée ({ent}) — packé/chiffré ?")
+    if packed_secs: score += 2; reasons.append("sections à haute entropie (code packé) : " +
+                                               ", ".join(s["name"] for s in packed_secs))
+    if "injection" in res["findings"]: score += 3
+    reasons.append("techniques d'injection de process présentes")
+    if "capture" in res["findings"]: score += 3; reasons.append("capacités de capture (clavier/écran/caméra)")
+    if "persist" in res["findings"]: score += 2; reasons.append("mécanismes de persistance")
+    if "crypto" in res["findings"]: score += 2; reasons.append("primitives de chiffrement (ransomware ?)")
+    if "evasion" in res["findings"]: score += 2; reasons.append("anti-analyse / anti-debug")
+    if "exec" in res["findings"] and (ftype.startswith("Exécutable") or ftype.startswith("Binaire")):
+        score += 1; reasons.append("exécution de commandes")
+    if score >= 6: verdict, lvl = "MALVEILLANT PROBABLE", "bad"
+    elif score >= 3: verdict, lvl = "SUSPECT", "mid"
+    else: verdict, lvl = "BÉNIN", "ok"
+    if score > 0 and not reasons:
+        reasons = ["indicateurs suspects présents"]
+    res["verdict"] = {"level": lvl, "label": verdict, "score": score, "reasons": reasons}
+    return res
+
+def page_lab():
+    body = """
+    <h1>Lab d'analyse</h1>
+    <div class="sub">Inspection statique d'un échantillon suspect · rien n'est jamais exécuté</div>
+    <div class="card">
+      <div class="drop" id="dropLab">🧪 Dépose un échantillon suspect ici (exe, dll, pdf, script… 50 Mo max)</div>
+      <div style="font-family:var(--mono);color:var(--dim);font-size:.66rem;margin-top:10px;letter-spacing:1px">
+        STATIQUE UNIQUEMENT : le fichier est lu, jamais lancé. Analyse locale.</div>
+    </div>
+    <div id="res"></div>
+    <div class="card"><p style="color:var(--muted);font-size:.85em;line-height:1.6">
+    Le lab analyse : <b>entropie</b> (packé/chiffré ?), <b>headers PE</b> (sections, timestamp de compilation),
+    <b>strings</b> (URLs, IPs, APIs suspects), <b>capacités</b> (injection, capture, persistance, chiffrement,
+    anti-debug) et rend un verdict argumenté. Hash SHA-256 pour vérification VirusTotal en un clic.</p></div>
+    """
+    js = r"""
+    setupDrop('dropLab', f => {
+      if (f.size > 50 * 1024 * 1024){ alert('50 Mo max'); return; }
+      document.getElementById('res').innerHTML = '<div style="font-family:var(--mono);color:var(--muted);padding:18px">🔬 analyse de ' + f.name + '…</div>';
+      fetch('/app/lab/analyze?name=' + encodeURIComponent(f.name), {method: 'POST', body: f})
+        .then(r => r.json()).then(d => show(d));
+    });
+    function esc(s){ return (s||'').replace(/[<&]/g, ''); }
+    function show(d){
+      const v = d.verdict;
+      const reasons = (v.reasons || []).map(r => '<li>▸ ' + esc(r) + '</li>').join('');
+      const secs = (d.pe ? d.pe.sections || [] : []).map(s =>
+        `<div class="hop"><div><div class="lbl"><b>${esc(s.name)}</b> — ${s.size.toLocaleString()} octets</div>
+         <div class="ip">entropie ${s.entropy} ${s.entropy > 7.3 ? '⚠️ packé ?' : ''}</div></div></div>`).join('');
+      const cat = (title, items) => items && items.length ?
+        `<h2>${title} <span style="color:var(--muted)">(${items.length})</span></h2>
+         <div class="card"><ul class="how">${items.slice(0, 12).map(i => '<li style="font-family:var(--mono);font-size:.76rem">' + esc(i) + '</li>').join('')}</ul></div>` : '';
+      document.getElementById('res').innerHTML = `
+        <div class="verdict ${v.level}" style="display:block">
+          <div class="big">${esc(v.label)} <span style="font-family:var(--mono);font-size:.7em;opacity:.7">score ${v.score}</span></div>
+          <ul style="margin-top:8px;list-style:none;padding:0">
+            ${reasons || '<li>aucun indicateur fort détecté</li>'}
+          </ul>
+        </div>
+        <div class="card">
+          <div style="display:flex;gap:24px;flex-wrap:wrap;font-family:var(--mono);font-size:.72rem;color:var(--txt)">
+            <div><b>${esc(d.name)}</b><br>${(d.size/1024).toLocaleString()} Ko</div>
+            <div>SHA-256<br><a href="https://www.virustotal.com/gui/file/${d.sha256}" target="_blank" style="color:var(--c)">${d.sha256.slice(0, 24)}…</a></div>
+            <div>Type<br>${esc(d.type)}</div>
+            <div>Entropie<br>${d.entropy}</div>
+            <div>Strings<br>${d.strings_count}</div>
+            ${d.pe ? '<div>Compilé<br>' + esc(d.pe.timestamp) + '</div>' : ''}
+          </div>
+        </div>
+        ${d.pe ? '<h2>Sections PE</h2>' + secs : ''}
+        ${cat('Réseau', d.findings.net)}
+        ${cat('Injection de process', d.findings.injection)}
+        ${cat('Capture (clavier/écran/cam)', d.findings.capture)}
+        ${cat('Persistance', d.findings.persist)}
+        ${cat('Chiffrement', d.findings.crypto)}
+        ${cat('Anti-analyse', d.findings.evasion)}
+        ${cat('Exécution', d.findings.exec)}
+        ${cat('Fichiers', d.findings.files)}`;
+      document.getElementById('res').scrollIntoView({behavior:'smooth'});
+    }
+    """
+    return shell("lab", "#e63022", "Lab d'analyse",
+                 '<a href="/">← Gotham City</a> · APP WEB · ANALYSE STATIQUE', body, js)
 def _kit_path(kit):
     base = os.path.dirname(os.path.abspath(__file__))
     return os.path.join(base, kit)
@@ -335,6 +503,116 @@ def api_kryptonite_scan():
         kits[f.get("kit", "?")] = kits.get(f.get("kit", "?"), 0) + 1
     return {"findings": findings, "count": len(findings), "by_kit": kits,
             "scanned": time.strftime("%H:%M:%S")}
+
+# ─────────────────────────── 8. L'ÉCOLE ───────────────────────────
+ECOLE_DATA = {
+    "keylogger": {"emoji": "⌨️", "titre": "Anatomie d'un keylogger", "couleur": "#ff8c30",
+        "cycle": [("1 · Arrivée", "phishing, USB infectée, dropper dans un bundle logiciel"),
+                  ("2 · Installation", "copie dans un dossier discret + agent de persistance (LaunchAgent / Run key)"),
+                  ("3 · Capture", "hook clavier global (SetWindowsHookEx) ou lecture événementielle"),
+                  ("4 · Contexte", "horodatage + fenêtre active : on sait qui a tapé quoi et où"),
+                  ("5 · Stockage", "fichier log chiffré ou obfusqué, rotation discrète"),
+                  ("6 · Exfiltration", "envoi périodique par HTTP/DNS/email ou récupération à distance")],
+        "detect": ["Process inconnu en CPU quasi nul qui tourne en permanence",
+                   "Fichier log qui grossit sans raison dans un dossier caché",
+                   "LaunchAgent / Run key inconnu pointant vers un binaire douteux",
+                   "Connexion sortante périodique vers un domaine inconnu",
+                   "Un hook clavier : macOS — TCC clavier demandé à une app inconnue"],
+        "defense": ["Ne jamais taper un mot de passe important sur une machine douteuse",
+                    "Gestionnaire de mots de passe : l'auto-remplissage bypass les keyloggers",
+                    "2FA partout — un keylogger volé de mots de passe devient inutile",
+                    "Auditer ses LaunchAgents (Sentinelle le fait) et ses process",
+                    "Scanner : Kryptonite Web détecte les IOCs des kits"]},
+    "ransomware": {"emoji": "🔒", "titre": "Anatomie d'un ransomware", "couleur": "#e63022",
+        "cycle": [("1 · Dropper", "email piégé, exploit RDP, faux crack/setup téléchargé"),
+                  ("2 · Élévation", "exploit locale ou creds volées pour devenir admin"),
+                  ("3 · Recon", "cartographie des disques et partages réseau, suppression des shadow copies"),
+                  ("4 · Chiffrement", "clé symétrique par fichier + clé protégée asymétriquement (le fichier reste illisible)"),
+                  ("5 · Note", "dépôt de la note de rançon + wallpaper, compte à rebours"),
+                  ("6 · Extorsion", "double extorsion : chiffrement + vol de données avant chiffrement")],
+        "detect": ["Activité disque anormale : des milliers de fichiers modifiés en minutes",
+                   "Apparition de nouvelles extensions sur les fichiers (.lock, .encrypted…)",
+                   "Process qui supprime les shadow copies (vssadmin delete shadows)",
+                   "Notes de rançon .txt/.html qui apparaissent dans les dossiers",
+                   "Pic d'entropie sur les fichiers — ils sont chiffrés"],
+        "defense": ["Backups 3-2-1 : 3 copies, 2 supports, 1 hors-ligne — le seul vrai remède",
+                    "Tester ses restores : un backup jamais restauré n'est pas un backup",
+                    "Systèmes à jour : la majorité des ransomwares passent par des failles connues",
+                    "Limiter les droits : pas d'admin au quotidien, RDP fermé de l'extérieur",
+                    "Kryptonite Web détecte les traces des kits de l'arsenal"]},
+    "c2": {"emoji": "📡", "titre": "Anatomie d'un C2", "couleur": "#00c8ff",
+        "cycle": [("1 · Implant", "l'agent (reverse shell / implant) est déposé sur la machine"),
+                  ("2 · Check-in", "l'agent appelle périodiquement le serveur de commande (beacon)"),
+                  ("3 · Tâches", "le C2 pousse des ordres : exécuter, lire, déplacer, escalader"),
+                  ("4 · Résultats", "les données remontent, chiffrées dans le canal"),
+                  ("5 · Canaux", "HTTP(s) classique, tunneling DNS, ou cache d'apps tierces"),
+                  ("6 · Pivot", "la machine compromise devient point d'entrée vers le réseau interne")],
+        "detect": ["Beacon régulier vers un domaine jamais vu (intervalle fixe, très visible sur un graphe)",
+                   "Process système qui ouvrent des connexions sortantes inhabituelles",
+                   "Requêtes DNS longues et répétitives (tunneling)",
+                   "Connexions vers des IP d'hébergement bon marché"],
+        "defense": ["Filtrage DNS sortant (les domaines inconnus sautent)",
+                    "Surveiller les connexions sortantes par process (Little Snitch côté Mac)",
+                    "Sentinelle alerte sur les nouveaux ports en écoute et les devices",
+                    "Segmenter le réseau : un poste compromis ne voit pas tout"]},
+    "phishing": {"emoji": "🎣", "titre": "Anatomie d'un phishing", "couleur": "#ffdc50",
+        "cycle": [("1 · Leurre", "email/SMS qui crée l'urgence : compte suspendu, colis, facture"),
+                  ("2 · Miroir", "fausse page de login pixel-perfect, domaine proche de l'original"),
+                  ("3 · Capture", "chaque frappe est enregistrée pendant la 'connexion'"),
+                  ("4 · Redirection", "la victime est renvoyée vers le vrai site : rien ne semble s'être passé"),
+                  ("5 · Exploitation", "les identifiants sont rejoués immédiatement (session theft)"),
+                  ("6 · Persistance", "ajout d'une 2FA personnelle à l'attaquant, règles de transfert")],
+        "detect": ["Domaine de l'expéditeur ≠ domaine affiché (Forensics Email le détecte)",
+                   "URL du lien ≠ URL réelle au survol",
+                   "Urgence artificielle + demande d'identifiants = arnaque à 99 %",
+                   "MFA demandé par téléphone = toujours une attaque"],
+        "defense": ["Vérifier les headers (Forensics Email, outil n°1 de BatWeb)",
+                    "Passkeys / MFA matériels : le phishing ne capture pas ce qu'il ne peut pas lire",
+                    "Ne jamais taper ses identifiants depuis un lien reçu — aller sur le site directement",
+                    "Signaler et supprimer ; vérifier avec l'expéditeur par un autre canal"]},
+}
+ECOLE_JS = r"""
+const E = __ECOLE__;
+function ecoleShow(key){
+  const a = E[key];
+  const cycle = a.cycle.map(c => `
+    <div class="hop" style="border-left-color:${a.couleur}">
+      <div><div class="lbl"><b>${c[0]}</b> — ${c[1]}</div></div></div>`).join('');
+  const det = a.detect.map(d => '<li>' + d + '</li>').join('');
+  const def = a.defense.map(d => '<li>' + d + '</li>').join('');
+  document.getElementById('ecole-title').innerHTML = a.emoji + ' ' + a.titre;
+  document.getElementById('ecole-body').innerHTML = `
+    <h2>Le cycle d'infection</h2><div>${cycle}</div>
+    <h2>Les signes de détection</h2><div class="card"><ul class="how">${det}</ul></div>
+    <h2>Les contre-mesures</h2><div class="card"><ul class="how">${def}</ul></div>`;
+  document.querySelectorAll('.etab').forEach(b => b.classList.toggle('on', b.dataset.k === key));
+}
+function ecoleInit(){
+  const tabs = Object.entries(E).map(([k, a]) =>
+    `<button class="etab" data-k="${k}" onclick="ecoleShow('${k}')">${a.emoji} ${a.titre.replace(/^Anatomie d'un |^Anatomie d'une /, '')}</button>`).join('');
+  document.getElementById('etabs').innerHTML = tabs;
+  ecoleShow('keylogger');
+}
+ecoleInit();
+"""
+ECOLE_BODY = """
+    <h1>L'École</h1>
+    <div class="sub">Anatomie des familles de malware · cycle, détection, contre-mesures · pédagogie</div>
+    <div class="card" style="display:flex;gap:10px;flex-wrap:wrap" id="etabs"></div>
+    <div class="card">
+      <h2 id="ecole-title" style="font-family:var(--disp);font-size:1.6rem;color:#fff;letter-spacing:1px;margin:0"></h2>
+    </div>
+    <div id="ecole-body"></div>
+    <div class="card"><p style="color:var(--muted);font-size:.85em;line-height:1.6">
+    Ces fiches expliquent <b>comment les familles de malware fonctionnent</b> pour mieux les détecter et les
+    neutraliser. Aucun code offensif ici : la connaissance du cycle d'infection et des signes de détection
+    est le matériel de base de tout analyste SOC — et l'arsenal défensif (Sentinelle, Kryptonite, le Lab)
+    applique exactement ces principes.</p></div>
+"""
+def page_ecole():
+    js = ECOLE_JS.replace("__ECOLE__", json.dumps(ECOLE_DATA, ensure_ascii=False))
+    return shell("ecole", "#f5c518", "L'École — anatomie du malware",
+                 '<a href="/">← Gotham City</a> · APP WEB · PÉDAGOGIE', ECOLE_BODY, js)
 
 KRYPTONITE_JS = r"""
 async function kscan(){

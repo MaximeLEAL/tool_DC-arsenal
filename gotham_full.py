@@ -39,7 +39,7 @@ KITS = [
     {"id": "TheThinker",        "n": "THE THINKER",       "c": "#9b30ff", "f": "thinker_face.jpg",                "i": "🧠", "d": "Reverse engineering · 8 commands"},
     {"id": "JokerCard",         "n": "JOKER CARD",        "c": "#ff6a00", "f": "jokercard_face.jpg",                "i": "🂡", "d": "SGP Card · BadUSB · 4 tools"},
     {"id": "DailyPlanet",       "n": "DAILY PLANET",      "c": "#64a0ff", "f": "dailyplanet_face.jpg",                "i": "📰", "d": "Veille · 25 sources · 3 tools"},
-    {"id": "BatWeb",            "n": "BATWEB",            "c": "#4ad66d", "f": None,                "i": "🕸️", "d": "6 apps web · kryptonite · sentinelle · wopr"},
+    {"id": "BatWeb",            "n": "BATWEB",            "c": "#4ad66d", "f": None,                "i": "🕸️", "d": "8 apps web · + l'école : anatomie du malware"},
 ]
 KIT_BY_ID = {k["id"]: k for k in KITS}
 
@@ -82,6 +82,8 @@ class H(http.server.BaseHTTPRequestHandler):
                         f"dernier passage récent")
                 return self._json({"events": events[:30], "status": stat})
             if sub == "wopr":                           return self._html(batweb.page_wopr())
+            if sub == "ecole":                          return self._html(batweb.page_ecole())
+            if sub == "lab":                            return self._html(batweb.page_lab())
             if sub == "wopr/status":                    return self._json(batweb.api_wopr_status())
             if sub.startswith("wopr/"):                 return self._json(batweb.api_wopr_action(sub.split("/")[1]))
             self.send_response(404); self.end_headers(); return
@@ -137,6 +139,21 @@ class H(http.server.BaseHTTPRequestHandler):
         self.send_response(200); self.send_header("Content-Type", "text/html; charset=utf-8")
         self.send_header("Content-Length", str(len(b))); self.send_header("Cache-Control", "no-cache")
         self.end_headers(); self.wfile.write(b)
+    def do_POST(self):
+        u = urllib.parse.urlparse(self.path)
+        if u.path == "/app/lab/analyze":
+            q = urllib.parse.parse_qs(u.query)
+            name = os.path.basename(q.get("name", ["echantillon"])[0])[:80]
+            try:
+                length = int(self.headers.get("Content-Length", 0))
+                if length > 50 * 1024 * 1024:
+                    return self._json({"err": "50 Mo max"})
+                data = self.rfile.read(length)
+                return self._json(batweb.analyze_sample(data, name))
+            except Exception as e:
+                return self._json({"err": str(e)[:120]})
+        self.send_response(404); self.end_headers()
+
     def log_message(self, *a): pass
 
 TPL_PATH = os.path.join(TOOL_DC, "design_preview", "page_principale.html")
