@@ -32,12 +32,19 @@ border:1px solid #ffd60a22;min-height:100px;display:grid;place-items:center}
 footer{text-align:center;color:#333;font-size:.75em;padding:30px}
 </style></head><body>
 <header>
-  <div class="icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<circle cx="50" cy="50" r="45" fill="#0a0a0a"/>
-<path d="M50 15 Q70 20 75 40 Q80 60 65 75 Q50 90 30 80 Q15 70 20 50 Q25 30 40 20 Q45 17 50 15Z" fill="#2a0a4a"/>
-<path d="M50 20 Q60 25 60 35 M50 20 Q40 25 40 35" stroke="#9b30ff" stroke-width="2" fill="none"/>
-<circle cx="45" cy="40" r="4" fill="#9b30ff"/>
-<circle cx="55" cy="40" r="4" fill="#9b30ff"/>
+  <div class="icon"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <radialGradient id="raven_bg"><stop offset="0%" stop-color="#2a0a4a"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient>
+  <filter id="raven_glow"><feGaussianBlur stdDeviation="4" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="200" height="200" fill="url(#raven_bg)"/>
+<path d="M100 30 Q140 40 150 70 Q160 100 140 130 Q120 160 90 155 Q60 150 50 120 Q45 90 60 65 Q70 45 85 35 Q92 30 100 30Z"
+  fill="#2a0a4a" stroke="#9b30ff" stroke-width="2" filter="url(#raven_glow)"/>
+<circle cx="85" cy="65" r="5" fill="#9b30ff" filter="url(#raven_glow)"/>
+<circle cx="110" cy="65" r="5" fill="#9b30ff" filter="url(#raven_glow)"/>
+<path d="M85 80 Q100 90 115 80" fill="none" stroke="#9b30ff" stroke-width="1.5"/>
+<path d="M100 15 Q100 0 110 5 Q100 5 100 15" fill="none" stroke="#9b30ff"/>
 </svg>
 </div>
   <div><h1>UNHOOK NTDLL<small>RAVEN · unhooking</small></h1></div>
@@ -60,12 +67,19 @@ footer{text-align:center;color:#333;font-size:.75em;padding:30px}
     </div>
   </div>
   <div class="card"><h2>🎬 DÉMONSTRATION</h2>
-    <div class="demo"><div class="icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<circle cx="50" cy="50" r="45" fill="#0a0a0a"/>
-<path d="M50 15 Q70 20 75 40 Q80 60 65 75 Q50 90 30 80 Q15 70 20 50 Q25 30 40 20 Q45 17 50 15Z" fill="#2a0a4a"/>
-<path d="M50 20 Q60 25 60 35 M50 20 Q40 25 40 35" stroke="#9b30ff" stroke-width="2" fill="none"/>
-<circle cx="45" cy="40" r="4" fill="#9b30ff"/>
-<circle cx="55" cy="40" r="4" fill="#9b30ff"/>
+    <div class="demo"><div class="icon"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <radialGradient id="raven_bg"><stop offset="0%" stop-color="#2a0a4a"/><stop offset="100%" stop-color="#0a0a0a"/></radialGradient>
+  <filter id="raven_glow"><feGaussianBlur stdDeviation="4" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="200" height="200" fill="url(#raven_bg)"/>
+<path d="M100 30 Q140 40 150 70 Q160 100 140 130 Q120 160 90 155 Q60 150 50 120 Q45 90 60 65 Q70 45 85 35 Q92 30 100 30Z"
+  fill="#2a0a4a" stroke="#9b30ff" stroke-width="2" filter="url(#raven_glow)"/>
+<circle cx="85" cy="65" r="5" fill="#9b30ff" filter="url(#raven_glow)"/>
+<circle cx="110" cy="65" r="5" fill="#9b30ff" filter="url(#raven_glow)"/>
+<path d="M85 80 Q100 90 115 80" fill="none" stroke="#9b30ff" stroke-width="1.5"/>
+<path d="M100 15 Q100 0 110 5 Q100 5 100 15" fill="none" stroke="#9b30ff"/>
 </svg>
 </div>
     <p style="color:#666;font-size:.85em;margin-top:10px">

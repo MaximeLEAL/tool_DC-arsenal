@@ -1,0 +1,18 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="ds_orange" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#ff8c30"/><stop offset="100%" stop-color="#c96100"/>
+  </linearGradient>
+  <filter id="ds_shadow"><feDropShadow dx="0" dy="5" stdDeviation="6" flood-opacity="0.5"/></filter>
+</defs>
+<rect width="200" height="200" fill="#0a0a0a"/>
+<path d="M100 10 L175 25 L175 100 Q175 160 100 185 Q25 160 25 100 L25 25 Z" fill="#0d0d0d" stroke="#333" filter="url(#ds_shadow)"/>
+<path d="M100 10 L175 25 L175 100 Q175 160 100 185 Z" fill="url(#ds_orange)"/>
+<path d="M100 10 L175 25 L175 100 Q175 160 100 185 Z" fill="none" stroke="#111" stroke-width="1"/>
+<path d="M35 30 L80 38 L80 52 L38 48 Z" fill="#e8e8e8"/>
+<path d="M100 35 L170 48 L170 78 L102 68 Z" fill="#0a0a0a"/>
+<path d="M100 38 L120 70 L100 70 Z" fill="#0a0a0a"/>
+<path d="M100 10 L100 185" stroke="#000" stroke-width="2"/>
+<path d="M40 100 L80 100 L80 110 L40 110 Z" fill="#0a0a0a" opacity=".5"/>
+<path d="M45 120 L75 120" stroke="#555" stroke-width="2"/>
+</svg>

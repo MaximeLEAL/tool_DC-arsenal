@@ -1,5 +1,8 @@
-<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<rect x="10" y="10" width="80" height="80" fill="none" stroke="#39ff14" stroke-width="3"/>
-<text x="50" y="55" text-anchor="middle" fill="#39ff14" font-size="32" font-weight="bold" font-family="Arial">LX</text>
-<text x="50" y="75" text-anchor="middle" fill="#39ff14" font-size="10">CORP</text>
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<rect width="200" height="200" fill="#0a0a0a"/>
+<rect x="20" y="20" width="160" height="160" fill="none" stroke="#39ff14" stroke-width="3"/>
+<text x="100" y="70" text-anchor="middle" fill="#39ff14" font-size="45" font-weight="bold" font-family="Arial Black">LX</text>
+<text x="100" y="100" text-anchor="middle" fill="#39ff14" font-size="14" letter-spacing="4">CORP</text>
+<path d="M40 130 L160 130" stroke="#39ff14" stroke-width="1"/>
+<text x="100" y="155" text-anchor="middle" fill="#39ff14" font-size="9">INDUSTRIES</text>
 </svg>

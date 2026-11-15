@@ -1,7 +1,8 @@
-<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<circle cx="50" cy="50" r="42" fill="none" stroke="#64a0ff" stroke-width="2"/>
-<ellipse cx="50" cy="50" rx="42" ry="15" fill="none" stroke="#64a0ff" stroke-width="1"/>
-<ellipse cx="50" cy="50" rx="20" ry="42" fill="none" stroke="#64a0ff" stroke-width="1"/>
-<path d="M8 50 L92 50" stroke="#64a0ff" stroke-width="1"/>
-<text x="50" y="55" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">DP</text>
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<circle cx="100" cy="100" r="85" fill="#003366" stroke="#64a0ff" stroke-width="2"/>
+<ellipse cx="100" cy="100" rx="85" ry="30" fill="none" stroke="#64a0ff" stroke-width="1"/>
+<ellipse cx="100" cy="100" rx="40" ry="85" fill="none" stroke="#64a0ff" stroke-width="1"/>
+<path d="M15 100 L185 100" stroke="#64a0ff" stroke-width="1"/>
+<path d="M50 15 Q30 50 50 90 M150 15 Q170 50 150 90" fill="none" stroke="#64a0ff" stroke-width="1"/>
+<text x="100" y="108" text-anchor="middle" fill="#fff" font-size="20" font-weight="bold" font-family="serif">DAILY PLANET</text>
 </svg>

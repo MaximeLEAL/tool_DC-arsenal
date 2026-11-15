@@ -1,0 +1,13 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="ww_gold" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#ffe55c"/><stop offset="100%" stop-color="#c9a600"/>
+  </linearGradient>
+  <filter id="ww_shadow"><feDropShadow dx="0" dy="4" stdDeviation="5" flood-opacity="0.4"/></filter>
+</defs>
+<circle cx="100" cy="100" r="90" fill="#c00" filter="url(#ww_shadow)"/>
+<circle cx="100" cy="100" r="75" fill="url(#ww_gold)"/>
+<path d="M30 40 L20 80 L40 60 L50 90 L60 55 L70 90 L80 60 L100 75 L95 40 L100 30 L80 45 L70 30 L60 55 L50 35 L40 55 L35 30 L30 40Z" fill="#c00" stroke="#801010" stroke-width="2"/>
+<path d="M40 40 L50 65 L55 45 L60 65 L65 45 L70 65 L75 40" fill="none" stroke="#ffd60a" stroke-width="3"/>
+<text x="100" y="150" text-anchor="middle" fill="#fff" font-size="14" font-weight="bold">WW</text>
+</svg>

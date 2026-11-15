@@ -32,10 +32,20 @@ border:1px solid #ffd60a22;min-height:100px;display:grid;place-items:center}
 footer{text-align:center;color:#333;font-size:.75em;padding:30px}
 </style></head><body>
 <header>
-  <div class="icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<path d="M50 5 L50 90 M35 15 L50 5 L65 15 M30 20 L50 10 L70 20" stroke="#40e0d0" stroke-width="5" fill="none"/>
-<path d="M40 30 L50 25 L60 30 L60 60 L50 70 L40 60 Z" fill="#40e0d0"/>
-<path d="M45 70 L45 90 L55 90 L55 70" fill="none" stroke="#40e0d0" stroke-width="4"/>
+  <div class="icon"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="aqua" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#40e0d0"/><stop offset="100%" stop-color="#008b8b"/>
+  </linearGradient>
+  <filter id="aqua_shadow"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.3"/></filter>
+</defs>
+<circle cx="100" cy="100" r="90" fill="#001a1a" filter="url(#aqua_shadow)"/>
+<path d="M85 10 L85 60 M60 25 L85 10 L110 25 M55 35 L85 20 L115 35" stroke="url(#aqua)" stroke-width="6" fill="none"/>
+<path d="M75 45 L85 40 L95 45 L95 90 L85 100 L75 90 Z" fill="url(#aqua)"/>
+<path d="M85 100 L85 130" stroke="url(#aqua)" stroke-width="8" fill="none"/>
+<path d="M80 100 L90 100" stroke="url(#aqua)" stroke-width="10"/>
+<path d="M70 45 L60 55 L60 75" stroke="url(#aqua)" stroke-width="3" fill="none"/>
+<path d="M100 45 L110 55 L110 75" stroke="url(#aqua)" stroke-width="3" fill="none"/>
 </svg>
 </div>
   <div><h1>MARÉES<small>AQUAMAN · débit réseau graphique live RX/TX</small></h1></div>
@@ -58,10 +68,20 @@ footer{text-align:center;color:#333;font-size:.75em;padding:30px}
     </div>
   </div>
   <div class="card"><h2>🎬 DÉMONSTRATION</h2>
-    <div class="demo"><div class="icon"><svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
-<path d="M50 5 L50 90 M35 15 L50 5 L65 15 M30 20 L50 10 L70 20" stroke="#40e0d0" stroke-width="5" fill="none"/>
-<path d="M40 30 L50 25 L60 30 L60 60 L50 70 L40 60 Z" fill="#40e0d0"/>
-<path d="M45 70 L45 90 L55 90 L55 70" fill="none" stroke="#40e0d0" stroke-width="4"/>
+    <div class="demo"><div class="icon"><svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="aqua" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#40e0d0"/><stop offset="100%" stop-color="#008b8b"/>
+  </linearGradient>
+  <filter id="aqua_shadow"><feDropShadow dx="0" dy="3" stdDeviation="4" flood-opacity="0.3"/></filter>
+</defs>
+<circle cx="100" cy="100" r="90" fill="#001a1a" filter="url(#aqua_shadow)"/>
+<path d="M85 10 L85 60 M60 25 L85 10 L110 25 M55 35 L85 20 L115 35" stroke="url(#aqua)" stroke-width="6" fill="none"/>
+<path d="M75 45 L85 40 L95 45 L95 90 L85 100 L75 90 Z" fill="url(#aqua)"/>
+<path d="M85 100 L85 130" stroke="url(#aqua)" stroke-width="8" fill="none"/>
+<path d="M80 100 L90 100" stroke="url(#aqua)" stroke-width="10"/>
+<path d="M70 45 L60 55 L60 75" stroke="url(#aqua)" stroke-width="3" fill="none"/>
+<path d="M100 45 L110 55 L110 75" stroke="url(#aqua)" stroke-width="3" fill="none"/>
 </svg>
 </div>
     <p style="color:#666;font-size:.85em;margin-top:10px">

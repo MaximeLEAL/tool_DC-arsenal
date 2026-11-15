@@ -1,0 +1,17 @@
+<svg viewBox="0 0 400 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="gold" x1="0%" y1="0%" x2="0%" y2="100%">
+    <stop offset="0%" stop-color="#FFE55C"/>
+    <stop offset="50%" stop-color="#FFD60A"/>
+    <stop offset="100%" stop-color="#B8960A"/>
+  </linearGradient>
+  <filter id="shadow"><feDropShadow dx="0" dy="4" stdDeviation="6" flood-opacity="0.5"/></filter>
+</defs>
+<ellipse cx="200" cy="100" rx="190" ry="88" fill="url(#gold)" filter="url(#shadow)"/>
+<path d="M200 35 C185 55 165 50 158 38 C150 52 130 48 122 35 C115 50 95 45 88 30
+C80 45 70 58 55 68 C40 78 20 82 5 88 C25 80 45 72 65 68 C75 66 80 60 85 55
+C90 60 95 63 100 63 C105 63 110 60 115 55 C120 60 125 66 135 68 C155 72 175 80 195 88
+C180 82 160 78 145 68 C138 58 128 45 120 30 C112 45 92 48 85 35 C78 48 58 52 50 38
+C55 50 65 55 75 58 C90 62 120 58 200 35Z" fill="#0a0a0a"/>
+<path d="M100 63 C120 60 140 62 160 65 C180 68 195 75 195 88 C175 80 155 72 135 68 C120 66 110 63 100 63Z" fill="#0a0a0a" opacity=".3"/>
+</svg>

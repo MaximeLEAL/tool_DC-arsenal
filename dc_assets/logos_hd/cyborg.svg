@@ -1,0 +1,18 @@
+<svg viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+<defs>
+  <linearGradient id="chrome" x1="0%" y1="0%" x2="100%" y2="100%">
+    <stop offset="0%" stop-color="#c0c0c0"/><stop offset="50%" stop-color="#808080"/>
+    <stop offset="100%" stop-color="#404040"/>
+  </linearGradient>
+  <filter id="cy_glow"><feGaussianBlur stdDeviation="3" result="b"/>
+  <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+</defs>
+<rect width="200" height="200" fill="#000"/>
+<path d="M40 20 Q40 10 55 10 L100 15 L100 185 L55 190 Q40 190 40 180 Z" fill="url(#chrome)"/>
+<path d="M100 15 L140 10 Q160 10 160 20 L160 180 Q160 190 140 190 L100 185 Z" fill="#222"/>
+<circle cx="60" cy="60" r="12" fill="#00c8ff" filter="url(#cy_glow)"/>
+<circle cx="60" cy="60" r="6" fill="#fff"/>
+<path d="M110 40 L150 40 M110 55 L140 55 M110 70 L145 70" stroke="#00c8ff" stroke-width="2"/>
+<rect x="105" y="90" width="50" height="25" rx="5" fill="#333" stroke="#00c8ff"/>
+<text x="130" y="108" text-anchor="middle" fill="#00c8ff" font-size="10">SYS</text>
+</svg>

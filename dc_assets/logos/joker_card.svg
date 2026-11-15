@@ -1,6 +1,7 @@
-<svg viewBox="0 0 100 140" xmlns="http://www.w3.org/2000/svg">
-<rect x="15" y="10" width="70" height="120" rx="8" fill="none" stroke="#ff6a00" stroke-width="2"/>
-<text x="50" y="55" text-anchor="middle" fill="#ff6a00" font-size="28" font-weight="bold">J</text>
-<text x="50" y="80" text-anchor="middle" fill="#666" font-size="10">JOKER</text>
-<text x="50" y="95" text-anchor="middle" fill="#333" font-size="8">SGP CARD</text>
+<svg viewBox="0 0 200 280" xmlns="http://www.w3.org/2000/svg">
+<rect x="30" y="20" width="140" height="240" rx="12" fill="#0a0a0a" stroke="#ff6a00" stroke-width="2"/>
+<text x="100" y="120" text-anchor="middle" fill="#ff6a00" font-size="60" font-weight="bold" font-family="serif">J</text>
+<text x="100" y="170" text-anchor="middle" fill="#666" font-size="16">JOKER</text>
+<text x="100" y="200" text-anchor="middle" fill="#333" font-size="10">SGP CARD</text>
+<path d="M50 40 L60 50 M140 40 L130 50" stroke="#ff6a00" stroke-width="1"/>
 </svg>
