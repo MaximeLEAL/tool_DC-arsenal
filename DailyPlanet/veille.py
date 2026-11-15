@@ -5,6 +5,7 @@
 # Usage: python3 veille.py serve [port]   |   python3 veille.py top [n]
 import http.server, urllib.request, urllib.parse, xml.etree.ElementTree as ET, json, time, os, sys, re, html, threading, hashlib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), ".."))
 import dc_fullscreen as dfs
 
 ROOT = os.path.dirname(os.path.abspath(__file__))

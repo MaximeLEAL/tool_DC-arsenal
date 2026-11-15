@@ -12,9 +12,11 @@ STATE = os.path.join(ROOT, "notifs_state.json")
 
 def refresh_cache():
     """rafraîchit le cache via veille.py (fetch_all) — import silencieux"""
+    global VEILLE
     try:
         sys.path.insert(0, ROOT)
         import veille
+        VEILLE = veille
         veille.fetch_all(force=True)
         return True
     except Exception as e:
@@ -64,11 +66,66 @@ def check(quiet_first=True):
     save(STATE, state)
     return len(fresh)
 
+def digest(hour=8):
+    """DIGEST QUOTIDIEN — une seule notif le matin avec les 3 actus majeures de la nuit"""
+    refresh_cache()
+    cache = load(CACHE, {})
+    items = cache.get("items", [])
+    state = load(STATE, {"seen": [], "last_digest": 0})
+    since = state.get("last_digest", 0)
+    # actus de la nuit (depuis le dernier digest, sinon 24 h)
+    from email.utils import parsedate_to_datetime
+    recent = []
+    for it in items:
+        try:
+            ts = parsedate_to_datetime(it.get("date", "")).timestamp()
+        except Exception:
+            continue
+        if ts > since and ts > time.time() - 86400:
+            recent.append((ts, it))
+    if not recent:
+        notify("📰 DIGEST DU MATIN", "Aucune actu majeure cette nuit — le journal est à jour.")
+        state["last_digest"] = time.time() - 23 * 3600  # retente demain à 8h
+        save(STATE, state)
+        return
+    # score de "majeure" : mots chauds + source de référence + catégorie
+    HOT_KW = getattr(globals().get("VEILLE"), "HOT", None) or \
+        ["ransomware", "0-day", "zero-day", "cve-", "exploit", "vulnérabilité", "vulnerability"]
+    TOP_SOURCES = {"The Hacker News", "KrebsOnSecurity", "CISA Alertes", "CERT-FR",
+                   "BleepingComputer", "Dark Reading", "SecurityWeek", "WeLiveSecurity"}
+    def score(it):
+        s = 0
+        t = it.get("titre", "").lower()
+        if any(k in t for k in HOT_KW): s += 3
+        if it.get("cat") == "alertes": s += 3
+        if it.get("cat") == "cyber": s += 2
+        if it.get("source") in TOP_SOURCES: s += 2
+        return -s  # tri croissant
+    ranked = sorted(recent, key=lambda x: score(x[1]))
+    top3 = [it for _, it in ranked[:3]]
+    lines = []
+    for n, it in enumerate(top3, 1):
+        titre = it.get("titre", "")[:58]
+        src = it.get("source", "")[:14]
+        lines.append(f"{n}. {titre} — {src}")
+    msg = "\n".join(lines)
+    extra = len(recent) - len(top3)
+    if extra > 0:
+        msg += f"\n+ {extra} autres sur le journal"
+    notify("📰 DIGEST DU MATIN", msg)
+    print(f"[✓] digest envoyé : {len(top3)} actus majeures ({len(recent)} nouvelles au total)")
+    # marque tout comme vu pour ne pas re-notifier
+    state["seen"] = list(set(state.get("seen", [])) | {i.get("lien", "") for i in items})[-400:]
+    state["last_digest"] = time.time()
+    save(STATE, state)
+
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "start"
     if cmd == "test":
         notify("📰 Daily Planet", "Notifs opérationnelles — tu seras prévenu à chaque actu cyber.")
         print("[✓] notif de test envoyée")
+    elif cmd == "digest":
+        digest()
     elif cmd == "once":
         n = check(quiet_first=False)
         print(f"[✓] {n} nouvelle(s) actu(s) notifiée(s)")
@@ -86,6 +143,7 @@ def main():
                 print(f"[!] {e}")
     else:
         print(__doc__)
+        print("MODES : start (flux en continu) · digest (récap quotidien à heure fixe) · once · test")
 
 if __name__ == "__main__":
     main()
