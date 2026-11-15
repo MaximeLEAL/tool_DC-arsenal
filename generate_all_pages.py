@@ -37,34 +37,18 @@ DC_COLORS = {
 
 
 # les SVG de chaque personnage DC
-SVGS = {
-    "RickPortal": '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="28" fill="none" stroke="#00ff70" stroke-width="2"/><circle cx="30" cy="30" r="20" fill="none" stroke="#00ff70" stroke-width="1" opacity=".5"/><circle cx="30" cy="30" r="10" fill="#00ff70" opacity=".3"/></svg>',
-    "FlashToolSuper": '<svg viewBox="0 0 100 100"><path d="M50 5 L35 45 L50 45 L30 95 L70 40 L55 40 L65 5 Z" fill="#ffd60a" stroke="#fff" stroke-width="1.5"/></svg>',
-    "BatCave": '<svg viewBox="0 0 100 60"><path d="M5 55 Q30 5 50 30 Q70 5 95 55 Q75 40 50 40 Q25 40 5 55Z" fill="#ffd60a" stroke="#fff"/></svg>',
-    "JokerChaos": '<svg viewBox="0 0 60 60"><text x="30" y="30" text-anchor="middle" fill="#9b30ff" font-size="24" font-weight="bold">HA</text><text x="30" y="48" text-anchor="middle" fill="#57ff14" font-size="14">HA HA</text></svg>',
-    "TridentAquaman": '<svg viewBox="0 0 60 60"><path d="M30 5 L30 55 M30 5 L20 15 M30 5 L40 15 M30 25 L15 35 M30 25 L45 35" stroke="#40e0d0" stroke-width="3" fill="none"/></svg>',
-    "SupermanVision": '<svg viewBox="0 0 60 60"><path d="M30 5 L55 30 L30 55 L5 30 Z" fill="none" stroke="#ff4628" stroke-width="3"/><text x="30" y="38" text-anchor="middle" fill="#ffd60a" font-size="20" font-weight="bold">S</text></svg>',
-    "ConstantineDark": '<svg viewBox="0 0 60 60"><rect x="25" y="35" width="10" height="20" fill="#c96100"/><path d="M30 25 Q28 15 32 10 Q30 20 30 25Z" fill="#ff8c30"/><circle cx="30" cy="30" r="25" fill="none" stroke="#333" stroke-dasharray="4 3"/></svg>',
-    "LassoVerite": '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#ffdc50" stroke-width="2" stroke-dasharray="6 4"/><text x="30" y="35" text-anchor="middle" fill="#fff" font-size="10">V</text></svg>',
-    "CyborgTech": '<svg viewBox="0 0 60 60"><rect x="15" y="15" width="30" height="30" rx="5" fill="none" stroke="#00c8ff" stroke-width="2"/><path d="M25 15 L25 45 M35 15 L35 45 M15 25 L45 25 M15 35 L45 35" stroke="#00c8ff" stroke-width="1"/><circle cx="30" cy="30" r="5" fill="#00c8ff"/></svg>',
-    "LexCorpIndustries": '<svg viewBox="0 0 60 60"><rect x="10" y="10" width="40" height="40" fill="none" stroke="#39ff14" stroke-width="2"/><text x="30" y="38" text-anchor="middle" fill="#39ff14" font-size="22" font-weight="bold">LX</text></svg>',
-    "STARLabs": '<svg viewBox="0 0 60 60"><path d="M15 15 L45 15 L45 45 L15 45 Z" fill="none" stroke="#00c8ff" stroke-width="2"/><path d="M15 30 L45 30" stroke="#00c8ff"/><path d="M30 15 L30 45" stroke="#00c8ff"/><circle cx="30" cy="30" r="4" fill="#00c8ff"/></svg>',
-    "TaskForceX": '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="#ff6a00" stroke-width="2"/><path d="M30 10 L30 50 M20 20 L40 40 M40 20 L20 40" stroke="#ff6a00"/></svg>',
-    "NeoMatrix": '<svg viewBox="0 0 60 60"><text x="15" y="20" fill="#00ff70" font-size="12">ｱ</text><text x="35" y="35" fill="#00ff70" font-size="12">ｲ</text><text x="10" y="50" fill="#00ff70" font-size="12">ｳ</text><text x="40" y="15" fill="#00ff70" font-size="12">ｴ</text><text x="25" y="55" fill="#0f0" font-size="12">ｵ</text></svg>',
-    "ForceGalaxy": '<svg viewBox="0 0 60 60"><path d="M30 5 L30 55" stroke="#ffd60a" stroke-width="2"/><path d="M10 30 L50 30" stroke="#ffd60a" stroke-width="2"/><circle cx="30" cy="30" r="8" fill="none" stroke="#ffd60a" stroke-width="2"/></svg>',
-    "CatwomanVoleuse": '<svg viewBox="0 0 60 60"><path d="M15 15 L25 30 L15 45 M45 15 L35 30 L45 45" stroke="#ffdc50" stroke-width="2" fill="none"/><circle cx="30" cy="30" r="6" fill="#ffdc50"/></svg>',
-    "HiveMining": '<svg viewBox="0 0 60 60"><path d="M30 10 L45 20 L45 40 L30 50 L15 40 L15 20 Z" fill="none" stroke="#ffc800" stroke-width="2"/><path d="M30 10 L30 50 M15 20 L45 40 M45 20 L15 40" stroke="#ffc800" stroke-width="1"/></svg>',
-    "ScarecrowPhish": '<svg viewBox="0 0 60 60"><circle cx="30" cy="20" r="8" fill="none" stroke="#ff8c30" stroke-width="2"/><path d="M30 28 L30 50 M20 35 L40 35 M25 42 L35 42" stroke="#ff8c30" stroke-width="2" fill="none"/></svg>',
-    "WarWorld": '<svg viewBox="0 0 60 60"><path d="M30 5 L55 20 L55 40 L30 55 L5 40 L5 20 Z" fill="none" stroke="#ff4628" stroke-width="2"/><path d="M15 20 L45 40 M45 20 L15 40" stroke="#ff4628"/><circle cx="30" cy="30" r="6" fill="#ff4628"/></svg>',
-    "LeagueOfShadows": '<svg viewBox="0 0 60 60"><path d="M10 10 L50 50 M50 10 L10 50" stroke="#c9a600" stroke-width="2"/><circle cx="30" cy="30" r="10" fill="none" stroke="#c9a600"/></svg>',
-    "KryptoniteSuite": '<svg viewBox="0 0 60 60"><path d="M30 10 L40 30 L30 50 L20 30 Z" fill="#39ff14" opacity=".5"/><path d="M30 10 L40 30 L30 50 L20 30 Z" fill="none" stroke="#39ff14" stroke-width="2"/></svg>',
-    "WOPR": '<svg viewBox="0 0 60 60"><path d="M15 15 L45 15 L45 45 L15 45 Z" fill="none" stroke="#7fff00" stroke-width="2"/><path d="M15 25 L45 25 M15 35 L45 35" stroke="#7fff00"/><path d="M25 15 L25 45 M35 15 L35 45" stroke="#7fff00"/></svg>',
-    "TheCalculator": '<svg viewBox="0 0 60 60"><rect x="15" y="10" width="30" height="40" rx="3" fill="none" stroke="#00c8ff" stroke-width="2"/><path d="M20 20 L40 20 M20 30 L40 30 M20 40 L40 40" stroke="#00c8ff"/></svg>',
-    "RavenEvasion": '<svg viewBox="0 0 60 60"><path d="M30 10 Q45 25 30 40 Q15 55 30 40 Q45 25 30 10Z" fill="none" stroke="#8899ff" stroke-width="2"/><circle cx="30" cy="30" r="20" fill="none" stroke="#8899ff" stroke-dasharray="3 3"/></svg>',
-    "TheThinker": '<svg viewBox="0 0 60 60"><circle cx="30" cy="20" r="12" fill="none" stroke="#9b30ff" stroke-width="2"/><path d="M30 32 L30 50 M20 40 L40 40" stroke="#9b30ff" stroke-width="2" fill="none"/></svg>',
-    "JokerCard": '<svg viewBox="0 0 60 60"><rect x="15" y="10" width="30" height="40" rx="5" fill="none" stroke="#ff6a00" stroke-width="2"/><text x="30" y="35" text-anchor="middle" fill="#ff6a00" font-size="16">J</text></svg>',
-    "DailyPlanet": '<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="20" fill="none" stroke="#64a0ff" stroke-width="2"/><path d="M10 30 L50 30 M30 10 Q20 30 30 50 M30 10 Q40 30 30 50" stroke="#64a0ff" fill="none"/></svg>',
-}
+# SVG chargés depuis dc_assets/logos/
+LOGOS_DIR = os.path.join(ROOT, "dc_assets", "logos")
+
+def load_svg(name):
+    """charge le SVG du personnage depuis le fichier"""
+    path = os.path.join(LOGOS_DIR, f"{name}.svg")
+    if os.path.exists(path):
+        return open(path).read()
+    return f'<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="{DC_COLORS.get(name, "#ffd60a")}" stroke-width="2"/></svg>'
+
+def get_svg(kit_id):
+    return load_svg(kit_id)
 
 def parse_md():
     raw = open(MD, encoding="utf-8").read()
@@ -85,7 +69,7 @@ def parse_md():
         if not kit_id: kit_id = re.sub(r'[^a-zA-Z]', '', name)
         color = DC_COLORS.get(kit_id, "#ffd60a")
         icon = DC_ICONS.get(kit_id, "⭐")
-        svg = SVGS.get(kit_id, f'<svg viewBox="0 0 60 60"><circle cx="30" cy="30" r="25" fill="none" stroke="{color}" stroke-width="2"/></svg>')
+        svg = get_svg(kit_id)
         cm = re.search(r'```\n(cd ~/Desktop/tool_DC/[^\n]+)\n```', sec)
         cmd = cm.group(1).strip() if cm else f"cd ~/Desktop/tool_DC/{kit_id}"
         tools = []

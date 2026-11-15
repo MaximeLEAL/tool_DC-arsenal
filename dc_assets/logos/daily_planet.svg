@@ -1,0 +1,7 @@
+<svg viewBox="0 0 100 100" xmlns="http://www.w3.org/2000/svg">
+<circle cx="50" cy="50" r="42" fill="none" stroke="#64a0ff" stroke-width="2"/>
+<ellipse cx="50" cy="50" rx="42" ry="15" fill="none" stroke="#64a0ff" stroke-width="1"/>
+<ellipse cx="50" cy="50" rx="20" ry="42" fill="none" stroke="#64a0ff" stroke-width="1"/>
+<path d="M8 50 L92 50" stroke="#64a0ff" stroke-width="1"/>
+<text x="50" y="55" text-anchor="middle" fill="#fff" font-size="12" font-weight="bold">DP</text>
+</svg>
