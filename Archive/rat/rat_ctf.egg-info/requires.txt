@@ -1,0 +1,6 @@
+pycryptodome
+opencv-python
+pynput
+mss
+pillow
+pyinstaller

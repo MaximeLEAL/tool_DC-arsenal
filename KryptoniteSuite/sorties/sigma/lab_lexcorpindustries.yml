@@ -1,0 +1,35 @@
+title: LexCorpIndustries — traces d'agent (kit lab Maxime Leal)
+status: experimental
+description: >
+  Detection des traces du kit LexCorpIndustries (RickPortal/LexCorp/etc lab).
+  Generes automatiquement par KryptoniteSuite.
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    process_creation:
+        Image|endswith:
+          - 'lex_ransom2'
+          - 'lex_smb_worm'
+          - 'lex_loader'
+
+    file_event:
+        TargetFilename|contains:
+          - 'lexagent.exe'
+          - 'lex_ransom2.exe'
+          - 'lex_smb_worm.exe'
+          - 'lex_loader.exe'
+          - '.lexcor'
+
+    persistence:
+        'LexSvc (tache distante)'
+    condition: 1 of them
+fields:
+    - Image
+    - TargetFilename
+falsepositives:
+    - machines de lab Maxime Leal (autorise)
+level: high
+tags:
+    - attack.execution
+    - attack.persistence

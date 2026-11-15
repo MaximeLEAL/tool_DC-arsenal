@@ -1,0 +1,6 @@
+REM JOKER CARD - demo clavier (machine de test autorisee)
+DELAY 1500
+STRING why so serious?
+ENTER
+STRING JOKER CARD - powered by Maxime Leal
+ENTER

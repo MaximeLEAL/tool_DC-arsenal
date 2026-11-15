@@ -1,0 +1,3 @@
+([('WindowsSecuritySvc',
+   '/Users/mleal/Desktop/tool/builds/WindowsSecuritySvc',
+   'EXECUTABLE')],)

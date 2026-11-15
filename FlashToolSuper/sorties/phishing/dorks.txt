@@ -1,0 +1,10 @@
+site:exemple.com inurl:login
+site:exemple.com filetype:pdf
+site:exemple.com filetype:xls
+site:exemple.com intitle:"index of"
+site:exemple.com inurl:admin
+site:exemple.com inurl:.env
+site:exemple.com intext:password
+site:exemple.com intext:confidentiel
+"@exemple.com" site:linkedin.com
+site:exemple.com inurl:wp-content

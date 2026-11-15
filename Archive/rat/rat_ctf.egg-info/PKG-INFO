@@ -1,0 +1,10 @@
+Metadata-Version: 2.4
+Name: rat-ctf
+Version: 1.0.0
+Requires-Dist: pycryptodome
+Requires-Dist: opencv-python
+Requires-Dist: pynput
+Requires-Dist: mss
+Requires-Dist: pillow
+Requires-Dist: pyinstaller
+Dynamic: requires-dist

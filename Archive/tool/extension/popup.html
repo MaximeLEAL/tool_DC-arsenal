@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<style>
+body{width:280px;padding:16px;font-family:'Segoe UI',sans-serif;
+     background:#f8f8f8;margin:0}
+h3{margin:0 0 10px;color:#333;font-size:14px;
+   display:flex;align-items:center;gap:8px}
+.status{background:#fff;border:1px solid #e0e0e0;border-radius:6px;
+        padding:12px;margin-bottom:10px}
+.row{display:flex;justify-content:space-between;
+     font-size:12px;padding:4px 0}
+.ok{color:#27ae60;font-weight:600}
+.info{color:#666;font-size:11px;margin-top:8px;line-height:1.5}
+</style>
+</head>
+<body>
+<h3>🛡 Security Checker Pro</h3>
+<div class="status">
+  <div class="row">
+    <span>Protection active</span>
+    <span class="ok">✓ ON</span>
+  </div>
+  <div class="row">
+    <span>HTTPS vérifié</span>
+    <span class="ok">✓</span>
+  </div>
+  <div class="row">
+    <span>Trackers bloqués</span>
+    <span class="ok">0</span>
+  </div>
+  <div class="row">
+    <span>Dernière analyse</span>
+    <span style="color:#666" id="ts">—</span>
+  </div>
+</div>
+<div class="info">
+  Votre connexion est sécurisée et surveillée en temps réel.
+</div>
+<script>
+document.getElementById("ts").textContent =
+  new Date().toLocaleTimeString();
+</script>
+</body>
+</html>

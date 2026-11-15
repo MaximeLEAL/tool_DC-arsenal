@@ -1,0 +1,83 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<title>FLASH TOOL_SUPER — DNS ENUM</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=JetBrains+Mono:wght@400;700&display=swap');
+*{box-sizing:border-box;margin:0}
+body{background:#0a0a0a;color:#ccc;font-family:'JetBrains Mono',monospace;min-height:100vh}
+header{background:linear-gradient(180deg,#0a0a0a,#000);padding:30px 40px 20px;border-bottom:3px solid #ffd60a;
+display:flex;align-items:center;gap:20px;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
+background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);animation:scan 3s infinite}
+@keyframes scan{to{left:100%}}
+.icon{font-size:3em;animation:pulse 2s infinite}
+@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
+h1{font-family:'Orbitron',monospace;font-size:1.6em;color:#ffd60a;margin:0}
+h1 small{color:#555;font-size:.5em;display:block;margin-top:2px}
+.github{margin-left:auto}
+.github a{background:#ffd60a;color:#000;padding:8px 20px;border-radius:6px;
+text-decoration:none;font-weight:bold;font-size:.85em}
+.github a:hover{background:#fff;transform:scale(1.05)}
+main{max-width:900px;margin:30px auto;padding:0 20px}
+.card{background:#0d0d0d;border:1px solid #ffd60a22;border-radius:10px;padding:24px;margin-bottom:18px;
+border-left:4px solid #ffd60a}
+.card h2{color:#ffd60a;font-size:1.1em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2::before{content:'';width:5px;height:5px;background:#ffd60a;border-radius:50%;animation:pulse 2s infinite}
+.card p{color:#99a;font-size:.9em;line-height:1.6}
+.code{background:#000;border:1px solid #ffd60a33;border-radius:8px;padding:14px 18px;
+font-size:.85em;color:#7fff7f;margin:10px 0;overflow-x:auto;white-space:pre-wrap}
+.code::before{content:'$ ';color:#ffd60a}
+.theme-tag{background:#ffd60a22;color:#ffd60a;padding:3px 14px;border-radius:12px;font-size:.8em;display:inline-block}
+.back{color:#ffd60a;text-decoration:none;font-size:.85em;margin-bottom:16px;display:inline-block}
+.back:hover{text-decoration:underline}
+.features{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:12px;margin:14px 0}
+.feature{background:#111;border-radius:8px;padding:12px 16px;font-size:.85em}
+.feature b{color:#ffd60a}
+.demo{background:#000;border-radius:8px;padding:20px;margin:14px 0;text-align:center;
+border:1px solid #ffd60a22;min-height:120px;display:grid;place-items:center}
+.demo .icon{font-size:4em;animation:pulse 3s infinite}
+footer{text-align:center;color:#333;font-size:.75em;padding:30px;letter-spacing:2px}
+</style></head><body>
+<header>
+  <div class="icon">⚡</div>
+  <div>
+    <h1>DNS ENUM<small>FLASH TOOL_SUPER · osint</small></h1>
+  </div>
+  <div class="github"><a href="https://github.com/MaximeLeal/tool_DC/tree/main/FlashToolSuper" target="_blank">⬇ GitHub ↗</a></div>
+</header>
+<main>
+  <a class="back" href="index_FLASH_TOOL_SUPER.html">← retour aux tools de FLASH TOOL_SUPER</a>
+
+  <div class="card">
+    <h2>DESCRIPTION</h2>
+    <p>A/AAAA/MX/NS/TXT d'un domaine</p>
+  </div>
+
+  <div class="card">
+    <h2>USAGE</h2>
+    <div class="code">python3 flash tool_super_tool.py</div>
+    <p>Tape un domaine — tous les records</p>
+  </div>
+
+  <div class="card">
+    <h2>FONCTIONNEMENT</h2>
+    <div class="features">
+      <div class="feature"><b>Thème</b><br>osint</div>
+      <div class="feature"><b>Kit</b><br>FLASH TOOL_SUPER</div>
+      <div class="feature"><b>Langage</b><br>Python 3 / C++</div>
+      <div class="feature"><b>Plateforme</b><br>macOS · Windows</div>
+    </div>
+  </div>
+
+  <div class="card">
+    <h2>DÉMONSTRATION VISUELLE</h2>
+    <div class="demo">
+      <div class="icon">⚡</div>
+      <p style="color:#666;font-size:.85em;margin-top:10px">
+        Lance le tool dans le terminal pour voir la démonstration animée complète.<br>
+        Les animations sont générées en temps réel par le code du tool.
+      </p>
+    </div>
+  </div>
+</main>
+<footer>FLASH TOOL_SUPER · DNS ENUM · powered by Maxime Leal</footer>
+</body></html>

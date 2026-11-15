@@ -1,0 +1,5 @@
+{"type": "GET", "ip": "127.0.0.1", "path": "/", "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:160.0) Gecko/20100101 Firefox/1", "detail": "/", "ts": "2026-11-14T21:10:34.041103"}
+{"type": "GET", "ip": "127.0.0.1", "path": "/favicon.ico", "ua": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10.15; rv:160.0) Gecko/20100101 Firefox/1", "detail": "/favicon.ico", "ts": "2026-11-14T21:10:34.308201"}
+{"type": "GET", "ip": "127.0.0.1", "path": "/portal.command", "ua": "curl/8.7.1", "detail": "/portal.command", "ts": "2026-11-14T21:23:35.553229"}
+{"type": "GET", "ip": "127.0.0.1", "path": "/portal.command", "ua": "curl/8.7.1", "detail": "/portal.command", "ts": "2026-11-14T21:23:43.972731"}
+{"type": "GET", "ip": "127.0.0.1", "path": "/portal.command", "ua": "curl/8.7.1", "detail": "/portal.command", "ts": "2026-11-14T21:23:53.427423"}

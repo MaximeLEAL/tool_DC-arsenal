@@ -1,0 +1,7 @@
+setup.py
+rat_ctf.egg-info/PKG-INFO
+rat_ctf.egg-info/SOURCES.txt
+rat_ctf.egg-info/dependency_links.txt
+rat_ctf.egg-info/entry_points.txt
+rat_ctf.egg-info/requires.txt
+rat_ctf.egg-info/top_level.txt

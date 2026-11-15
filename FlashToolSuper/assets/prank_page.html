@@ -1,0 +1,30 @@
+<!doctype html>
+<html><head><meta charset="utf8"><title>SECURITE</title>
+<style>
+html,body{margin:0;height:100%;background:#003399;color:#fff;font-family:sans-serif;overflow:hidden}
+#c{display:grid;place-items:center;height:100vh;text-align:center}
+h1{font-size:3.2em}p{font-size:1.4em;color:#cde}
+</style></head>
+<body oncontextmenu="return false" onkeydown="guard(event)">
+<div id="c">
+  <h1>⚠ ACCES SUSPENDU ⚠</h1>
+  <p id="msg">Session verrouillee par le service de securite.<br>Contactez l'administrateur systeme.</p>
+</div>
+<script>
+// plein ecran + anti-fermeture : seule la sequence secrete libere la machine
+document.documentElement.requestFullscreen && document.documentElement.requestFullscreen();
+var buf = "";
+var COMBO = "RICK"; // <- combo secret, modifiable
+function guard(e){
+  if (e.key === "F11") e.preventDefault();
+  if (e.key.length === 1) {
+    buf = (buf + e.key.toUpperCase()).slice(-8);
+    if (buf.endsWith(COMBO)) {
+      document.getElementById("msg").innerHTML = "Systeme delivre. Tu es schwifty.";
+      setTimeout(function(){ document.exitFullscreen && document.exitFullscreen(); }, 1200);
+    }
+  }
+}
+window.onbeforeunload = function(){ return "Vraiment ?"; };
+</script>
+</body></html>

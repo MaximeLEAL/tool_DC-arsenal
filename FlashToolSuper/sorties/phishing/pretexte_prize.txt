@@ -1,0 +1,6 @@
+OBJET : Felicitations ! Vous avez gagne
+
+Votre adresse a ete tiree au sort parmi les inscrits.
+Reclamez votre lot avant dimanche minuit :
+
+  -> https://loterie-exemple.example/claim

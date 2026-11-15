@@ -1,0 +1,25 @@
+title: S.T.A.R. Labs (C2) — traces d'agent (kit lab Maxime Leal)
+status: experimental
+description: >
+  Detection des traces du kit S.T.A.R. Labs (C2) (RickPortal/LexCorp/etc lab).
+  Generes automatiquement par KryptoniteSuite.
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    process_creation:
+        Image|endswith:
+          - 'star_dns_c2_server'
+          - 'star_c2_server'
+          - 'star_dns_agent'
+
+    condition: 1 of them
+fields:
+    - Image
+    - TargetFilename
+falsepositives:
+    - machines de lab Maxime Leal (autorise)
+level: high
+tags:
+    - attack.execution
+    - attack.persistence

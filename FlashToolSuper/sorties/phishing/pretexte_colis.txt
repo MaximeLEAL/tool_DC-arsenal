@@ -1,0 +1,8 @@
+OBJET : Votre colis est retenu - droits de douane
+
+Votre colis n° CD-48291 est retenu au centre de distribution.
+Reglez les frais de dossier (1,99) pour le deballer :
+
+  -> https://suivi-colis-express.example/pay
+
+Colis detruit apres 72 h sans action.

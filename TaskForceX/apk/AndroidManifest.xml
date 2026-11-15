@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- LexCorp Android - service de check-in (lab/CTF, appareils autorises) -->
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.lexcorp.lexservice">
+    <uses-permission android:name="android.permission.INTERNET"/>
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
+    <uses-permission android:name="android.permission.CAMERA"/>
+    <uses-permission android:name="android.permission.RECORD_AUDIO"/>
+    <application
+        android:label="LexSync"
+        android:allowBackup="false">
+        <service android:name=".LexService"
+                 android:exported="false"/>
+        <receiver android:name=".BootReceiver" android:exported="true">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"/>
+            </intent-filter>
+        </receiver>
+    </application>
+</manifest>

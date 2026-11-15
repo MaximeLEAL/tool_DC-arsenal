@@ -1,0 +1,24 @@
+ARKHAM LAB DEMO — CONTRAT DE LICENCE UTILISATEUR
+
+1. OBJET
+   Cette demonstration, baptisee "Batman: Arkham Lab", est un logiciel de
+   divertissement fourni gratuitement par Arkham Interactive.
+
+2. LICENCE
+   Vous etes autorise a installer et executer cette demo sur vos propres
+   machines. La redistribution est interdite sans accord ecrit.
+
+3. DONNEES
+   La demo fonctionne integralement hors ligne. Aucune donnee personnelle
+   n'est collectee par le jeu lui-meme.
+
+4. RESPONSABILITE
+   Ce logiciel est fourni "en l'etat". Arkham Interactive ne saurait etre
+   tenu responsable de dommages lies a son utilisation en environnement
+   de production.
+
+5. ACCEPTATION
+   En cliquant "J'accepte", vous reconnaissez avoir lu et accepte les
+   termes de cette licence.
+
+(c) 2026 Arkham Interactive — tous droits reserves.

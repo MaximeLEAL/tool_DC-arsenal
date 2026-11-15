@@ -1,0 +1,1 @@
+([('svchost32', '/Users/mleal/Desktop/tool/builds/svchost32', 'EXECUTABLE')],)

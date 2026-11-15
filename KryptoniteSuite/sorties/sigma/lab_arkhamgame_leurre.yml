@@ -1,0 +1,34 @@
+title: ArkhamGame (leurre) — traces d'agent (kit lab Maxime Leal)
+status: experimental
+description: >
+  Detection des traces du kit ArkhamGame (leurre) (RickPortal/LexCorp/etc lab).
+  Generes automatiquement par KryptoniteSuite.
+logsource:
+    product: windows
+    service: sysmon
+detection:
+    process_creation:
+        Image|endswith:
+          - 'ArkhamUpdate'
+          - 'msupd'
+          - 'lexagent'
+
+    file_event:
+        TargetFilename|contains:
+          - 'ArkhamUpdate.exe'
+          - 'msupd.exe'
+          - 'lexagent.exe'
+          - 'scr.bmp'
+
+    persistence:
+        'ArkhamUpdate (Run key)'
+    condition: 1 of them
+fields:
+    - Image
+    - TargetFilename
+falsepositives:
+    - machines de lab Maxime Leal (autorise)
+level: high
+tags:
+    - attack.execution
+    - attack.persistence

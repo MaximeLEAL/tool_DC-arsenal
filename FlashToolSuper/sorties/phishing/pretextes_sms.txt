@@ -1,0 +1,4 @@
+[SMISHING 1] FR-ALERT: Colis retenu. Reglez 1,99: https://bit.ly/xxxxx (72h)
+[SMISHING 2] Votre compte sera bloque. Confirmez vos identifiants: https://verification.exemple.com
+[SMISHING 3] Code de securite envoye par erreur. Annulez sur: https://annulation.exemple.com
+[SMISHING 4] Prime de fin d'annee disponible. Reclamez avant 23h59: https://prime.exemple.com

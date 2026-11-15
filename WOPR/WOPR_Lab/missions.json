@@ -1,0 +1,6 @@
+{
+ "ALPHA": "Injection SQL sur /login \u2014 la base lache son flag quand l'injection reussit",
+ "BRAVO": "Path traversal sur /files \u2014 les 4 fichiers de flags/ se debloquent avec ../",
+ "CHARLIE": "RCE sur /cmd?c= \u2014 execute n'importe quelle commande, lis les flags",
+ "DELTA": "Upload + exploitation \u2014 les autres cibles de ton arsenal"
+}

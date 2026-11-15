@@ -1,0 +1,12 @@
+OBJET : ALERTE SECURITE - verification requise
+DE    : alerte@x.com
+
+Bonjour,
+
+Une connexion suspecte a ete detectee sur votre espace.
+Si ce n'etait pas vous, verifiez immediatement vos identifiants :
+
+  -> https://verification.banque.com/connexion
+
+Ce lien expire dans 24 heures.
+Service Securite - banque.com

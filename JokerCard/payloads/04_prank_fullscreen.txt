@@ -1,0 +1,9 @@
+REM JOKER CARD - prank plein ecran (sortie : taper JOKER)
+DELAY 2000
+GUI SPACE
+DELAY 800
+STRING Terminal
+ENTER
+DELAY 1200
+STRING open "https://example.com/prank.html"
+ENTER
