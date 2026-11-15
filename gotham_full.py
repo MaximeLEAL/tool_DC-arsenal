@@ -51,6 +51,7 @@ class H(http.server.BaseHTTPRequestHandler):
         if p.startswith("/face/"):                      return self._face(p)
         if p == "/api/status":                          return self._api_status()
         if p.startswith("/pages/"):                     return self._static(p[len("/pages/"):], PAGES)
+        if p.startswith("/gotham_static/"):             return self._static(p[len("/gotham_static/"):], os.path.join(TOOL_DC, "gotham_static"))
         if p.startswith("/kit/"):
             kid = p.split("/kit/")[1].split("?")[0]
             kit = KIT_BY_ID.get(kid)
