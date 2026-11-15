@@ -22,6 +22,7 @@ shutil.copytree(PAGES, SITE, dirs_exist_ok=True)
 shutil.copytree(FACES, os.path.join(SITE, "faces"))
 
 # 4. arsenal_dc.html (catalogue)
+os.system(f"python3 {os.path.join(ROOT, 'build_catalog.py')}")
 shutil.copy(os.path.join(ROOT, "arsenal_dc.html"), SITE)
 
 # 5. index : le template Gotham + cartes générées dynamiquement (comme le serveur)
