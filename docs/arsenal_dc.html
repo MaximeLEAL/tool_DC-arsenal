@@ -1,0 +1,1169 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<title>L'ARSENAL DC — 26 KITS · 155 TOOLS</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&display=swap');
+*{box-sizing:border-box;margin:0}
+body{background:#020208;color:#ccc;font-family:monospace;min-height:100vh}
+.hero{background:linear-gradient(180deg,#000,#0a0a14);text-align:center;padding:60px 20px 30px;
+border-bottom:3px solid #ffd60a;position:relative;overflow:hidden}
+.hero::before{content:'';position:absolute;inset:0;
+background:radial-gradient(ellipse at 50% 20%,rgba(255,214,10,.08),transparent 70%);animation:flicker 5s infinite}
+@keyframes flicker{0%,100%{opacity:1}97%{opacity:1}98%{opacity:.5}99%{opacity:1}}
+.hero h1{font-family:'Orbitron',monospace;font-size:3.2em;color:#ffd60a;letter-spacing:4px;
+text-shadow:0 0 30px rgba(255,214,10,.4)}
+.hero h1 b{color:#ff4628}
+.hero .sub{color:#666;font-size:.9em;letter-spacing:6px;margin-top:8px}
+.hero .stats{display:flex;gap:12px;justify-content:center;margin-top:16px;flex-wrap:wrap}
+.hero .stat{background:#0a0a14;border:1px solid #2a2a3a;padding:8px 20px;border-radius:8px}
+.hero .stat b{color:#ffd60a;font-size:1.3em}
+.search-bar{text-align:center;padding:16px;position:sticky;top:0;z-index:100;
+background:#020208ee;backdrop-filter:blur(8px);border-bottom:1px solid #1a1a2a}
+.search-bar input{background:#0a0a14;border:1px solid #333;color:#ddd;padding:12px 24px;
+border-radius:24px;width:min(500px,90%);font-size:1em;font-family:monospace}
+#container{max-width:1200px;margin:0 auto;padding:20px}
+.kit{background:#0a0a14;border:1px solid #1a1a2a;border-radius:12px;margin:16px 0;
+border-left:4px solid var(--c);overflow:hidden}
+.kit-header{display:flex;align-items:center;gap:12px;padding:16px 20px;
+background:linear-gradient(90deg,"var(--c)11",transparent);cursor:pointer}
+.kit-header:hover{background:rgba(255,255,255,.03)}
+.kit-icon{font-size:2em}
+.kit-name{font-family:'Orbitron',monospace;font-size:1.15em;color:var(--c);font-weight:700}
+.kit-desc{display:block;color:#666;font-size:.8em;margin-top:2px}
+.kit-count{margin-left:auto;background:var(--c);color:#000;border-radius:12px;
+padding:3px 12px;font-size:.8em;font-weight:bold}
+.kit-cmd{padding:8px 20px;background:#000;border-top:1px solid #111}
+.kit-cmd code{color:#39ff14;font-size:.82em;background:none}
+.kit-tools{padding:8px 20px 16px}
+.tool{display:grid;grid-template-columns:36px 1fr 140px 1fr;gap:12px;padding:7px 10px;
+border-bottom:1px solid #111;border-radius:4px;align-items:center}
+.tool:hover{background:#0d0d1a;border-bottom-color:#222}
+.tnum{color:var(--c);font-weight:bold;text-align:center}
+.tname{color:#e7e9ea;font-weight:600;font-size:.92em}
+.ttheme{color:#6495ff;font-size:.82em}
+.tdesc{color:#777;font-size:.82em}
+@media(max-width:700px){.tool{grid-template-columns:36px 1fr}.ttheme,.tdesc{display:none}}
+</style></head><body>
+<div class="hero">
+  <h1>L'ARSENAL <b>DC</b></h1>
+  <div class="sub">26 KITS · 155 TOOLS · POWERED BY MAXIME LEAL</div>
+  <div class="stats">
+    <div class="stat"><b>26</b><span>KITS</span></div>
+    <div class="stat"><b>155</b><span>TOOLS</span></div>
+    <div class="stat"><b>16</b><span>PERSONNAGES DC</span></div>
+    <div class="stat"><b>~240</b><span>COMMANDS</span></div>
+  </div>
+</div>
+<div class="search-bar">
+  <input id="q" placeholder="🔍 rechercher un tool, un thème, une arme…" autocomplete="off">
+</div>
+<div id="container">
+        <div class="kit" id="kit01" style="--c:#00ff70">
+          <div class="kit-header">
+            <span class="kit-icon">🟢</span>
+            <div>
+              <span class="kit-name">RICKPORTAL</span>
+              <span class="kit-desc">portail vert · kit malware complet</span>
+            </div>
+            <span class="kit-count">10 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/RickPortal && ./RickPortal.command</code></div>
+          <div class="kit-tools"><div class="tool" data-q="MEESEEKS KEYLOGGER keylogger capture des frappes clavier, horodaté + fenêtre active".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">MEESEEKS KEYLOGGER</span>
+              <span class="ttheme">keylogger</span>
+              <span class="tdesc">capture des frappes clavier, horodaté + fenêtre active</span>
+            </div><div class="tool" data-q="PORTAL SHELL reverse shell contrôle total à distance, reconnexion auto 20 s".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">PORTAL SHELL</span>
+              <span class="ttheme">reverse shell</span>
+              <span class="tdesc">contrôle total à distance, reconnexion auto 20 s</span>
+            </div><div class="tool" data-q="SCHWIFTYCRYPT ransomware AES-256-CBC, fichiers .morty, mode decrypt inclus".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">SCHWIFTYCRYPT</span>
+              <span class="ttheme">ransomware</span>
+              <span class="tdesc">AES-256-CBC, fichiers .morty, mode decrypt inclus</span>
+            </div><div class="tool" data-q="CLIP HIJACK clipboard espionne le presse-papiers, remplace adresses crypto".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">CLIP HIJACK</span>
+              <span class="ttheme">clipboard</span>
+              <span class="tdesc">espionne le presse-papiers, remplace adresses crypto</span>
+            </div><div class="tool" data-q="PLUMBUS WORM worm USB propagation sur clés USB, autorun, fichiers cachés".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">PLUMBUS WORM</span>
+              <span class="ttheme">worm USB</span>
+              <span class="tdesc">propagation sur clés USB, autorun, fichiers cachés</span>
+            </div><div class="tool" data-q="CITADEL WORM worm LAN propagation réseau /24 via C$, creds faibles".toLowerCase()>
+              <span class="tnum">6</span>
+              <span class="tname">CITADEL WORM</span>
+              <span class="ttheme">worm LAN</span>
+              <span class="tdesc">propagation réseau /24 via C$, creds faibles</span>
+            </div><div class="tool" data-q="INTERDIM SCREENS screenspy captures d'écran GDI périodiques en BMP".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">INTERDIM SCREENS</span>
+              <span class="ttheme">screenspy</span>
+              <span class="tdesc">captures d'écran GDI périodiques en BMP</span>
+            </div><div class="tool" data-q="BLIPS & CHITZ CAM webcam snapshots webcam VFW périodiques".toLowerCase()>
+              <span class="tnum">8</span>
+              <span class="tname">BLIPS & CHITZ CAM</span>
+              <span class="ttheme">webcam</span>
+              <span class="tdesc">snapshots webcam VFW périodiques</span>
+            </div><div class="tool" data-q="PORTAL DROPPER dropper URL XOR-obfusquée, download+exec caché+persistance".toLowerCase()>
+              <span class="tnum">9</span>
+              <span class="tname">PORTAL DROPPER</span>
+              <span class="ttheme">dropper</span>
+              <span class="tdesc">URL XOR-obfusquée, download+exec caché+persistance</span>
+            </div><div class="tool" data-q="POOPYBUTTHOLE MIC micro enregistrement micro WAV 60 s en boucle".toLowerCase()>
+              <span class="tnum">0</span>
+              <span class="tname">POOPYBUTTHOLE MIC</span>
+              <span class="ttheme">micro</span>
+              <span class="tdesc">enregistrement micro WAV 60 s en boucle</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit02" style="--c:#ffd60a">
+          <div class="kit-header">
+            <span class="kit-icon">⚡</span>
+            <div>
+              <span class="kit-name">FLASH TOOL_SUPER</span>
+              <span class="kit-desc">éclair · 55 tools</span>
+            </div>
+            <span class="kit-count">25 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/FlashToolSuper && python3 flash_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="COMPILE KIT MAC build des 10 tools macOS | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">COMPILE KIT MAC</span>
+              <span class="ttheme">build des 10 tools macOS</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="DROPPER MAC génère le .command auto-extractant | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">DROPPER MAC</span>
+              <span class="ttheme">génère le .command auto-extractant</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="KEYLOGGER test capteur de frappes local | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">KEYLOGGER test</span>
+              <span class="ttheme">capteur de frappes local</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="SCHWIFTYCRYPT demo AES chiffre/déchiffre dossier leurre | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">SCHWIFTYCRYPT demo</span>
+              <span class="ttheme">AES chiffre/déchiffre dossier leurre</span>
+              <span class="tdesc">| 8</span>
+            </div><div class="tool" data-q="SCREENSPY 5s captures rapides pour test | 0".toLowerCase()>
+              <span class="tnum">9</span>
+              <span class="tname">SCREENSPY 5s</span>
+              <span class="ttheme">captures rapides pour test</span>
+              <span class="tdesc">| 0</span>
+            </div><div class="tool" data-q="USERNAME HUNT pseudo sur 20 réseaux | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">USERNAME HUNT</span>
+              <span class="ttheme">pseudo sur 20 réseaux</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="DNS ENUM A/AAAA/MX/NS/TXT | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">DNS ENUM</span>
+              <span class="ttheme">A/AAAA/MX/NS/TXT</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="GEOLOC IP ville, ASN, orga d'une IP | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">GEOLOC IP</span>
+              <span class="ttheme">ville, ASN, orga d'une IP</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="HTTP HEADERS technos exposées | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">HTTP HEADERS</span>
+              <span class="ttheme">technos exposées</span>
+              <span class="tdesc">| 8</span>
+            </div><div class="tool" data-q="WAYBACK historique d'archive | 0".toLowerCase()>
+              <span class="tnum">9</span>
+              <span class="tname">WAYBACK</span>
+              <span class="ttheme">historique d'archive</span>
+              <span class="tdesc">| 0</span>
+            </div><div class="tool" data-q="PING SWEEP /24 hôtes vivants du sous-réseau | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">PING SWEEP /24</span>
+              <span class="ttheme">hôtes vivants du sous-réseau</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="ARP TABLE voisins réseau et MAC | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">ARP TABLE</span>
+              <span class="ttheme">voisins réseau et MAC</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="TRACEROUTE chemin vers une cible | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">TRACEROUTE</span>
+              <span class="ttheme">chemin vers une cible</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="MA TABLE WIFI réseaux mémorisés | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">MA TABLE WIFI</span>
+              <span class="ttheme">réseaux mémorisés</span>
+              <span class="tdesc">| 8</span>
+            </div><div class="tool" data-q="ROUTE TABLE passerelles et routes | 0".toLowerCase()>
+              <span class="tnum">9</span>
+              <span class="tname">ROUTE TABLE</span>
+              <span class="ttheme">passerelles et routes</span>
+              <span class="tdesc">| 0</span>
+            </div><div class="tool" data-q="PRANK PLEIN ÉCRAN message invincible, combo secret pour sortir | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">PRANK PLEIN ÉCRAN</span>
+              <span class="ttheme">message invincible, combo secret pour sortir</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="DROPPER MAC USB installe le kit via terminal tapé | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">DROPPER MAC USB</span>
+              <span class="ttheme">installe le kit via terminal tapé</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="WIFI GRAB WIN exporte les clés wifi sur clé USB | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">WIFI GRAB WIN</span>
+              <span class="ttheme">exporte les clés wifi sur clé USB</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="MESSAGE SPAMMER popups en boucle | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">MESSAGE SPAMMER</span>
+              <span class="ttheme">popups en boucle</span>
+              <span class="tdesc">| 8</span>
+            </div><div class="tool" data-q="PAGE LOGIN DEMO page de capture (lab autorisé) | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">PAGE LOGIN DEMO</span>
+              <span class="ttheme">page de capture (lab autorisé)</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="PRETEXTES EMAIL 3 modèles d'emails d'ingénierie | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">PRETEXTES EMAIL</span>
+              <span class="ttheme">3 modèles d'emails d'ingénierie</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="DORK GENERATOR dorks ciblés sur un domaine ### Page 6 — SYSTÈME".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">DORK GENERATOR</span>
+              <span class="ttheme">dorks ciblés sur un domaine</span>
+              <span class="tdesc">### Page 6 — SYSTÈME</span>
+            </div><div class="tool" data-q="CLÉS WIFI MÉMORISÉES passphrase des réseaux connus | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">CLÉS WIFI MÉMORISÉES</span>
+              <span class="ttheme">passphrase des réseaux connus</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="LAUNCHAGENTS persistance présente | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">LAUNCHAGENTS</span>
+              <span class="ttheme">persistance présente</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="DISQUE usage des volumes | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">DISQUE</span>
+              <span class="ttheme">usage des volumes</span>
+              <span class="tdesc">| 6</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit03" style="--c:#ffd60a">
+          <div class="kit-header">
+            <span class="kit-icon">🦇</span>
+            <div>
+              <span class="kit-name">BATCAVE</span>
+              <span class="kit-desc">chauve-souris · 31 tools</span>
+            </div>
+            <span class="kit-count">16 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/BatCave && python3 bat_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="ANALYSE EMAIL headers : IP source, relais, SPF | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">ANALYSE EMAIL</span>
+              <span class="ttheme">headers : IP source, relais, SPF</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="STÉGANO CACHER message secret dans un PNG | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">STÉGANO CACHER</span>
+              <span class="ttheme">message secret dans un PNG</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="DOSSIER DOMAINE whois + DNS + MX en rapport | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">DOSSIER DOMAINE</span>
+              <span class="ttheme">whois + DNS + MX en rapport</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="COUTEAU SUISSE ENC base64 / hex / rot13 | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">COUTEAU SUISSE ENC</span>
+              <span class="ttheme">base64 / hex / rot13</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="CASSE-MD5 attaque dictionnaire md5/sha1 | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">CASSE-MD5</span>
+              <span class="ttheme">attaque dictionnaire md5/sha1</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="CHIFFRE CESAR rot-N interactif | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">CHIFFRE CESAR</span>
+              <span class="ttheme">rot-N interactif</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="TCPDUMP LIVE paquets en direct (sudo) | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">TCPDUMP LIVE</span>
+              <span class="ttheme">paquets en direct (sudo)</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="REJOUER UN PCAP analyse d'une capture | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">REJOUER UN PCAP</span>
+              <span class="ttheme">analyse d'une capture</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="GROS PARLEURS qui consomme le réseau ### Page DARK WEB".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">GROS PARLEURS</span>
+              <span class="ttheme">qui consomme le réseau</span>
+              <span class="tdesc">### Page DARK WEB</span>
+            </div><div class="tool" data-q="STATUS TOR tor actif ? IP de sortie ? | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">STATUS TOR</span>
+              <span class="ttheme">tor actif ? IP de sortie ?</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="FETCH ONION récupérer une page .onion | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">FETCH ONION</span>
+              <span class="ttheme">récupérer une page .onion</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="BATARANG KNOCK port knocking sur une cible | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">BATARANG KNOCK</span>
+              <span class="ttheme">port knocking sur une cible</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="FUMIGÈNE MAC usurper une adresse MAC | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">FUMIGÈNE MAC</span>
+              <span class="ttheme">usurper une adresse MAC</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="BATMOBILE SPEED test de débit réseau | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">BATMOBILE SPEED</span>
+              <span class="ttheme">test de débit réseau</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="BAT-SIGNAL WEB surveille un site, alerte au changement | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">BAT-SIGNAL WEB</span>
+              <span class="ttheme">surveille un site, alerte au changement</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="VEILLE PORTS alerte si un port s'ouvre | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">VEILLE PORTS</span>
+              <span class="ttheme">alerte si un port s'ouvre</span>
+              <span class="tdesc">| 4</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit04" style="--c:#9b30ff">
+          <div class="kit-header">
+            <span class="kit-icon">🃏</span>
+            <div>
+              <span class="kit-name">JOKER</span>
+              <span class="kit-desc">chaos · 8 pranks</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/JokerChaos && python3 joker_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="TEMPÊTE HAHA écran envahi de rires (Ctrl+C) | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">TEMPÊTE HAHA</span>
+              <span class="ttheme">écran envahi de rires (Ctrl+C)</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="POPUP ORAGE dialogues en rafale | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">POPUP ORAGE</span>
+              <span class="ttheme">dialogues en rafale</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="PRANK PLEIN ÉCRAN page invincible, sortie: JOKER | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">PRANK PLEIN ÉCRAN</span>
+              <span class="ttheme">page invincible, sortie: JOKER</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="VOLUME MAX volume à fond en boucle | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">VOLUME MAX</span>
+              <span class="ttheme">volume à fond en boucle</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit05" style="--c:#40e0d0">
+          <div class="kit-header">
+            <span class="kit-icon">🔱</span>
+            <div>
+              <span class="kit-name">AQUAMAN</span>
+              <span class="kit-desc">réseau · 8 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/TridentAquaman && python3 aquaman_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="MARÉES débit réseau graphique live RX/TX | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">MARÉES</span>
+              <span class="ttheme">débit réseau graphique live RX/TX</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="TRIDENT WOL wake-on-lan réel (magic packet) | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">TRIDENT WOL</span>
+              <span class="ttheme">wake-on-lan réel (magic packet)</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="REEF PORTS ports d'écoute par application | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">REEF PORTS</span>
+              <span class="ttheme">ports d'écoute par application</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="ABYSS SCAN scan profond de ports (threads) | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">ABYSS SCAN</span>
+              <span class="ttheme">scan profond de ports (threads)</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit06" style="--c:#ff4628">
+          <div class="kit-header">
+            <span class="kit-icon">🦸</span>
+            <div>
+              <span class="kit-name">SUPERMAN</span>
+              <span class="kit-desc">vision · 8 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/SupermanVision && python3 superman_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="RAYONS-X DISQUE plus gros / cachés / récents fichiers | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">RAYONS-X DISQUE</span>
+              <span class="ttheme">plus gros / cachés / récents fichiers</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="SOUFFLE GIVRANT geler un processus (réversible) | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">SOUFFLE GIVRANT</span>
+              <span class="ttheme">geler un processus (réversible)</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="KRYPTONITE DETECTOR détecte les IOCs des 20 kits | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">KRYPTONITE DETECTOR</span>
+              <span class="ttheme">détecte les IOCs des 20 kits</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="CHARGE SOLAIRE batterie et thermique | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">CHARGE SOLAIRE</span>
+              <span class="ttheme">batterie et thermique</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit07" style="--c:#90ff78">
+          <div class="kit-header">
+            <span class="kit-icon">🕯️</span>
+            <div>
+              <span class="kit-name">CONSTANTINE</span>
+              <span class="kit-desc">dark web · 10 tools</span>
+            </div>
+            <span class="kit-count">5 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/ConstantineDark && python3 constantine_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="STATUS TOR tor actif ? IP de sortie ? | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">STATUS TOR</span>
+              <span class="ttheme">tor actif ? IP de sortie ?</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="FETCH ONION récupérer une page .onion | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">FETCH ONION</span>
+              <span class="ttheme">récupérer une page .onion</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="RECHERCHE OMBRE moteur Ahmia → onions | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">RECHERCHE OMBRE</span>
+              <span class="ttheme">moteur Ahmia → onions</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="SIGNATURE OMBRE signer un message (RSA) | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">SIGNATURE OMBRE</span>
+              <span class="ttheme">signer un message (RSA)</span>
+              <span class="tdesc">| 8</span>
+            </div><div class="tool" data-q="MOTEUR DE FUITE email/pseudo sur 4 sources | 0".toLowerCase()>
+              <span class="tnum">9</span>
+              <span class="tname">MOTEUR DE FUITE</span>
+              <span class="ttheme">email/pseudo sur 4 sources</span>
+              <span class="tdesc">| 0</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit08" style="--c:#ffdc50">
+          <div class="kit-header">
+            <span class="kit-icon">🪢</span>
+            <div>
+              <span class="kit-name">LASSO VÉRITÉ</span>
+              <span class="kit-desc">vérification · 8 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/LassoVerite && python3 lasso_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="VÉRITÉ FICHIER hash + comparaison de référence | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">VÉRITÉ FICHIER</span>
+              <span class="ttheme">hash + comparaison de référence</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="VÉRITÉ EMAIL SPF/DKIM/DMARC d'un header | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">VÉRITÉ EMAIL</span>
+              <span class="ttheme">SPF/DKIM/DMARC d'un header</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="VÉRITÉ SITE HSTS/CSP : protections | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">VÉRITÉ SITE</span>
+              <span class="ttheme">HSTS/CSP : protections</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="VÉRITÉ PERSONNE consistance d'un pseudo | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">VÉRITÉ PERSONNE</span>
+              <span class="ttheme">consistance d'un pseudo</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit09" style="--c:#00c8ff">
+          <div class="kit-header">
+            <span class="kit-icon">🤖</span>
+            <div>
+              <span class="kit-name">CYBORG</span>
+              <span class="kit-desc">intégration · 8 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/CyborgTech && python3 cyborg_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="API STRIKE tester un endpoint REST | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">API STRIKE</span>
+              <span class="ttheme">tester un endpoint REST</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="JSON X-RAY valider + extraire du JSON | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">JSON X-RAY</span>
+              <span class="ttheme">valider + extraire du JSON</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="PORT GUARD veille : action quand un port s'ouvre | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">PORT GUARD</span>
+              <span class="ttheme">veille : action quand un port s'ouvre</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="AUTOMATON surveille un dossier, agit au changement | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">AUTOMATON</span>
+              <span class="ttheme">surveille un dossier, agit au changement</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit10" style="--c:#39ff14">
+          <div class="kit-header">
+            <span class="kit-icon">🏢</span>
+            <div>
+              <span class="kit-name">LEXCORP</span>
+              <span class="kit-desc">arsenal Windows · 7 modules</span>
+            </div>
+            <span class="kit-count">7 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/LexCorpIndustries && zsh verify_lex.zsh</code></div>
+          <div class="kit-tools"><div class="tool" data-q="LEX_INJECT_DLL injection VirtualAllocEx + CreateRemoteThread → LoadLibrary".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">LEX_INJECT_DLL</span>
+              <span class="ttheme">injection</span>
+              <span class="tdesc">VirtualAllocEx + CreateRemoteThread → LoadLibrary</span>
+            </div><div class="tool" data-q="LEX_HOLLOW process hollowing créer suspendu, démapper, écrire son PE".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">LEX_HOLLOW</span>
+              <span class="ttheme">process hollowing</span>
+              <span class="tdesc">créer suspendu, démapper, écrire son PE</span>
+            </div><div class="tool" data-q="LEX_APC APC injection shellcode dans un thread suspendu".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">LEX_APC</span>
+              <span class="ttheme">APC injection</span>
+              <span class="tdesc">shellcode dans un thread suspendu</span>
+            </div><div class="tool" data-q="LEX_RANSOM2 ransomware shadow copies supprimées + AES partiel + decrypt".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">LEX_RANSOM2</span>
+              <span class="ttheme">ransomware</span>
+              <span class="tdesc">shadow copies supprimées + AES partiel + decrypt</span>
+            </div><div class="tool" data-q="LEX_SMB_WORM worm SMB sweep /24 + drop + tâche distante".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">LEX_SMB_WORM</span>
+              <span class="ttheme">worm SMB</span>
+              <span class="tdesc">sweep /24 + drop + tâche distante</span>
+            </div><div class="tool" data-q="LEX_CRYPTER crypter packer RC4 → loader généré, strings xorées".toLowerCase()>
+              <span class="tnum">6</span>
+              <span class="tname">LEX_CRYPTER</span>
+              <span class="ttheme">crypter</span>
+              <span class="tdesc">packer RC4 → loader généré, strings xorées</span>
+            </div><div class="tool" data-q="LEX_TEST_DLL preuve DLL MessageBox à l'attach".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">LEX_TEST_DLL</span>
+              <span class="ttheme">preuve</span>
+              <span class="tdesc">DLL MessageBox à l'attach</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit11" style="--c:#00c8ff">
+          <div class="kit-header">
+            <span class="kit-icon">🔬</span>
+            <div>
+              <span class="kit-name">S.T.A.R. LABS</span>
+              <span class="kit-desc">C2 DNS + HTTP · 5 tools</span>
+            </div>
+            <span class="kit-count">5 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/STARLabs && python3 star_c2_server.py 8090</code></div>
+          <div class="kit-tools"><div class="tool" data-q="DNS C2 SERVER DNS tunneling commandes dans les réponses DNS (testé live ✓)".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">DNS C2 SERVER</span>
+              <span class="ttheme">DNS tunneling</span>
+              <span class="tdesc">commandes dans les réponses DNS (testé live ✓)</span>
+            </div><div class="tool" data-q="DNS C2 AGENT agent DNS reçoit les commandes par DNS, exécute".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">DNS C2 AGENT</span>
+              <span class="ttheme">agent DNS</span>
+              <span class="tdesc">reçoit les commandes par DNS, exécute</span>
+            </div><div class="tool" data-q="C2 FRAMEWORK HTTP C2 multi-agents, push par URL, jitter (testé ✓)".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">C2 FRAMEWORK</span>
+              <span class="ttheme">HTTP C2</span>
+              <span class="tdesc">multi-agents, push par URL, jitter (testé ✓)</span>
+            </div><div class="tool" data-q="INFOSTEALER infostealer scan 3 navigateurs, export RC4 chiffré".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">INFOSTEALER</span>
+              <span class="ttheme">infostealer</span>
+              <span class="tdesc">scan 3 navigateurs, export RC4 chiffré</span>
+            </div><div class="tool" data-q="EVASION anti-analysis PT_DENY_ATTACH + strings xor + exec mémoire W^X".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">EVASION</span>
+              <span class="ttheme">anti-analysis</span>
+              <span class="tdesc">PT_DENY_ATTACH + strings xor + exec mémoire W^X</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit12" style="--c:#ff6a00">
+          <div class="kit-header">
+            <span class="kit-icon">🎯</span>
+            <div>
+              <span class="kit-name">TASK FORCE X</span>
+              <span class="kit-desc">déploiement · 2 tools</span>
+            </div>
+            <span class="kit-count">2 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/TaskForceX && python3 taskforce_ssh_worm.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="SSH WORM propagation known_hosts + ARP → authorized_keys injection".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">SSH WORM</span>
+              <span class="ttheme">propagation</span>
+              <span class="tdesc">known_hosts + ARP → authorized_keys injection</span>
+            </div><div class="tool" data-q="MODULE ANDROID APK LexService : C2 check-in, START_STICKY, boot receiver".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">MODULE ANDROID</span>
+              <span class="ttheme">APK</span>
+              <span class="tdesc">LexService : C2 check-in, START_STICKY, boot receiver</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit13" style="--c:#00ff70">
+          <div class="kit-header">
+            <span class="kit-icon">💊</span>
+            <div>
+              <span class="kit-name">NEO / LA MATRICE</span>
+              <span class="kit-desc">10 tools</span>
+            </div>
+            <span class="kit-count">5 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/NeoMatrix && python3 neo_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="SOURCE VISION flux du système en direct | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">SOURCE VISION</span>
+              <span class="ttheme">flux du système en direct</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="CONSTRUCT LOADER payload C2 paramétré généré | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">CONSTRUCT LOADER</span>
+              <span class="ttheme">payload C2 paramétré généré</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="ZION UPLINK test de liaison avec le C2 | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">ZION UPLINK</span>
+              <span class="ttheme">test de liaison avec le C2</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="TRACE DESTROY efface l'historique terminal | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">TRACE DESTROY</span>
+              <span class="ttheme">efface l'historique terminal</span>
+              <span class="tdesc">| 8</span>
+            </div><div class="tool" data-q="THE ORACLE un message qui tombe juste | 0".toLowerCase()>
+              <span class="tnum">9</span>
+              <span class="tname">THE ORACLE</span>
+              <span class="ttheme">un message qui tombe juste</span>
+              <span class="tdesc">| 0</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit14" style="--c:#ffd60a">
+          <div class="kit-header">
+            <span class="kit-icon">🌟</span>
+            <div>
+              <span class="kit-name">LA FORCE</span>
+              <span class="kit-desc">8 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/ForceGalaxy && python3 force_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="HOLOCRON archive totale de la machine | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">HOLOCRON</span>
+              <span class="ttheme">archive totale de la machine</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="FORCE CHOKE figer/libérer un processus | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">FORCE CHOKE</span>
+              <span class="ttheme">figer/libérer un processus</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="DEATH STAR TARGETING triple tir sur host:port | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">DEATH STAR TARGETING</span>
+              <span class="ttheme">triple tir sur host:port</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="KYBER CRYSTAL 3 clés AES dérivées (PBKDF2) | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">KYBER CRYSTAL</span>
+              <span class="ttheme">3 clés AES dérivées (PBKDF2)</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit15" style="--c:#ffdc50">
+          <div class="kit-header">
+            <span class="kit-icon">🐱</span>
+            <div>
+              <span class="kit-name">CATWOMAN</span>
+              <span class="kit-desc">secrets · 8 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/CatwomanVoleuse && python3 catwoman_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="WIFI KEYS clés wifi du trousseau | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">WIFI KEYS</span>
+              <span class="ttheme">clés wifi du trousseau</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="KEYCHAIN AUDIT objets du trousseau système | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">KEYCHAIN AUDIT</span>
+              <span class="ttheme">objets du trousseau système</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="SECRETS SCAN API keys/tokens dans les fichiers | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">SECRETS SCAN</span>
+              <span class="ttheme">API keys/tokens dans les fichiers</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="DPAPI WINDOWS extracteur réel Chrome (CryptUnprotectData) | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">DPAPI WINDOWS</span>
+              <span class="ttheme">extracteur réel Chrome (CryptUnprotectData)</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit16" style="--c:#ffc800">
+          <div class="kit-header">
+            <span class="kit-icon">🍯</span>
+            <div>
+              <span class="kit-name">H.I.V.E.</span>
+              <span class="kit-desc">minage · 8 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/HiveMining && python3 ruche_tool.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="POW MINER minage PoW réel SHA-256 (1,95 Mh/s vérifié) | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">POW MINER</span>
+              <span class="ttheme">minage PoW réel SHA-256 (1,95 Mh/s vérifié)</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="CRYPTOJACKER payload discret X% CPU + LaunchAgent | 4".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">CRYPTOJACKER</span>
+              <span class="ttheme">payload discret X% CPU + LaunchAgent</span>
+              <span class="tdesc">| 4</span>
+            </div><div class="tool" data-q="MINER HUNTER détecte les mineurs étrangers | 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">MINER HUNTER</span>
+              <span class="ttheme">détecte les mineurs étrangers</span>
+              <span class="tdesc">| 6</span>
+            </div><div class="tool" data-q="BOT FACTORY scripts de déploiement par machine | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">BOT FACTORY</span>
+              <span class="ttheme">scripts de déploiement par machine</span>
+              <span class="tdesc">| 8</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit17" style="--c:#ff8c30">
+          <div class="kit-header">
+            <span class="kit-icon">🎃</span>
+            <div>
+              <span class="kit-name">SCARECROW</span>
+              <span class="kit-desc">phishing · 12 sites</span>
+            </div>
+            <span class="kit-count">6 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/ScarecrowPhish && python3 epouvanteur.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="MICROSOFT MIROIR phishing pixel-perfect le vrai login MS reflété, capture pendant la frappe".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">MICROSOFT MIROIR</span>
+              <span class="ttheme">phishing pixel-perfect</span>
+              <span class="tdesc">le vrai login MS reflété, capture pendant la frappe</span>
+            </div><div class="tool" data-q="TRICK FORGE 12 sites gmail, facebook, instagram, twitter, linkedin, netflix, paypal, steam, github, snapchat, tiktok, outlook".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">TRICK FORGE</span>
+              <span class="ttheme">12 sites</span>
+              <span class="tdesc">gmail, facebook, instagram, twitter, linkedin, netflix, paypal, steam, github, snapchat, tiktok, outlook</span>
+            </div><div class="tool" data-q="LIEN PUBLIC tunnel cloudflare lien utilisable de partout".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">LIEN PUBLIC</span>
+              <span class="ttheme">tunnel cloudflare</span>
+              <span class="tdesc">lien utilisable de partout</span>
+            </div><div class="tool" data-q="CAPTURES harvest identifiants + IP + UA → captures.json (testé ✓)".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">CAPTURES</span>
+              <span class="ttheme">harvest</span>
+              <span class="tdesc">identifiants + IP + UA → captures.json (testé ✓)</span>
+            </div><div class="tool" data-q="OEIL viewer vue live des captures (rafraîchi 1,5 s)".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">OEIL</span>
+              <span class="ttheme">viewer</span>
+              <span class="tdesc">vue live des captures (rafraîchi 1,5 s)</span>
+            </div><div class="tool" data-q="MIRROR PROXY multi-domaines proxy inverse du vrai flux MS multi-étapes (v2)".toLowerCase()>
+              <span class="tnum">6</span>
+              <span class="tname">MIRROR PROXY</span>
+              <span class="ttheme">multi-domaines</span>
+              <span class="tdesc">proxy inverse du vrai flux MS multi-étapes (v2)</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit18" style="--c:#ff4628">
+          <div class="kit-header">
+            <span class="kit-icon">⚔️</span>
+            <div>
+              <span class="kit-name">WARWORLD</span>
+              <span class="kit-desc">arsenal · 110 armes / 16 thèmes</span>
+            </div>
+            <span class="kit-count">10 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/WarWorld && python3 warworld_cmd.py</code></div>
+          <div class="kit-tools"><div class="tool" data-q="RECONNAISSANCE 6 | 2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">RECONNAISSANCE</span>
+              <span class="ttheme">6</span>
+              <span class="tdesc">| 2</span>
+            </div><div class="tool" data-q="| 3 RÉSEAU & INFRA 6".toLowerCase()>
+              <span class="tnum">6</span>
+              <span class="tname">| 3</span>
+              <span class="ttheme">RÉSEAU & INFRA</span>
+              <span class="tdesc">6</span>
+            </div><div class="tool" data-q="MALWARE & RANSOMWARE 7 | 5".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">MALWARE & RANSOMWARE</span>
+              <span class="ttheme">7</span>
+              <span class="tdesc">| 5</span>
+            </div><div class="tool" data-q="| 6 WIRELESS & RF 6".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">| 6</span>
+              <span class="ttheme">WIRELESS & RF</span>
+              <span class="tdesc">6</span>
+            </div><div class="tool" data-q="HARDWARE & BADUSB 10 | 8".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">HARDWARE & BADUSB</span>
+              <span class="ttheme">10</span>
+              <span class="tdesc">| 8</span>
+            </div><div class="tool" data-q="| 9 CLOUD 4".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">| 9</span>
+              <span class="ttheme">CLOUD</span>
+              <span class="tdesc">4</span>
+            </div><div class="tool" data-q="DÉTECTION & DFIR 6 | 11".toLowerCase()>
+              <span class="tnum">10</span>
+              <span class="tname">DÉTECTION & DFIR</span>
+              <span class="ttheme">6</span>
+              <span class="tdesc">| 11</span>
+            </div><div class="tool" data-q="| 12 POSTURE & C2 5".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">| 12</span>
+              <span class="ttheme">POSTURE & C2</span>
+              <span class="tdesc">5</span>
+            </div><div class="tool" data-q="OPEN-SOURCE & GITHUB 13 | 14".toLowerCase()>
+              <span class="tnum">13</span>
+              <span class="tname">OPEN-SOURCE & GITHUB</span>
+              <span class="ttheme">13</span>
+              <span class="tdesc">| 14</span>
+            </div><div class="tool" data-q="| 15 RESSOURCES FERMÉES 7".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">| 15</span>
+              <span class="ttheme">RESSOURCES FERMÉES</span>
+              <span class="tdesc">7</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit19" style="--c:#c9a600">
+          <div class="kit-header">
+            <span class="kit-icon">🥷</span>
+            <div>
+              <span class="kit-name">LIGNE ROUGE</span>
+              <span class="kit-desc">orchestrateur · 3 commands</span>
+            </div>
+            <span class="kit-count">3 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/LeagueOfShadows && python3 league.py plan <nom> [site]</code></div>
+          <div class="kit-tools"><div class="tool" data-q="plan orchestration planifie la campagne en 4 steps (PHISHING → DROPPER → C2 → SURVEILLANCE)".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">plan</span>
+              <span class="ttheme">orchestration</span>
+              <span class="tdesc">planifie la campagne en 4 steps (PHISHING → DROPPER → C2 → SURVEILLANCE)</span>
+            </div><div class="tool" data-q="run exécution lance tout : phishing + dropper + C2 + surveillance live (captures/sessions/10s)".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">run</span>
+              <span class="ttheme">exécution</span>
+              <span class="tdesc">lance tout : phishing + dropper + C2 + surveillance live (captures/sessions/10s)</span>
+            </div><div class="tool" data-q="report documentation RAPPORT.md avec captures (IP+creds), sessions, recommandations".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">report</span>
+              <span class="ttheme">documentation</span>
+              <span class="tdesc">RAPPORT.md avec captures (IP+creds), sessions, recommandations</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit20" style="--c:#39ff14">
+          <div class="kit-header">
+            <span class="kit-icon">🟩</span>
+            <div>
+              <span class="kit-name">KRYPTONITE SUITE</span>
+              <span class="kit-desc">défense · 4 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/KryptoniteSuite && python3 kryptonite.py scan</code></div>
+          <div class="kit-tools"><div class="tool" data-q="scan détection machine vs IOCs des 20 kits (chemins, fichiers, process, ports)".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">scan</span>
+              <span class="ttheme">détection</span>
+              <span class="tdesc">machine vs IOCs des 20 kits (chemins, fichiers, process, ports)</span>
+            </div><div class="tool" data-q="sigma détection 8 règles Sigma par kit → import Elastic/Splunk (testé ✓)".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">sigma</span>
+              <span class="ttheme">détection</span>
+              <span class="tdesc">8 règles Sigma par kit → import Elastic/Splunk (testé ✓)</span>
+            </div><div class="tool" data-q="yara détection 5 règles YARA sur les strings d'agents (testé ✓)".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">yara</span>
+              <span class="ttheme">détection</span>
+              <span class="tdesc">5 règles YARA sur les strings d'agents (testé ✓)</span>
+            </div><div class="tool" data-q="catalog référence le JSON des IOCs complets des 20 kits".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">catalog</span>
+              <span class="ttheme">référence</span>
+              <span class="tdesc">le JSON des IOCs complets des 20 kits</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit21" style="--c:#7fff00">
+          <div class="kit-header">
+            <span class="kit-icon">🎮</span>
+            <div>
+              <span class="kit-name">W.O.P.R.</span>
+              <span class="kit-desc">auto-lab WarGames · 4 commands</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/WOPR && python3 wopr.py play</code></div>
+          <div class="kit-tools"><div class="tool" data-q="play intro morpion + SHALL WE PLAY A GAME? tapé lettre par lettre".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">play</span>
+              <span class="ttheme">intro</span>
+              <span class="tdesc">morpion + SHALL WE PLAY A GAME? tapé lettre par lettre</span>
+            </div><div class="tool" data-q="build lab cible vulnérable :8090 (SQLi/traversal/RCE) + 4 flags + missions".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">build</span>
+              <span class="ttheme">lab</span>
+              <span class="tdesc">cible vulnérable :8090 (SQLi/traversal/RCE) + 4 flags + missions</span>
+            </div><div class="tool" data-q="serve CTF cible + scoreboard :8091 — POST /submit?f=FLAG{...} (testé ✓)".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">serve</span>
+              <span class="ttheme">CTF</span>
+              <span class="tdesc">cible + scoreboard :8091 — POST /submit?f=FLAG{...} (testé ✓)</span>
+            </div><div class="tool" data-q="destroy nettoyage efface le lab complètement".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">destroy</span>
+              <span class="ttheme">nettoyage</span>
+              <span class="tdesc">efface le lab complètement</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit22" style="--c:#00c8ff">
+          <div class="kit-header">
+            <span class="kit-icon">📊</span>
+            <div>
+              <span class="kit-name">THE CALCULATOR</span>
+              <span class="kit-desc">breach analytics · 2 tools</span>
+            </div>
+            <span class="kit-count">2 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/TheCalculator && python3 calculator.py serve 8094</code></div>
+          <div class="kit-tools"><div class="tool" data-q="stats analyse par secteur (Internet 3,59Md · Social 2,0Md), par année, top 8".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">stats</span>
+              <span class="ttheme">analyse</span>
+              <span class="tdesc">par secteur (Internet 3,59Md · Social 2,0Md), par année, top 8</span>
+            </div><div class="tool" data-q="serve web barres par secteur + timeline des 23 breaches (2004→2026)".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">serve</span>
+              <span class="ttheme">web</span>
+              <span class="tdesc">barres par secteur + timeline des 23 breaches (2004→2026)</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit23" style="--c:#8899ff">
+          <div class="kit-header">
+            <span class="kit-icon">🐦‍⬛</span>
+            <div>
+              <span class="kit-name">RAVEN</span>
+              <span class="kit-desc">évasion EDR · 5 modules</span>
+            </div>
+            <span class="kit-count">5 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/RavenEvasion && zsh verify_raven.zsh</code></div>
+          <div class="kit-tools"><div class="tool" data-q="SYSCALLS DIRECT Hell's Gate SSN depuis ntdll disque, stubs syscall en mémoire".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">SYSCALLS DIRECT</span>
+              <span class="ttheme">Hell's Gate</span>
+              <span class="tdesc">SSN depuis ntdll disque, stubs syscall en mémoire</span>
+            </div><div class="tool" data-q="UNHOOK NTDLL unhooking restaure ntdll au code original Microsoft".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">UNHOOK NTDLL</span>
+              <span class="ttheme">unhooking</span>
+              <span class="tdesc">restaure ntdll au code original Microsoft</span>
+            </div><div class="tool" data-q="ETW + AMSI télémétrie EtwEventWrite ← ret · AmsiScanBuffer ← CLEAN".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">ETW + AMSI</span>
+              <span class="ttheme">télémétrie</span>
+              <span class="tdesc">EtwEventWrite ← ret · AmsiScanBuffer ← CLEAN</span>
+            </div><div class="tool" data-q="SLEEP OBFUSCATION mémoire pages chiffrées pendant le repos, RX à l'exécution".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">SLEEP OBFUSCATION</span>
+              <span class="ttheme">mémoire</span>
+              <span class="tdesc">pages chiffrées pendant le repos, RX à l'exécution</span>
+            </div><div class="tool" data-q="STACK SPOOFING call stack chaîne de retour remplacée par CreateFileA".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">STACK SPOOFING</span>
+              <span class="ttheme">call stack</span>
+              <span class="tdesc">chaîne de retour remplacée par CreateFileA</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit24" style="--c:#9b30ff">
+          <div class="kit-header">
+            <span class="kit-icon">🧠</span>
+            <div>
+              <span class="kit-name">THE THINKER</span>
+              <span class="kit-desc">reverse engineering · 8 commands</span>
+            </div>
+            <span class="kit-count">8 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/TheThinker && python3 thinker.py arsenal</code></div>
+          <div class="kit-tools"><div class="tool" data-q="analyze fiche type, headers r2, sections, imports, test UPX".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">analyze</span>
+              <span class="ttheme">fiche</span>
+              <span class="tdesc">type, headers r2, sections, imports, test UPX</span>
+            </div><div class="tool" data-q="strings strings URLs, IPs, chemins, mots chauds filtrés".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">strings</span>
+              <span class="ttheme">strings</span>
+              <span class="tdesc">URLs, IPs, chemins, mots chauds filtrés</span>
+            </div><div class="tool" data-q="imports imports DLL/fonctions (PE via objdump) ou nm/otool (Mach-O)".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">imports</span>
+              <span class="ttheme">imports</span>
+              <span class="tdesc">DLL/fonctions (PE via objdump) ou nm/otool (Mach-O)</span>
+            </div><div class="tool" data-q="unpack dépack dépacke UPX → .unpacked".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">unpack</span>
+              <span class="ttheme">dépack</span>
+              <span class="tdesc">dépacke UPX → .unpacked</span>
+            </div><div class="tool" data-q="r2 radare2 passthrough (aaa, afl, pdf main, iz…)".toLowerCase()>
+              <span class="tnum">5</span>
+              <span class="tname">r2</span>
+              <span class="ttheme">radare2</span>
+              <span class="tdesc">passthrough (aaa, afl, pdf main, iz…)</span>
+            </div><div class="tool" data-q="watch dynamique fichiers ouverts d'un process en live".toLowerCase()>
+              <span class="tnum">6</span>
+              <span class="tname">watch</span>
+              <span class="ttheme">dynamique</span>
+              <span class="tdesc">fichiers ouverts d'un process en live</span>
+            </div><div class="tool" data-q="diff versioning diff de strings entre 2 builds".toLowerCase()>
+              <span class="tnum">7</span>
+              <span class="tname">diff</span>
+              <span class="ttheme">versioning</span>
+              <span class="tdesc">diff de strings entre 2 builds</span>
+            </div><div class="tool" data-q="arsenal référence Ghidra (NSA), radare2, x64dbg, FLARE-VM, Capstone, IDA…".toLowerCase()>
+              <span class="tnum">8</span>
+              <span class="tname">arsenal</span>
+              <span class="ttheme">référence</span>
+              <span class="tdesc">Ghidra (NSA), radare2, x64dbg, FLARE-VM, Capstone, IDA…</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit25" style="--c:#ff6a00">
+          <div class="kit-header">
+            <span class="kit-icon">🂡</span>
+            <div>
+              <span class="kit-name">JOKER CARD</span>
+              <span class="kit-desc">SGP Card · BadUSB · 4 tools</span>
+            </div>
+            <span class="kit-count">4 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/JokerCard && python3 joker_forge.py <c2></code></div>
+          <div class="kit-tools"><div class="tool" data-q="JOKER FORGE payloads cuit les 5 payloads BadUSB avec ton C2".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">JOKER FORGE</span>
+              <span class="ttheme">payloads</span>
+              <span class="tdesc">cuit les 5 payloads BadUSB avec ton C2</span>
+            </div><div class="tool" data-q="FIRMWARE Ducky-lite interpréteur autonome (LED + buzzer + SW4 relance)".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">FIRMWARE</span>
+              <span class="ttheme">Ducky-lite</span>
+              <span class="tdesc">interpréteur autonome (LED + buzzer + SW4 relance)</span>
+            </div><div class="tool" data-q="WEB UI Payload Manager éditeur + save LittleFS + run HID à distance".toLowerCase()>
+              <span class="tnum">3</span>
+              <span class="tname">WEB UI</span>
+              <span class="ttheme">Payload Manager</span>
+              <span class="tdesc">éditeur + save LittleFS + run HID à distance</span>
+            </div><div class="tool" data-q="RAPPORT audit RAPPORT_SGP_JOKER.md (architecture complète)".toLowerCase()>
+              <span class="tnum">4</span>
+              <span class="tname">RAPPORT</span>
+              <span class="ttheme">audit</span>
+              <span class="tdesc">RAPPORT_SGP_JOKER.md (architecture complète)</span>
+            </div></div>
+        </div>
+        <div class="kit" id="kit26" style="--c:#64a0ff">
+          <div class="kit-header">
+            <span class="kit-icon">📰</span>
+            <div>
+              <span class="kit-name">DAILY PLANET</span>
+              <span class="kit-desc">veille · 25 sources · 2 tools</span>
+            </div>
+            <span class="kit-count">2 tools</span>
+          </div>
+          <div class="kit-cmd"><code>cd ~/Desktop/tool_DC/DailyPlanet && python3 veille.py serve 8088</code></div>
+          <div class="kit-tools"><div class="tool" data-q="serve web journal 644 actus / 25 sources / filtres CYBER-TECH-JURIDIQUE / recherche".toLowerCase()>
+              <span class="tnum">1</span>
+              <span class="tname">serve</span>
+              <span class="ttheme">web journal</span>
+              <span class="tdesc">644 actus / 25 sources / filtres CYBER-TECH-JURIDIQUE / recherche</span>
+            </div><div class="tool" data-q="top terminal les N dernières colorées par catégorie".toLowerCase()>
+              <span class="tnum">2</span>
+              <span class="tname">top</span>
+              <span class="ttheme">terminal</span>
+              <span class="tdesc">les N dernières colorées par catégorie</span>
+            </div></div>
+        </div></div>
+<script>
+document.getElementById('q').addEventListener('input', function() {
+  const q = this.value.toLowerCase();
+  document.querySelectorAll('.kit').forEach(function(kit) {
+    let visible = false;
+    kit.querySelectorAll('.tool').forEach(function(tool) {
+      const match = tool.dataset.q.includes(q);
+      tool.style.display = match ? '' : 'none';
+      if (match) visible = true;
+    });
+    kit.style.display = visible || !q ? '' : 'none';
+  });
+});
+document.querySelectorAll('.kit-header').forEach(function(h) {
+  h.onclick = function() {
+    const tools = h.parentElement.querySelector('.kit-tools');
+    const cmd = h.parentElement.querySelector('.kit-cmd');
+    const open = tools.style.display !== 'none';
+    tools.style.display = open ? 'none' : '';
+    cmd.style.display = open ? 'none' : '';
+  };
+});
+</script></body></html>
