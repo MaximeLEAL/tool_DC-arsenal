@@ -38,6 +38,7 @@ KITS = [
     (24, "TheThinker",        "THE THINKER",      "#9b30ff", "🧠", "thinker_face.jpg"),
     (25, "JokerCard",         "JOKER CARD",       "#ff6a00", "🂡", "jokercard_face.jpg"),
     (26, "DailyPlanet",       "DAILY PLANET",     "#64a0ff", "📰", "dailyplanet_face.jpg"),
+    (27, "BatWeb",            "BATWEB",           "#4ad66d", "🕸️", None),
 ]
 FACES_REL = "../../gotham_static/faces/"
 
@@ -293,6 +294,18 @@ THEMES = {
         "how": ["Les agents font un check-in périodique.",
                 "Les tâches sont poussées, les résultats remontent.",
                 "Console web + canal DNS pour passer les filtres."]},
+    "forensics web": {"role": "L'analyse d'headers détermine si un email est authentique ou usurpé, sans l'ouvrir.",
+        "how": ["SPF vérifie que le serveur émetteur est autorisé pour le domaine.",
+                "DKIM prouve la signature du message, DMARC aligne le domaine affiché.",
+                "La chaîne Received retrace chaque relais depuis l'expéditeur."]},
+    "stégano studio": {"role": "Le studio stégano cache un message dans une image directement depuis le navigateur.",
+        "how": ["Le message est écrit dans le bit de poids faible de chaque canal RGB.",
+                "L'image résultante est visuellement identique à l'originale.",
+                "Un mot de passe dérive un flux SHA-256 qui chiffre le payload."]},
+    "carte réseau": {"role": "La carte réseau révèle en temps réel les appareils connectés à ton wifi.",
+        "how": ["La table ARP (ou un ping sweep) découvre les hôtes vivants.",
+                "Le graphe se rafraîchit toutes les 10 secondes.",
+                "Tout nouvel appareil apparaît en orange avec une alerte."]},
     "prank": {"role": "Un prank est une farce visuelle inoffensive, sans aucune action système.",
         "how": ["Animation plein écran ou notification.",
                 "Aucun fichier écrit, aucune persistance.",

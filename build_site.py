@@ -46,6 +46,9 @@ for dirpath, _, files in os.walk(SITE):
             n += 1
 print(f"{n} pages corrigées")
 
+# 7. snapshot du journal Daily Planet (statique, fraîchit à chaque build)
+os.system(f"python3 {os.path.join(ROOT, 'build_news_snapshot.py')}")
+
 # 7. stats
 kits = [d for d in os.listdir(SITE) if os.path.isdir(os.path.join(SITE, d)) and d != "faces"]
 tools = sum(len([f for f in os.listdir(os.path.join(SITE, k)) if f.endswith(".html") and f != "index.html"]) for k in kits)

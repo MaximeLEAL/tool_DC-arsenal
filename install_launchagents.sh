@@ -14,7 +14,7 @@ mkdir -p "$LOGS"
 
 # ── 0. miroir runtime (hors Desktop, accessible aux LaunchAgents) ─
 mkdir -p "$RUN/DailyPlanet" "$RUN/gotham_static" "$RUN/arsenal_pages_data"
-cp "$DC/gotham_full.py" "$RUN/"
+cp "$DC/gotham_full.py" "$DC/batweb.py" "$RUN/" 2>/dev/null || true
 cp "$DC/arsenal_dc.html" "$RUN/" 2>/dev/null || true
 mkdir -p "$RUN/design_preview"
 cp "$DC/design_preview/page_principale.html" "$RUN/design_preview/" 2>/dev/null || true
@@ -26,7 +26,7 @@ cp "$DC/arsenal_pages_data/"*.json "$RUN/arsenal_pages_data/" 2>/dev/null || tru
 cat > "$LOGS/gotham_sync.sh" <<EOS
 #!/bin/bash
 mkdir -p "$RUN/gotham_static" "$RUN/arsenal_pages_data" "$RUN/DailyPlanet"
-cp "$DC/gotham_full.py" "$RUN/" 2>/dev/null
+cp "$DC/gotham_full.py" "$DC/batweb.py" "$RUN/" 2>/dev/null
 cp "$DC/arsenal_dc.html" "$RUN/" 2>/dev/null
 mkdir -p "$RUN/design_preview"
 cp "$DC/design_preview/page_principale.html" "$RUN/design_preview/" 2>/dev/null

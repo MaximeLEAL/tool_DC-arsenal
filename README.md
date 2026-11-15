@@ -2,7 +2,7 @@
 
 # 🦇 GOTHAM CITY — L'ARSENAL DC
 
-**26 kits · 245 outils · 1 interface web**
+**27 kits · 249 outils · 1 interface web**
 
 Un arsenal de cybersécurité complet, habillé aux couleurs de l'univers DC Comics.
 Développé de A à Z en Python — interface web embarquée, générateur de documentation
@@ -30,7 +30,7 @@ code source.
 | 🕸️ **Interface web** | serveur HTTP embarqué (Python stdlib, zéro dépendance), design custom : skyline animée, cartes 3D tilt au curseur, recherche live |
 | 📄 **Documentation générée** | un pipeline parse le catalogue (`liste_tool.md`) et génère 245 fiches + 26 pages de kits automatiquement |
 | 🌍 **Publication** | site statique sur GitHub Pages, reconstruit en une commande (`build_site.py`) |
-| 🖼️ **Pipeline d'images** | 26 visages de personnages DC téléchargés en HD (API DC Database + Wikipedia), recadrés au pixel près, optimisés web |
+| 🖼️ **Pipeline d'images** | 27 visages de personnages DC téléchargés en HD (API DC Database + Wikipedia), recadrés au pixel près, optimisés web |
 | 🔬 **Périmètre** | laboratoire isolé : machines perso, VMs, participants CTF uniquement |
 
 ## 🧩 Les 26 kits
@@ -62,7 +62,8 @@ code source.
 | 23 | 🐦‍⬛ Raven | évasion EDR : syscalls directs, unhooking, ETW/AMSI, sleep obfuscation |
 | 24 | 🧠 The Thinker | reverse engineering : analyse statique/dynamique, radare2 |
 | 25 | 🂡 Joker Card | BadUSB : payloads, firmware ducky-lite, gestionnaire web |
-| 26 | 📰 Daily Planet | veille : 25 sources, 644 actus, dashboard filtrable |
+| 26 | 📰 Daily Planet | veille : 25 sources, 644 actus, dashboard filtrable, digest 8h + push téléphone |
+| 27 | 🕸️ BatWeb | 3 apps web : forensics email, stégano studio, carte réseau vivante |
 
 ## 🚀 Démarrage
 
@@ -86,7 +87,8 @@ python3 build_site.py           # site complet → docs/ (publié sur GitHub Pag
 
 ```
 tool_DC/
-├── gotham_full.py            # serveur web embarqué (interface + API + statique)
+├── gotham_full.py            # serveur web embarqué (interface + API + statique + apps /app/)
+├── batweb.py                 # les 3 apps web : forensics email, stégano studio, carte réseau
 ├── generate_all_pages.py     # générateur des 245 fiches tools (parse liste_tool.md)
 ├── build_site.py             # build du site statique → docs/ → GitHub Pages
 ├── liste_tool.md             # LA source de vérité : catalogue des 26 kits
@@ -117,7 +119,7 @@ sa contre-mesure.
 
 <div align="center">
 
-**GOTHAM CITY · 26 KITS · 245 TOOLS** · *powered by Maxime Leal*
+**GOTHAM CITY · 27 KITS · 249 TOOLS** · *powered by Maxime Leal*
 
 [🌐 Site](https://maximeleal.github.io/tool_DC-arsenal/) · [📦 Code](https://github.com/MaximeLEAL/tool_DC-arsenal)
 

@@ -39,6 +39,7 @@ KITS = [
     {"id": "TheThinker",        "n": "THE THINKER",       "c": "#9b30ff", "f": "thinker_face.jpg",                "i": "🧠", "d": "Reverse engineering · 8 commands"},
     {"id": "JokerCard",         "n": "JOKER CARD",        "c": "#ff6a00", "f": "jokercard_face.jpg",                "i": "🂡", "d": "SGP Card · BadUSB · 4 tools"},
     {"id": "DailyPlanet",       "n": "DAILY PLANET",      "c": "#64a0ff", "f": "dailyplanet_face.jpg",                "i": "📰", "d": "Veille · 25 sources · 3 tools"},
+    {"id": "BatWeb",            "n": "BATWEB",            "c": "#4ad66d", "f": None,                "i": "🕸️", "d": "3 apps web · forensics · stégano · réseau"},
 ]
 KIT_BY_ID = {k["id"]: k for k in KITS}
 
