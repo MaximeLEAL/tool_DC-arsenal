@@ -14,20 +14,31 @@ CFG = os.path.join(ROOT, "notifs_config.json")
 def cfg():
     return load(CFG, {})
 
-def push_ntfy(title, message, link=None, tags="newspaper"):
-    """publie la notif sur ntfy.sh → reçue sur le téléphone (app ntfy abonnée au canal)"""
+def push_ntfy(title, message, link=None, tags="newspaper", image_data=None):
+    """publie sur ntfy.sh → reçue sur le téléphone. image_data = octets (attachment)"""
     topic = cfg().get("ntfy_topic")
     if not topic: return
     try:
-        req = urllib.request.Request(
-            f"https://ntfy.sh/{topic}",
-            data=message.encode("utf-8"),
-            headers={"Title": title.encode("utf-8"), "Tags": tags,
-                     "Priority": "default",
-                     **({"Click": link} if link else {})})
-        urllib.request.urlopen(req, timeout=10)
+        headers = {"Title": title.encode("utf-8"), "Tags": tags, "Priority": "default",
+                   **({"Click": link} if link else {}),
+                   **({"Message": message.encode("utf-8")} if image_data else {})}
+        if image_data:
+            headers["Filename"] = "actus.jpg"
+            req = urllib.request.Request(f"https://ntfy.sh/{topic}", data=image_data, headers=headers)
+        else:
+            req = urllib.request.Request(f"https://ntfy.sh/{topic}", data=message.encode("utf-8"), headers=headers)
+        urllib.request.urlopen(req, timeout=15)
     except Exception as e:
         print(f"[!] ntfy: {e}")
+
+def thumb_for(article_url):
+    """octets de la vignette en cache (pré-téléchargée), ou None"""
+    try:
+        sys.path.insert(0, ROOT)
+        import veille
+        return veille.fetch_og_image(article_url)
+    except Exception:
+        return None
 
 def refresh_cache():
     """rafraîchit le cache via veille.py (fetch_all) — import silencieux"""
@@ -134,11 +145,70 @@ def digest(hour=8):
         msg += f"\n+ {extra} autres sur le journal"
     notify("📰 DIGEST DU MATIN", msg,
            link="https://maximeleal.github.io/tool_DC-arsenal/DailyPlanet/")
+    # téléphone : 3 notifs enrichies avec les vignettes, cliquables vers les articles
+    for n, it in enumerate(top3, 1):
+        img = thumb_for(it.get("lien", ""))
+        push_ntfy(f"📰 DIGEST {n}/3 · {it.get('source','')[:20]}", it.get("titre", "")[:180],
+                  link=it.get("lien"), tags="newspaper", image_data=img)
+        time.sleep(1)
+    print("[📱] 3 notifs enrichies envoyées sur le téléphone")
     print(f"[✓] digest envoyé : {len(top3)} actus majeures ({len(recent)} nouvelles au total)")
     # marque tout comme vu pour ne pas re-notifier
     state["seen"] = list(set(state.get("seen", [])) | {i.get("lien", "") for i in items})[-400:]
     state["last_digest"] = time.time()
     save(STATE, state)
+
+def check_keywords():
+    """ALERTES IMMÉDIATES : notifie (Mac + téléphone, avec image) si une nouvelle actu
+    contient un des mots-clés du fichier notifs_config.json"""
+    kws = [k.lower() for k in cfg().get("keywords", []) if k.strip()]
+    if not kws: return 0
+    cache = load(CACHE, {})
+    items = cache.get("items", [])
+    state = load(STATE, {"seen": [], "last_digest": 0})
+    seen = set(state.get("seen", []))
+    hits = 0
+    for it in items:
+        lien = it.get("lien", "")
+        if not lien or lien in seen: continue
+        blob = (it.get("titre", "") + " " + it.get("resume", "")).lower()
+        match = [k for k in kws if k in blob]
+        if not match: continue
+        title = f"🎯 {', '.join(match[:2]).upper()} — {it.get('source', '')[:24]}"
+        notify(title, it.get("titre", "")[:140], link=lien)
+        # push téléphone avec la vignette si dispo
+        img = thumb_for(lien)
+        push_ntfy(title, it.get("titre", "")[:180], link=lien,
+                  tags="rotating_light", image_data=img)
+        seen.add(lien)
+        hits += 1
+        if hits >= 5:
+            print("[!] limite de 5 alertes mots-clés par cycle (anti-spam)")
+            break
+    # marque tout comme vu (pour que les non-matching ne reviennent pas en boucle)
+    state["seen"] = (list(seen) + [i.get("lien", "") for i in items])[-400:]
+    save(STATE, state)
+    return hits
+
+def watch(minutes=5):
+    """MODE PERSISTANT : alertes mots-clés immédiates + digest quotidien à 8h"""
+    kws = cfg().get("keywords", [])
+    print(f"[*] DAILY PLANET WATCH — alertes mots-clés: {kws or 'aucun (à configurer)'} · digest à {cfg().get('digest_hour', 8)}h · toutes les {minutes} min")
+    while True:
+        try:
+            refresh_cache()
+            h = check_keywords()
+            if h: print(f"[{time.strftime('%H:%M')}] {h} alerte(s) mot(s)-clé(s) envoyée(s)")
+            now = time.localtime()
+            today = time.strftime("%Y-%m-%d")
+            state = load(STATE, {})
+            if now.tm_hour == int(cfg().get("digest_hour", 8)) and state.get("digest_day") != today:
+                state["digest_day"] = today
+                save(STATE, state)
+                digest()
+        except Exception as e:
+            print(f"[!] watch: {e}")
+        time.sleep(minutes * 60)
 
 def main():
     cmd = sys.argv[1] if len(sys.argv) > 1 else "start"
@@ -147,6 +217,11 @@ def main():
         print("[✓] notif de test envoyée")
     elif cmd == "digest":
         digest()
+    elif cmd == "watch":
+        watch(int(sys.argv[2]) if len(sys.argv) > 2 else 5)
+    elif cmd == "keywords":
+        for k in cfg().get("keywords", []): print(" -", k)
+        print(f"→ édite {CFG} pour changer (json: \"keywords\": [...])")
     elif cmd == "once":
         n = check(quiet_first=False)
         print(f"[✓] {n} nouvelle(s) actu(s) notifiée(s)")

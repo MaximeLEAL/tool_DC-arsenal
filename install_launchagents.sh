@@ -106,11 +106,11 @@ cat > "$HOME/Library/LaunchAgents/com.maxime.dailyplanet.plist" <<EOF
   <key>Label</key><string>com.maxime.dailyplanet</string>
   <key>ProgramArguments</key><array>
     <string>/opt/homebrew/bin/python3</string>
-    <string>$RUN/DailyPlanet/veille_notifs.py</string><string>digest</string>
+    <string>$RUN/DailyPlanet/veille_notifs.py</string><string>watch</string><string>5</string>
   </array>
   <key>WorkingDirectory</key><string>$RUN/DailyPlanet</string>
-  <key>StartCalendarInterval</key>
-  <dict><key>Hour</key><integer>8</integer><key>Minute</key><integer>0</integer></dict>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
   <key>StandardOutPath</key><string>$LOGS/notifs.log</string>
   <key>StandardErrorPath</key><string>$LOGS/notifs.log</string>
 </dict></plist>
