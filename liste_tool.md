@@ -537,6 +537,9 @@ open http://127.0.0.1:9000/app/forensics
 | 1 | FORENSICS EMAIL | forensics web | headers collés → verdict authentique/spoofé/suspect + carte des relais |
 | 2 | STÉGANO STUDIO | stégano studio | cacher/révéler un message dans une image, glisser-déposer, mot de passe |
 | 3 | CARTE RÉSEAU | carte réseau | hôtes du wifi en graphe vivant, refresh 10s, alerte nouvel appareil |
+| 4 | KRYPTONITE WEB | web scanner | la machine vs les IOCs des 27 kits, scan en direct, verdict visuel |
+| 5 | SENTINELLE | surveillance | gardien permanent : wifi, ports, persistance, sessions, disque → push |
+| 6 | WOPR WEB | ctf web | lab CTF piloté du browser : cible :8090 + scoreboard :8091 |
 
 
 ═══════════════════════════════════════════════════════════════

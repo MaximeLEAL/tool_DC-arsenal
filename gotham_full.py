@@ -39,7 +39,7 @@ KITS = [
     {"id": "TheThinker",        "n": "THE THINKER",       "c": "#9b30ff", "f": "thinker_face.jpg",                "i": "🧠", "d": "Reverse engineering · 8 commands"},
     {"id": "JokerCard",         "n": "JOKER CARD",        "c": "#ff6a00", "f": "jokercard_face.jpg",                "i": "🂡", "d": "SGP Card · BadUSB · 4 tools"},
     {"id": "DailyPlanet",       "n": "DAILY PLANET",      "c": "#64a0ff", "f": "dailyplanet_face.jpg",                "i": "📰", "d": "Veille · 25 sources · 3 tools"},
-    {"id": "BatWeb",            "n": "BATWEB",            "c": "#4ad66d", "f": None,                "i": "🕸️", "d": "3 apps web · forensics · stégano · réseau"},
+    {"id": "BatWeb",            "n": "BATWEB",            "c": "#4ad66d", "f": None,                "i": "🕸️", "d": "6 apps web · kryptonite · sentinelle · wopr"},
 ]
 KIT_BY_ID = {k["id"]: k for k in KITS}
 
@@ -62,6 +62,28 @@ class H(http.server.BaseHTTPRequestHandler):
             if sub == "netmap/scan":
                 deep = q.get("deep", [""])[0] == "1" if (q := urllib.parse.parse_qs(u.query)) else False
                 return self._json(batweb.api_netmap_scan(deep))
+            if sub == "kryptonite":                     return self._html(batweb.page_kryptonite())
+            if sub == "kryptonite/scan":                return self._json(batweb.api_kryptonite_scan())
+            if sub == "sentinelle":                     return self._html(batweb.page_sentinelle())
+            if sub == "sentinelle/events":
+                ev = os.path.join(TOOL_DC, "Sentinelle", "events.json")
+                st = os.path.join(TOOL_DC, "Sentinelle", "sentinelle_state.json")
+                events = []
+                try: events = json.load(open(ev, encoding="utf-8"))
+                except Exception: pass
+                status = []
+                try: status = json.load(open(st, encoding="utf-8"))
+                except Exception: pass
+                lan = status.get("lan", [])
+                ports = status.get("ports", [])
+                stat = (f"🟢 gardes actives · wifi : {len(lan)} appareils connus · "
+                        f"ports en écoute : {len(ports)} · "
+                        f"LaunchAgents : {len(status.get('agents_list', []))} · "
+                        f"dernier passage récent")
+                return self._json({"events": events[:30], "status": stat})
+            if sub == "wopr":                           return self._html(batweb.page_wopr())
+            if sub == "wopr/status":                    return self._json(batweb.api_wopr_status())
+            if sub.startswith("wopr/"):                 return self._json(batweb.api_wopr_action(sub.split("/")[1]))
             self.send_response(404); self.end_headers(); return
         if p.startswith("/gotham_static/"):             return self._static(p[len("/gotham_static/"):], os.path.join(TOOL_DC, "gotham_static"))
         if p.startswith("/kit/"):

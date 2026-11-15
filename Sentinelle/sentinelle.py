@@ -3,7 +3,7 @@
 # SENTINELLE — le gardien de ta machine · tourne en LaunchAgent (toutes les 5 min)
 # Surveille : nouveaux appareils wifi · nouveaux ports en écoute · LaunchAgents
 # modifiés · sessions ouvertes · disque. Chaque anomalie → notif macOS + push ntfy.
-import json, os, subprocess, time, urllib.request, hashlib
+import json, os, subprocess, time, urllib.request, hashlib, sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 STATE = os.path.join(ROOT, "sentinelle_state.json")

@@ -22,6 +22,10 @@ cp "$DC/DailyPlanet/veille.py" "$DC/DailyPlanet/veille_notifs.py" "$DC/dc_fullsc
 cp "$DC/dc_fullscreen.py" "$RUN/" 2>/dev/null || true
 cp "$DC/gotham_static/faces/"*.jpg "$RUN/gotham_static/faces/" 2>/dev/null || mkdir -p "$RUN/gotham_static/faces" && cp "$DC/gotham_static/faces/"*.jpg "$RUN/gotham_static/faces/" 2>/dev/null || true
 cp "$DC/arsenal_pages_data/"*.json "$RUN/arsenal_pages_data/" 2>/dev/null || true
+mkdir -p "$RUN/Sentinelle" "$RUN/KryptoniteSuite" "$RUN/WOPR"
+cp "$DC/Sentinelle/sentinelle.py" "$RUN/Sentinelle/" 2>/dev/null
+cp "$DC/KryptoniteSuite/kryptonite.py" "$RUN/KryptoniteSuite/" 2>/dev/null
+cp "$DC/WOPR/wopr.py" "$RUN/WOPR/" 2>/dev/null
 # mets à jour le miroir à chaque login : le plist de sync ci-dessous s'en charge
 cat > "$LOGS/gotham_sync.sh" <<EOS
 #!/bin/bash
@@ -134,8 +138,26 @@ cat > "$HOME/Library/LaunchAgents/com.maxime.veille.plist" <<EOF
 </dict></plist>
 EOF
 
+# ── 4. sentinelle (gardien) ────────────────────────────────────────
+cat > "$HOME/Library/LaunchAgents/com.maxime.sentinelle.plist" <<EOF
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0"><dict>
+  <key>Label</key><string>com.maxime.sentinelle</string>
+  <key>ProgramArguments</key><array>
+    <string>/opt/homebrew/bin/python3</string>
+    <string>$RUN/Sentinelle/sentinelle.py</string><string>5</string>
+  </array>
+  <key>WorkingDirectory</key><string>$RUN/Sentinelle</string>
+  <key>RunAtLoad</key><true/>
+  <key>KeepAlive</key><true/>
+  <key>StandardOutPath</key><string>$LOGS/sentinelle.log</string>
+  <key>StandardErrorPath</key><string>$LOGS/sentinelle.log</string>
+</dict></plist>
+EOF
+
 # ── installation ──────────────────────────────────────────────────
-for svc in gotham gotham-tunnel dailyplanet veille; do
+for svc in gotham gotham-tunnel dailyplanet veille sentinelle; do
   launchctl unload "$HOME/Library/LaunchAgents/com.maxime.$svc.plist" 2>/dev/null || true
   launchctl load   "$HOME/Library/LaunchAgents/com.maxime.$svc.plist"
 done
@@ -151,4 +173,4 @@ IP=$(ipconfig getifaddr en0 2>/dev/null || ipconfig getifaddr en1 2>/dev/null)
 echo "  Notifs        : Daily Planet vérifie les actus toutes les 5 min"
 echo "  Miroir runtime: $RUN (sync auto à chaque login)"
 echo "  Logs          : $LOGS/"
-echo "  Pour tout arrêter : launchctl unload ~/Library/LaunchAgents/com.maxime.gotham{,-tunnel,-sync,-dailyplanet}.plist"
+echo "  Pour tout arrêter : launchctl unload ~/Library/LaunchAgents/com.maxime.gotham{,-tunnel,-veille,-dailyplanet,-sentinelle}.plist"
