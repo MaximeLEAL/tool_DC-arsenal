@@ -128,48 +128,176 @@ def render(data, query="", cat="toutes"):
     if query:
         q = query.lower()
         items = [i for i in items if q in (i["titre"] + i["resume"]).lower()]
+    total_all = data["n"]
+    shown = len(items)
+    # comptes par catégorie
+    counts = {}
+    for i in data["items"]:
+        counts[i["cat"]] = counts.get(i["cat"], 0) + 1
     chips = [("toutes", "TOUTES"), ("cyber", "CYBER"), ("alertes", "CVE & ALERTES"),
              ("juridique", "JURIDIQUE"), ("tech-fr", "TECH FR"), ("tech", "TECH")]
-    chips_html = " ".join(
-        f'<a href="/?cat={c}" style="text-decoration:none"><span style="background:{"#c9a600" if c==cat else "#14141c"};'
-        f'color:{"#111" if c==cat else "#c9a600"};padding:6px 16px;border-radius:20px;font-size:.85em;'
-        f'border:1px solid #2a2a3a">{label}</span></a>' for c, label in chips)
+    chips_html = "".join(
+        f'<a class="chip{" on" if c == cat else ""}" href="/?cat={c}&q={urllib.parse.quote(query)}">{label}'
+        f'<b>{counts.get(c, total_all if c == "toutes" else 0)}</b></a>'
+        for c, label in chips)
+
+    CAT_COLOR = {"cyber": "#ff4628", "alertes": "#ff8c30", "juridique": "#64a0ff",
+                 "tech": "#4ad66d", "tech-fr": "#f5c518"}
     cards = []
-    for it in items[:120]:
+    for it in items[:250]:
+        cc = CAT_COLOR.get(it["cat"], "#64a0ff")
+        resume = html.escape((it.get("resume") or "")[:220])
+        titre = html.escape(it.get("titre", ""))
         cards.append(f"""
-        <div style="background:#0c0c16;border:1px solid #1a1a2a;border-radius:10px;padding:16px 20px;margin-bottom:12px">
-          <div style="font-size:.75em;color:#889;margin-bottom:6px">
-            <span style="background:#14141c;color:#c9a600;border-radius:4px;padding:2px 10px">{it['source']}</span>
-            <span style="margin-left:8px">{time_ago(it['date'])}</span> {hot_badge(it['titre'])}
-            <span style="float:right;color:#556">{it['cat'].upper()}</span>
+        <a class="news" href="{html.escape(it.get('lien',''))}" target="_blank" rel="noopener" style="--cc:{cc}">
+          <div class="nhead">
+            <span class="src" style="color:{cc};border-color:{cc}55">{html.escape(it['source'])}</span>
+            <span class="ago">{time_ago(it.get('date',''))}</span>
+            {hot_badge(html.escape(it['titre']))}
+            <span class="cat">{it['cat'].upper()}</span>
           </div>
-          <a href="{it['lien']}" target="_blank" style="color:#e7e9ea;text-decoration:none;font-size:1.05em;font-weight:600">
-            {it['titre']}</a>
-          <p style="color:#99a;font-size:.88em;margin:8px 0 0">{it['resume'][:200]}…</p>
-        </div>""")
-    page = f"""<!doctype html><html lang="fr"><head><meta charset="utf-8">
+          <h3>{titre}</h3>
+          <p>{resume}…</p>
+          <div class="go">LIRE L'ARTICLE <span class="arr">→</span></div>
+        </a>""")
+
+    return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8">
     <title>DAILY PLANET — La veille tech &amp; cyber</title>
     <meta http-equiv="refresh" content="300">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
     <style>
-    body{{background:#050509;color:#ddd;font-family:'Segoe UI',sans-serif;margin:0;padding:30px 20px}}
-    .masthead{{text-align:center;border-bottom:3px double #c9a600;padding-bottom:22px;margin-bottom:8px}}
-    h1{{color:#e7e9ea;font-size:2.4em;margin:0;letter-spacing:1px}}
-    h1 b{{color:#c9a600}}
-    .sous{{color:#889;font-size:.9em}}
-    .barre{{display:flex;gap:14px;align-items:center;justify-content:center;margin:20px 0;flex-wrap:wrap}}
-    input{{background:#0c0c16;border:1px solid #2a2a3a;color:#ddd;padding:9px 16px;border-radius:20px;width:280px}}
-    .info{{text-align:center;color:#665;font-size:.8em;margin-bottom:18px}}
+    :root{{--bg:#06070c; --panel:#0c0e17; --panel2:#070810; --line:#1a1c2e;
+      --txt:#c4c6d6; --muted:#6a6d86; --dim:#45485e; --red:#e63022; --gold:#f5c518;
+      --c:#64a0ff;
+      --disp:"Anton",Impact,sans-serif; --cond:"Oswald",sans-serif;
+      --sans:"Archivo",-apple-system,sans-serif; --mono:"JetBrains Mono",monospace}}
+    *{{box-sizing:border-box;margin:0;padding:0}}
+    body{{background:var(--bg);color:var(--txt);font-family:var(--sans);min-height:100vh;position:relative;-webkit-font-smoothing:antialiased}}
+    ::selection{{background:var(--red);color:#fff}}
+    ::-webkit-scrollbar{{width:11px}}::-webkit-scrollbar-track{{background:var(--bg)}}
+    ::-webkit-scrollbar-thumb{{background:#1c1e30;border-radius:6px;border:2px solid var(--bg)}}
+    ::-webkit-scrollbar-thumb:hover{{background:var(--red)}}
+    .bg{{position:fixed;inset:0;z-index:0;pointer-events:none;overflow:hidden}}
+    .bg .beam{{position:absolute;inset:0;background:
+      radial-gradient(44% 70% at 50% 108%,rgba(100,160,255,.10),transparent 60%),
+      radial-gradient(60% 80% at 50% -10%,rgba(230,48,34,.12),transparent 62%)}}
+    .bg .dots{{position:absolute;inset:0;opacity:.12;background-image:radial-gradient(rgba(255,255,255,.5) 1px,transparent 1.4px);background-size:16px 16px;mask-image:radial-gradient(ellipse 70% 55% at 50% 20%,#000 10%,transparent 72%)}}
+    .bg .grid{{position:absolute;inset:0;opacity:.5;background-image:linear-gradient(rgba(255,255,255,.02) 1px,transparent 1px),linear-gradient(90deg,rgba(255,255,255,.02) 1px,transparent 1px);background-size:52px 52px;mask-image:radial-gradient(ellipse 85% 70% at 50% 30%,#000 35%,transparent 88%)}}
+    .bg .vig{{position:absolute;inset:0;background:radial-gradient(ellipse 100% 80% at 50% 30%,transparent 55%,rgba(0,0,0,.55))}}
+    .wrap{{position:relative;z-index:1}}
+    .nav{{display:flex;justify-content:space-between;align-items:center;padding:14px clamp(18px,4vw,40px);
+      position:sticky;top:0;z-index:30;background:rgba(6,7,12,.55);backdrop-filter:blur(16px) saturate(140%);border-bottom:1px solid var(--line)}}
+    .brand{{font-family:var(--cond);font-weight:700;letter-spacing:5px;font-size:.95rem;color:#fff;
+      display:flex;align-items:center;gap:11px;text-transform:uppercase;text-decoration:none}}
+    .brand .dot{{width:8px;height:8px;border-radius:50%;background:var(--red);box-shadow:0 0 14px var(--red);animation:pulse 2s infinite}}
+    .brand em{{color:var(--red);font-style:normal}}
+    @keyframes pulse{{0%,100%{{opacity:1}}50%{{opacity:.3}}}}
+    .nav-right{{display:flex;align-items:center;gap:14px}}
+    .status{{font-family:var(--mono);font-size:.64rem;letter-spacing:1.6px;color:#4ad66d;display:flex;align-items:center;gap:7px;text-transform:uppercase}}
+    .status::before{{content:"";width:6px;height:6px;border-radius:50%;background:#4ad66d;box-shadow:0 0 10px #4ad66d;animation:pulse 1.6s infinite}}
+    .ghbtn{{font-family:var(--mono);color:#9fb4ff;font-size:.7rem;letter-spacing:.6px;text-decoration:none;
+      border:1px solid var(--line);padding:8px 15px;border-radius:10px;transition:.25s;background:rgba(255,255,255,.02)}}
+    .ghbtn:hover{{border-color:#6495ff;color:#cdd9ff;box-shadow:0 0 22px rgba(100,149,255,.22)}}
+    header.hero{{text-align:center;padding:clamp(40px,7vw,80px) 20px 30px;position:relative}}
+    .eyebrow{{font-family:var(--mono);font-size:.7rem;letter-spacing:6px;color:var(--muted);display:inline-flex;
+      align-items:center;gap:14px;margin-bottom:22px;text-transform:uppercase}}
+    .eyebrow::before,.eyebrow::after{{content:"";width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--dim),transparent)}}
+    h1{{font-family:var(--disp);font-size:clamp(3rem,10vw,6.4rem);line-height:.9;color:#fff;letter-spacing:2px;
+      text-transform:uppercase;text-shadow:0 3px 0 rgba(0,0,0,.55),0 0 70px rgba(100,160,255,.25)}}
+    h1 b{{background:linear-gradient(120deg,var(--gold) 0%,#ff6a3d 50%,var(--red) 100%);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent}}
+    .sous{{margin-top:14px;font-family:var(--mono);color:var(--muted);letter-spacing:3px;font-size:.72rem;text-transform:uppercase}}
+    .stats{{display:flex;gap:14px;justify-content:center;flex-wrap:wrap;margin-top:34px}}
+    .stat{{background:linear-gradient(180deg,rgba(255,255,255,.045),rgba(255,255,255,.008));border:1px solid var(--line);
+      border-radius:12px;padding:15px 26px;min-width:110px;transition:.3s}}
+    .stat:hover{{border-color:rgba(100,160,255,.4);transform:translateY(-3px)}}
+    .stat b{{display:block;font-family:var(--disp);font-size:2rem;color:#fff;line-height:1}}
+    .stat span{{font-family:var(--mono);font-size:.6rem;letter-spacing:2px;color:var(--muted);margin-top:7px;display:block;text-transform:uppercase}}
+    .toolbar{{position:sticky;top:49px;z-index:20;background:rgba(6,7,12,.72);backdrop-filter:blur(14px);
+      border-top:1px solid var(--line);border-bottom:1px solid var(--line);padding:16px clamp(18px,4vw,40px);
+      display:flex;gap:14px;align-items:center;justify-content:center;flex-wrap:wrap;margin-top:30px}}
+    .chip{{font-family:var(--mono);font-size:.66rem;letter-spacing:1.2px;text-decoration:none;color:var(--muted);
+      border:1px solid var(--line);background:rgba(255,255,255,.02);padding:8px 14px;border-radius:999px;transition:.25s;display:inline-flex;gap:8px;align-items:center}}
+    .chip b{{color:var(--dim);font-weight:500}}
+    .chip:hover{{border-color:var(--c);color:#cdd9ff}}
+    .chip.on{{background:var(--gold);border-color:var(--gold);color:#111;font-weight:700}}
+    .chip.on b{{color:rgba(0,0,0,.55)}}
+    form.search{{position:relative}}
+    .search input{{font-family:var(--mono);font-size:.78rem;color:#fff;background:rgba(255,255,255,.03);
+      border:1px solid var(--line);border-radius:10px;padding:10px 14px 10px 38px;width:min(320px,70vw);outline:none;transition:.25s}}
+    .search input::placeholder{{color:var(--dim);letter-spacing:1.5px;text-transform:uppercase;font-size:.68rem}}
+    .search input:focus{{border-color:var(--c);box-shadow:0 0 24px rgba(100,160,255,.18);background:rgba(255,255,255,.05)}}
+    .search svg{{position:absolute;left:12px;top:50%;transform:translateY(-50%);stroke:var(--muted)}}
+    main{{max-width:880px;margin:26px auto 0;padding:0 24px 44px;position:relative;z-index:1}}
+    .info{{font-family:var(--mono);color:var(--dim);font-size:.64rem;letter-spacing:1.5px;text-align:center;
+      text-transform:uppercase;margin-bottom:22px}}
+    .news{{display:block;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+      border-radius:4px;padding:16px 20px 14px;margin-bottom:11px;text-decoration:none;position:relative;overflow:hidden;
+      transition:border-color .25s,transform .25s,box-shadow .25s}}
+    .news:hover{{border-color:color-mix(in srgb,var(--cc) 55%,var(--line));transform:translateX(5px);
+      box-shadow:0 10px 34px color-mix(in srgb,var(--cc) 14%,transparent)}}
+    .news::before{{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cc);opacity:.85}}
+    .nhead{{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:.64rem;letter-spacing:.8px;margin-bottom:8px}}
+    .src{{border:1px solid;border-radius:5px;padding:2px 8px;font-weight:700}}
+    .ago{{color:var(--muted)}}
+    .cat{{margin-left:auto;color:var(--dim)}}
+    .hot{{background:#7a1010;color:#fff;border-radius:4px;padding:2px 8px;letter-spacing:1.5px}}
+    .news h3{{font-family:var(--cond);color:#fff;font-size:1.06rem;font-weight:600;line-height:1.35;letter-spacing:.2px}}
+    .news p{{color:var(--muted);font-size:.85em;margin:7px 0 0;line-height:1.55}}
+    .go{{font-family:var(--mono);font-size:.6rem;letter-spacing:1.6px;color:var(--cc);margin-top:10px;opacity:.85}}
+    .go .arr{{display:inline-block;transition:transform .25s}}
+    .news:hover .go .arr{{transform:translateX(6px)}}
+    .more{{display:block;margin:26px auto 0;font-family:var(--mono);font-size:.7rem;letter-spacing:2px;
+      color:#cdd9ff;background:rgba(255,255,255,.03);border:1px solid var(--line);border-radius:10px;
+      padding:13px 30px;cursor:pointer;transition:.25s;text-transform:uppercase}}
+    .more:hover{{border-color:var(--c);box-shadow:0 0 22px rgba(100,160,255,.2)}}
+    footer{{text-align:center;color:var(--muted);padding:40px 20px 56px;font-family:var(--mono);font-size:.66rem;
+      letter-spacing:2.2px;border-top:1px solid var(--line);margin-top:44px;text-transform:uppercase}}
+    footer a{{color:#9fb4ff;text-decoration:none}}
+    @media (max-width:560px){{.status{{display:none}}}}
     </style></head><body>
-    <div class="masthead">
+    <div class="bg"><div class="beam"></div><div class="dots"></div><div class="grid"></div><div class="vig"></div></div>
+    <div class="wrap">
+    <nav class="nav">
+      <a class="brand" href="https://maximeleal.github.io/tool_DC-arsenal/"><span class="dot"></span>Gotham <em>City</em></a>
+      <div class="nav-right"><span class="status">Live · {len(FEEDS)} sources</span>
+        <a class="ghbtn" href="https://github.com/MaximeLEAL/tool_DC-arsenal" target="_blank">&#8599; GITHUB</a></div>
+    </nav>
+    <header class="hero">
+      <div class="eyebrow">Veille technologie &amp; cybersécurité</div>
       <h1>DAILY <b>PLANET</b></h1>
-      <div class="sous">LA VEILLE TECHNOLOGIQUE &amp; CYBERSÉCURITÉ — powered by Maxime Leal</div>
+      <div class="sous">L'ACTUALITÉ MONDIALE · POWERED BY MAXIME LEAL</div>
+      <div class="stats">
+        <div class="stat"><b>{total_all}</b><span>Actualités</span></div>
+        <div class="stat"><b>{len(FEEDS)}</b><span>Sources</span></div>
+        <div class="stat"><b>{counts.get('cyber', 0)}</b><span>Cyber</span></div>
+        <div class="stat"><b>{counts.get('alertes', 0)}</b><span>CVE &amp; Alertes</span></div>
+      </div>
+    </header>
+    <div class="toolbar">{chips_html}
+      <form class="search" method="get"><input name="q" placeholder="Rechercher une actu…" value="{html.escape(query)}" spellcheck="false">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.3-4.3"/></svg></form>
     </div>
-    <div class="barre">{chips_html}
-      <form method="get"><input name="q" placeholder="🔍 rechercher une actualité…" value="{html.escape(query)}"></form>
+    <main>
+    <div class="info">{shown} résultat{'s' if shown != 1 else ''} affiché{'s' if shown != 1 else ''} · dernière collecte {data['fetched']} · auto-refresh 5 min</div>
+    <div id="list">{''.join(cards)}</div>
+    <button class="more" id="more" onclick="showMore()" style="display:{'block' if shown > 60 else 'none'}">Charger plus d'actus ▾</button>
+    </main>
+    <footer>DAILY PLANET · UNE DE L'ARSENAL DC · <a href="https://github.com/MaximeLEAL/tool_DC-arsenal">GITHUB</a> · POWERED BY MAXIME LEAL</footer>
     </div>
-    <div class="info">{data['n']} actualités agrégées · {len(FEEDS)} sources · dernière collecte : {data['fetched']}
-    · rafraîchi toutes les 5 min · erreurs : {len(data.get('errors', []))}</div>
-    {''.join(cards) or '<div class="info">aucun résultat</div>'}
+    <script>
+    const all = document.querySelectorAll('#list .news'), step = 60;
+    let shownN = Math.min(step, all.length);
+    for (let i = shownN; i < all.length; i++) all[i].style.display = 'none';
+    function showMore() {{
+      const next = Math.min(shownN + step, all.length);
+      for (let i = shownN; i < next; i++) all[i].style.display = '';
+      shownN = next;
+      if (shownN >= all.length) document.getElementById('more').style.display = 'none';
+    }}
+    </script>
     </body></html>"""
     return page
 
