@@ -3,7 +3,7 @@
 # DAILY PLANET - LA VEILLE TECH & CYBER · powered by Maxime Leal
 # Agrège les grands flux RSS (FR + EN), dédoublonne, classe, et sert une page web journal.
 # Usage: python3 veille.py serve [port]   |   python3 veille.py top [n]
-import http.server, urllib.request, urllib.parse, xml.etree.ElementTree as ET, json, time, os, sys, re, html, threading
+import http.server, urllib.request, urllib.parse, xml.etree.ElementTree as ET, json, time, os, sys, re, html, threading, hashlib
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dc_fullscreen as dfs
 
@@ -121,6 +121,49 @@ def hot_badge(title):
     return '<span style="background:#7a1010;color:#fff;border-radius:4px;padding:1px 8px;font-size:.75em">HOT</span>' \
         if any(k in t for k in HOT) else ""
 
+# ── miniatures d'articles : og:image récupéré à la volée + cache disque ──
+IMG_CACHE = os.path.join(ROOT, "img_cache")
+os.makedirs(IMG_CACHE, exist_ok=True)
+OG_RE = re.compile(r'<meta[^>]+(?:property=["\']og:image["\']|name=["\']twitter:image["\'])[^>]+content=["\']([^"\']+)["\']', re.I)
+OG_RE2 = re.compile(r'content=["\']([^"\']+)["\'][^>]+(?:property=["\']og:image["\']|name=["\']twitter:image["\'])', re.I)
+UA_IMG = {"User-Agent": "Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0 Safari/537.36"}
+
+def fetch_og_image(article_url):
+    """octets de la vignette de l'article (cache disque), ou None"""
+    h = hashlib.md5(article_url.encode()).hexdigest()
+    ok_path = os.path.join(IMG_CACHE, h + ".img")
+    fail_path = os.path.join(IMG_CACHE, h + ".fail")
+    if os.path.exists(ok_path): return open(ok_path, "rb").read()
+    if os.path.exists(fail_path): return None
+    try:
+        req = urllib.request.Request(article_url, headers=UA_IMG)
+        with urllib.request.urlopen(req, timeout=8) as r:
+            page = r.read(200_000).decode("utf-8", "ignore")
+        m = OG_RE.search(page) or OG_RE2.search(page)
+        if not m: raise ValueError("pas d'og:image")
+        img_url = urllib.parse.urljoin(article_url, html.unescape(m.group(1)))
+        req2 = urllib.request.Request(img_url, headers=UA_IMG)
+        with urllib.request.urlopen(req2, timeout=10) as r2:
+            data = r2.read(3_000_000)
+        if len(data) < 800: raise ValueError("image vide")
+        with open(ok_path, "wb") as f: f.write(data)
+        return data
+    except Exception:
+        open(fail_path, "w").write("1")
+        return None
+
+def serve_img(self, article_url):
+    data = fetch_og_image(article_url)
+    if not data:
+        self.send_response(404); self.end_headers(); return
+    ct = "image/jpeg"
+    if data[:4] == b"\x89PNG": ct = "image/png"
+    elif data[:4] == b"RIFF": ct = "image/webp"
+    self.send_response(200); self.send_header("Content-Type", ct)
+    self.send_header("Content-Length", str(len(data)))
+    self.send_header("Cache-Control", "public, max-age=86400")
+    self.end_headers(); self.wfile.write(data)
+
 def render(data, query="", cat="toutes"):
     items = data["items"]
     if cat != "toutes":
@@ -148,17 +191,21 @@ def render(data, query="", cat="toutes"):
         cc = CAT_COLOR.get(it["cat"], "#64a0ff")
         resume = html.escape((it.get("resume") or "")[:220])
         titre = html.escape(it.get("titre", ""))
+        enc = html.escape(it.get("lien", ""), quote=True)
         cards.append(f"""
         <a class="news" href="{html.escape(it.get('lien',''))}" target="_blank" rel="noopener" style="--cc:{cc}">
-          <div class="nhead">
-            <span class="src" style="color:{cc};border-color:{cc}55">{html.escape(it['source'])}</span>
-            <span class="ago">{time_ago(it.get('date',''))}</span>
-            {hot_badge(html.escape(it['titre']))}
-            <span class="cat">{it['cat'].upper()}</span>
+          <img class="thumb" loading="lazy" src="/img?u={enc}" alt="" onerror="this.classList.add('dead')">
+          <div class="nbody">
+            <div class="nhead">
+              <span class="src" style="color:{cc};border-color:{cc}55">{html.escape(it['source'])}</span>
+              <span class="ago">{time_ago(it.get('date',''))}</span>
+              {hot_badge(html.escape(it['titre']))}
+              <span class="cat">{it['cat'].upper()}</span>
+            </div>
+            <h3>{titre}</h3>
+            <p>{resume}…</p>
+            <div class="go">LIRE L'ARTICLE <span class="arr">→</span></div>
           </div>
-          <h3>{titre}</h3>
-          <p>{resume}…</p>
-          <div class="go">LIRE L'ARTICLE <span class="arr">→</span></div>
         </a>""")
 
     return f"""<!doctype html><html lang="fr"><head><meta charset="utf-8">
@@ -168,6 +215,7 @@ def render(data, query="", cat="toutes"):
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Anton&family=Oswald:wght@400;500;600;700&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+    <link rel="icon" href="/globe">
     <style>
     :root{{--bg:#06070c; --panel:#0c0e17; --panel2:#070810; --line:#1a1c2e;
       --txt:#c4c6d6; --muted:#6a6d86; --dim:#45485e; --red:#e63022; --gold:#f5c518;
@@ -202,6 +250,11 @@ def render(data, query="", cat="toutes"):
       border:1px solid var(--line);padding:8px 15px;border-radius:10px;transition:.25s;background:rgba(255,255,255,.02)}}
     .ghbtn:hover{{border-color:#6495ff;color:#cdd9ff;box-shadow:0 0 22px rgba(100,149,255,.22)}}
     header.hero{{text-align:center;padding:clamp(40px,7vw,80px) 20px 30px;position:relative}}
+    .globe{{position:absolute;left:50%;top:50%;transform:translate(-50%,-54%);width:clamp(280px,42vw,480px);
+      opacity:.20;filter:saturate(1.15);pointer-events:none;
+      -webkit-mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 68%);
+      mask-image:radial-gradient(circle at 50% 45%,#000 30%,transparent 68%)}}
+    h1,.eyebrow,.sous,.stats{{position:relative}}
     .eyebrow{{font-family:var(--mono);font-size:.7rem;letter-spacing:6px;color:var(--muted);display:inline-flex;
       align-items:center;gap:14px;margin-bottom:22px;text-transform:uppercase}}
     .eyebrow::before,.eyebrow::after{{content:"";width:40px;height:1px;background:linear-gradient(90deg,transparent,var(--dim),transparent)}}
@@ -233,20 +286,26 @@ def render(data, query="", cat="toutes"):
     main{{max-width:880px;margin:26px auto 0;padding:0 24px 44px;position:relative;z-index:1}}
     .info{{font-family:var(--mono);color:var(--dim);font-size:.64rem;letter-spacing:1.5px;text-align:center;
       text-transform:uppercase;margin-bottom:22px}}
-    .news{{display:block;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
-      border-radius:4px;padding:16px 20px 14px;margin-bottom:11px;text-decoration:none;position:relative;overflow:hidden;
+    .news{{display:flex;gap:14px;background:linear-gradient(180deg,var(--panel),var(--panel2));border:1px solid var(--line);
+      border-radius:4px;padding:12px 16px;margin-bottom:9px;text-decoration:none;position:relative;overflow:hidden;
       transition:border-color .25s,transform .25s,box-shadow .25s}}
     .news:hover{{border-color:color-mix(in srgb,var(--cc) 55%,var(--line));transform:translateX(5px);
       box-shadow:0 10px 34px color-mix(in srgb,var(--cc) 14%,transparent)}}
     .news::before{{content:"";position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--cc);opacity:.85}}
-    .nhead{{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:.64rem;letter-spacing:.8px;margin-bottom:8px}}
+    .thumb{{width:96px;height:64px;object-fit:cover;border-radius:6px;flex-shrink:0;background:#12141f;
+      border:1px solid var(--line);margin-top:2px}}
+    .thumb.dead{{display:none}}
+    .nbody{{flex:1;min-width:0}}
+    .nhead{{display:flex;gap:10px;align-items:center;font-family:var(--mono);font-size:.62rem;letter-spacing:.8px;margin-bottom:6px}}
     .src{{border:1px solid;border-radius:5px;padding:2px 8px;font-weight:700}}
     .ago{{color:var(--muted)}}
     .cat{{margin-left:auto;color:var(--dim)}}
     .hot{{background:#7a1010;color:#fff;border-radius:4px;padding:2px 8px;letter-spacing:1.5px}}
-    .news h3{{font-family:var(--cond);color:#fff;font-size:1.06rem;font-weight:600;line-height:1.35;letter-spacing:.2px}}
-    .news p{{color:var(--muted);font-size:.85em;margin:7px 0 0;line-height:1.55}}
-    .go{{font-family:var(--mono);font-size:.6rem;letter-spacing:1.6px;color:var(--cc);margin-top:10px;opacity:.85}}
+    .news h3{{font-family:var(--cond);color:#fff;font-size:1.02rem;font-weight:600;line-height:1.3;letter-spacing:.2px;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
+    .news p{{color:var(--muted);font-size:.83em;margin:5px 0 0;line-height:1.5;
+      display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}}
+    .go{{font-family:var(--mono);font-size:.6rem;letter-spacing:1.6px;color:var(--cc);margin-top:8px;opacity:.85}}
     .go .arr{{display:inline-block;transition:transform .25s}}
     .news:hover .go .arr{{transform:translateX(6px)}}
     .more{{display:block;margin:26px auto 0;font-family:var(--mono);font-size:.7rem;letter-spacing:2px;
@@ -266,6 +325,7 @@ def render(data, query="", cat="toutes"):
         <a class="ghbtn" href="https://github.com/MaximeLEAL/tool_DC-arsenal" target="_blank">&#8599; GITHUB</a></div>
     </nav>
     <header class="hero">
+      <img class="globe" src="/globe" alt="">
       <div class="eyebrow">Veille technologie &amp; cybersécurité</div>
       <h1>DAILY <b>PLANET</b></h1>
       <div class="sous">L'ACTUALITÉ MONDIALE · POWERED BY MAXIME LEAL</div>
@@ -305,6 +365,21 @@ class H(http.server.BaseHTTPRequestHandler):
     def do_GET(self):
         u = urllib.parse.urlparse(self.path)
         q = urllib.parse.parse_qs(u.query)
+        if u.path == "/img":
+            art = q.get("u", [""])[0]
+            if art: return serve_img(self, art)
+            self.send_response(404); self.end_headers(); return
+        if u.path == "/globe":
+            p = os.path.join(ROOT, "globe.jpg")
+            if os.path.exists(p):
+                d = open(p, "rb").read()
+                self.send_response(200); self.send_header("Content-Type", "image/jpeg")
+                self.send_header("Content-Length", str(len(d)))
+                self.send_header("Cache-Control", "public, max-age=604800")
+                self.end_headers(); self.wfile.write(d)
+            else:
+                self.send_response(404); self.end_headers()
+            return
         data = fetch_all()
         if u.path == "/api":
             b = json.dumps(data, ensure_ascii=False).encode()
