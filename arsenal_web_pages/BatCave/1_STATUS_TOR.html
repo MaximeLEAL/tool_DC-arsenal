@@ -8,59 +8,56 @@ border-bottom:3px solid #ffd60a;display:flex;align-items:center;gap:20px;positio
 header::before{content:'';position:absolute;top:0;left:-100%;width:100%;height:100%;
 background:linear-gradient(90deg,transparent,rgba(255,255,255,.03),transparent);animation:scan 3s infinite}
 @keyframes scan{to{left:100%}}
-.icon{font-size:3em;animation:pulse 2s infinite}
-@keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.1)}}
-h1{font-family:'Orbitron',sans-serif;font-size:1.6em;color:#ffd60a;margin:0}
-h1 small{color:#555;font-size:.5em;display:block;margin-top:2px}
-.github{margin-left:auto}
-.github a{background:#ffd60a;color:#000;padding:8px 20px;border-radius:6px;
-text-decoration:none;font-weight:bold;font-size:.85em}
-main{max-width:900px;margin:30px auto;padding:0 20px}
-.card{background:#0d0d0d;border:1px solid #ffd60a22;border-radius:10px;padding:24px;
-margin-bottom:18px;border-left:4px solid #ffd60a}
-.card h2{color:#ffd60a;font-size:1.1em;margin-bottom:12px}
+.icon svg{width:60px;height:60px;filter:drop-shadow(0 0 20px #ffd60a66)}
+h1{font-family:'Orbitron',sans-serif;font-size:1.4em;color:#ffd60a}
+h1 small{color:#555;font-size:.5em;display:block}
+.gh{margin-left:auto}
+.gh a{background:#ffd60a;color:#000;padding:8px 20px;border-radius:6px;text-decoration:none;font-weight:bold;font-size:.85em}
+main{max-width:850px;margin:30px auto;padding:0 20px}
+.card{background:#0d0d0d;border:1px solid #1a1a2a;border-left:4px solid #ffd60a;border-radius:10px;
+padding:22px;margin-bottom:16px}
+.card h2{color:#ffd60a;font-size:1.05em;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+.card h2::before{content:'';width:5px;height:5px;background:#ffd60a;border-radius:50%}
 .card p{color:#99a;font-size:.9em;line-height:1.6}
 .code{background:#000;border:1px solid #ffd60a33;border-radius:8px;padding:14px 18px;
 font-size:.85em;color:#7fff7f;margin:10px 0;overflow-x:auto;white-space:pre-wrap}
-.theme-tag{background:#ffd60a22;color:#ffd60a;padding:3px 14px;border-radius:12px;font-size:.8em;display:inline-block}
-.back{color:#ffd60a;text-decoration:none;font-size:.85em;margin-bottom:16px;display:inline-block}
+.theme-tag{background:#ffd60a22;color:#ffd60a;padding:3px 14px;border-radius:12px;font-size:.82em;display:inline-block}
+.back{color:#ffd60a;text-decoration:none;font-size:.85em;margin-bottom:16px;display:inline-block;margin-right:16px}
 .features{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin:14px 0}
 .feature{background:#111;border-radius:8px;padding:12px 16px;font-size:.85em}
 .feature b{color:#ffd60a}
 .demo{background:#000;border-radius:8px;padding:30px;margin:14px 0;text-align:center;
-border:1px solid #ffd60a22}
-.demo .icon{font-size:4em;animation:pulse 3s infinite}
+border:1px solid #ffd60a22;min-height:100px;display:grid;place-items:center}
+.demo .icon svg{width:80px;height:80px;filter:drop-shadow(0 0 30px #ffd60a44)}
 footer{text-align:center;color:#333;font-size:.75em;padding:30px}
 </style></head><body>
 <header>
-  <div class="icon">🦇</div>
+  <div class="icon"><svg viewBox="0 0 100 60"><path d="M5 55 Q30 5 50 30 Q70 5 95 55 Q75 40 50 40 Q25 40 5 55Z" fill="#ffd60a" stroke="#fff"/></svg></div>
   <div><h1>STATUS TOR<small>BATCAVE · tor actif ? IP de sortie ?</small></h1></div>
-  <div class="github"><a href="https://github.com/MaximeLEAL/tool_DC" target="_blank">⬇ GitHub ↗</a></div>
+  <div class="gh"><a href="https://github.com/MaximeLEAL/tool_DC-arsenal" target="_blank">⬇ GitHub ↗</a></div>
 </header>
 <main>
   <a class="back" href="../index.html">← Gotham City</a>
-  <a class="back" href="index_BATCAVE.html" style="margin-left:16px">← BATCAVE</a>
+  <a class="back" href="index________.html">← BATCAVE</a>
   <div class="card"><h2>📝 DESCRIPTION</h2><p></p></div>
   <div class="card"><h2>⚙️ LANCEMENT</h2>
     <div class="code">cd ~/Desktop/tool_DC/BatCave &amp;&amp; python3 bat_tool.py</div>
-    <p style="margin-top:8px">Tape le numéro <b style="color:#ffd60a">1</b> dans le menu du kit pour lancer ce tool.</p>
+    <p>Tape <b style="color:#ffd60a">1</b> dans le menu du kit pour lancer ce tool.</p>
   </div>
   <div class="card"><h2>🏷️ INFORMATIONS</h2>
     <div class="features">
-      <div class="feature"><b style="color:#ffd60a">Thème</b><br>tor actif ? IP de sortie ?</div>
-      <div class="feature"><b style="color:#ffd60a">Kit</b><br>BATCAVE</div>
-      <div class="feature"><b style="color:#ffd60a">Numéro</b><br>1</div>
-      <div class="feature"><b style="color:#ffd60a">Source</b><br>https://github.com/MaximeLEAL/tool_DC</div>
+      <div class="feature"><b>Thème</b><br>tor actif ? IP de sortie ?</div>
+      <div class="feature"><b>Kit</b><br>BATCAVE</div>
+      <div class="feature"><b>Numéro</b><br>1</div>
+      <div class="feature"><b>GitHub</b><br><a href="https://github.com/MaximeLEAL/tool_DC-arsenal" style="color:#ffd60a">github.com/MaximeLEAL/tool_DC-arsenal</a></div>
     </div>
   </div>
   <div class="card"><h2>🎬 DÉMONSTRATION</h2>
-    <div class="demo">
-      <div class="icon">🦇</div>
-      <p style="color:#666;font-size:.85em;margin-top:12px">
-        Lance le tool dans le terminal pour voir la démonstration animée complète.<br>
-        Les animations fullscreen sont générées en temps réel par dc_fullscreen.py.
-      </p>
-    </div>
+    <div class="demo"><div class="icon"><svg viewBox="0 0 100 60"><path d="M5 55 Q30 5 50 30 Q70 5 95 55 Q75 40 50 40 Q25 40 5 55Z" fill="#ffd60a" stroke="#fff"/></svg></div>
+    <p style="color:#666;font-size:.85em;margin-top:10px">
+      Lance le tool dans le terminal pour la démonstration animée complète<br>
+      Les animations fullscreen sont générées par dc_fullscreen.py
+    </p></div>
   </div>
 </main>
 <footer>BATCAVE · STATUS TOR · powered by Maxime Leal</footer>

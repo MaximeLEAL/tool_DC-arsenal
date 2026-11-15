@@ -1,0 +1,49 @@
+<!doctype html><html lang="fr"><head><meta charset="utf-8">
+<title>W.O.P.R. — Tous les Tools</title>
+<style>
+*{box-sizing:border-box;margin:0}
+body{background:#050505;color:#ccc;font-family:'JetBrains Mono',monospace;min-height:100vh}
+header{background:linear-gradient(180deg,#0a0a0a,#000);padding:40px;text-align:center;
+border-bottom:3px solid #7fff00;position:relative;overflow:hidden}
+header::before{content:'';position:absolute;inset:0;
+background:radial-gradient(ellipse at 50% 0%,#7fff0011,transparent 60%)}
+.icon svg{width:80px;height:80px;filter:drop-shadow(0 0 30px #7fff0044)}
+h1{font-size:2em;color:#7fff00;letter-spacing:3px}
+main{max-width:800px;margin:30px auto;padding:0 20px}
+.tool-card{display:flex;gap:16px;align-items:center;background:#0d0d0d;
+border:1px solid #1a1a2a;border-left:4px solid #7fff00;border-radius:10px;
+padding:18px 20px;margin-bottom:12px;text-decoration:none;transition:all .2s;color:#ccc}
+.tool-card:hover{background:#1a1a1a;transform:translateX(6px)}
+.back{color:#7fff00;text-decoration:none;font-size:.9em;display:block;margin-bottom:20px}
+footer{text-align:center;color:#333;font-size:.75em;padding:30px}
+</style></head><body>
+<header><div class="icon"><svg viewBox="0 0 60 60"><path d="M15 15 L45 15 L45 45 L15 45 Z" fill="none" stroke="#7fff00" stroke-width="2"/><path d="M15 25 L45 25 M15 35 L45 35" stroke="#7fff00"/><path d="M25 15 L25 45 M35 15 L35 45" stroke="#7fff00"/></svg></div><h1>W.O.P.R.</h1></header>
+<main>
+  <a class="back" href="../index.html">← Gotham City</a>
+  <div style="text-align:center;margin:20px 0">
+    <a href="https://github.com/MaximeLEAL/tool_DC-arsenal" target="_blank" style="background:#7fff00;color:#000;padding:10px 30px;border-radius:8px;text-decoration:none;font-weight:bold">⬇ Dépôt GitHub</a>
+  </div>
+  <a class="tool-card" href="1_play.html" style="border-left-color:#7fff00">
+          <div style="font-size:1.8em">🎮</div>
+          <div style="flex:1"><b style="color:#7fff00">play</b>
+          <span style="color:#6495ff;font-size:.78em;display:block">intro</span>
+          <p style="color:#777;font-size:.82em;margin:4px 0 0">morpion + SHALL WE PLAY A GAME? tapé lettre par lettre</p></div>
+          <span style="margin-left:auto;color:#7fff00;font-size:1.3em">→</span></a><a class="tool-card" href="2_build.html" style="border-left-color:#7fff00">
+          <div style="font-size:1.8em">🎮</div>
+          <div style="flex:1"><b style="color:#7fff00">build</b>
+          <span style="color:#6495ff;font-size:.78em;display:block">lab</span>
+          <p style="color:#777;font-size:.82em;margin:4px 0 0">cible vulnérable :8090 (SQLi/traversal/RCE) + 4 flags + missions</p></div>
+          <span style="margin-left:auto;color:#7fff00;font-size:1.3em">→</span></a><a class="tool-card" href="3_serve.html" style="border-left-color:#7fff00">
+          <div style="font-size:1.8em">🎮</div>
+          <div style="flex:1"><b style="color:#7fff00">serve</b>
+          <span style="color:#6495ff;font-size:.78em;display:block">CTF</span>
+          <p style="color:#777;font-size:.82em;margin:4px 0 0">cible + scoreboard :8091 — POST /submit?f=FLAG{...} (testé ✓)</p></div>
+          <span style="margin-left:auto;color:#7fff00;font-size:1.3em">→</span></a><a class="tool-card" href="4_destroy.html" style="border-left-color:#7fff00">
+          <div style="font-size:1.8em">🎮</div>
+          <div style="flex:1"><b style="color:#7fff00">destroy</b>
+          <span style="color:#6495ff;font-size:.78em;display:block">nettoyage</span>
+          <p style="color:#777;font-size:.82em;margin:4px 0 0">efface le lab complètement</p></div>
+          <span style="margin-left:auto;color:#7fff00;font-size:1.3em">→</span></a>
+</main>
+<footer>W.O.P.R. · powered by Maxime Leal</footer>
+</body></html>
